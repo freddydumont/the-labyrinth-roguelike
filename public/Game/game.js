@@ -3,12 +3,13 @@ if (!ROT.isSupported()) {
     alert("The rot.js library isn't supported by your browser.");
 } else {
     // width and height
-    let w = 36, h = 25;
+    ROT.DEFAULT_HEIGHT = 25;
+    ROT.DEFAULT_WIDTH = 36;
 
     // Create display, declare and generate map type
-    let display = new ROT.Display({ width: w, height: h });
+    let display = new ROT.Display();
     let container = display.getContainer();
-    let map = new ROT.Map.Arena(w, h);
+    let map = new ROT.Map.Arena();
 
     // store empty cells as array of arrays [[x1,y1],[x2,y2],...]
     let freeCells = [];
