@@ -6,6 +6,7 @@ export default class GameContainer extends Component {
     const rot = document.createElement('script');
     const game = document.createElement('script');
     const map = document.createElement('script');
+    const player = document.createElement('script');
 
     // settings for scripts
     rot.src = './Game/rot.min.js';
@@ -14,11 +15,14 @@ export default class GameContainer extends Component {
     game.async = false;
     map.src = './Game/map.js';
     map.async = false;
+    player.src = './Game/player.js';
+    player.async = false;
 
     // append scripts to page
     document.body.appendChild(rot);
     document.body.appendChild(game);
     document.body.appendChild(map);
+    document.body.appendChild(player);
   }
   render() {
     return <div className="game-container" />;
