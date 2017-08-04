@@ -7,9 +7,9 @@ export default class GameContainer extends Component {
     const game = document.createElement('script');
 
     // settings for scripts
-    rot.src = '../rot.min.js';
+    rot.src = './Game/rot.min.js';
     rot.async = false;
-    game.src = './game.js';
+    game.src = './Game/game.js';
     game.async = false;
 
     // append scripts to page
