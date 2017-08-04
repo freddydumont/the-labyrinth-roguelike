@@ -15,12 +15,15 @@ Game.generateMap = function () {
   let freeCells = [];
 
   // create map
-  mapCallback = function (x, y, wall) {
+  let mapCallback = function (x, y, wall) {
+    let key = x + "," + y;
+
     if (!wall) {
-      // store empty cells as array of arrays
       freeCells.push([x, y]);
+      this.map[key] = ".";
+    } else {
+      this.map[key] = '#';
     }
-    this.display.draw(x, y, wall ? "#" : ".")
   }
   arena.create(mapCallback.bind(this));
 

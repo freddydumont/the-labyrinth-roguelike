@@ -4,6 +4,7 @@ ROT.DEFAULT_WIDTH = 36;
 
 let Game = {
     display: null,
+    engine: null,
 
     init: function () {
         // create display with rot defaults
@@ -13,6 +14,14 @@ let Game = {
         document.getElementsByClassName("game-container")[0].appendChild(this.display.getContainer());
         // call map generation function
         this.generateMap();
+
+        // create scheduler and add player to it
+        let scheduler = new ROT.Scheduler.Simple();
+        scheduler.add(this.player, true);
+
+        // start the engine with the scheduler
+        this.engine = new ROT.Engine(scheduler);
+        this.engine.start();
     },
 };
 
