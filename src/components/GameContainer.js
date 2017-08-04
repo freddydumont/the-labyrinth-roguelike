@@ -2,27 +2,22 @@ import React, { Component } from 'react';
 
 export default class GameContainer extends Component {
   componentWillMount() {
-    // create script elements to append to page
-    const rot = document.createElement('script');
-    const game = document.createElement('script');
-    const map = document.createElement('script');
-    const player = document.createElement('script');
+    // Add corresponding script when you add a file in /public/Game/
+    let scripts = {
+      rot: document.createElement('script'),
+      game: document.createElement('script'),
+      map: document.createElement('script'),
+      player: document.createElement('script')
+    };
 
-    // settings for scripts
-    rot.src = './Game/rot.min.js';
-    rot.async = false;
-    game.src = './Game/game.js';
-    game.async = false;
-    map.src = './Game/map.js';
-    map.async = false;
-    player.src = './Game/player.js';
-    player.async = false;
+    for (let script in scripts) {
+      // add settings to script
+      scripts[script].src = `./Game/${script}.js`;
+      scripts[script].async = false;
 
-    // append scripts to page
-    document.body.appendChild(rot);
-    document.body.appendChild(game);
-    document.body.appendChild(map);
-    document.body.appendChild(player);
+      // append script to page
+      document.body.appendChild(scripts[script]);
+    }
   }
   render() {
     return <div className="game-container" />;
