@@ -31,7 +31,7 @@ Game.generateMap = function () {
   this.drawWholeMap();
 
   // call function to display entity on a free cell
-  this.player = this.createBeing(freeCells, Player, "@", "yellow");
+  this.player = this.createBeing(freeCells, Player);
   this.enemy = this.createBeing(freeCells, Enemy, "E", "red");
 }
 

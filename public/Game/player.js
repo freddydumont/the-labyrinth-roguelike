@@ -13,7 +13,7 @@ class Being {
 }
 
 class Player extends Being {
-  constructor(x, y, symbol, color) {
+  constructor(x, y, symbol = "@", color = "yellow") {
     super(x, y, symbol, color);
   }
   act() {
