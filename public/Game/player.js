@@ -10,6 +10,14 @@ class Being {
   draw() {
     Game.display.draw(this._x, this._y, this._symbol, this._color)
   }
+
+  getX() {
+    return this._x;
+  }
+
+  getY() {
+    return this._y;
+  }
 }
 
 class Player extends Being {
@@ -55,6 +63,8 @@ class Player extends Being {
     this._y = newY;
     this.draw();
 
+    console.log('player:', this.getX(), this.getY());
+    console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
     // turn has ended, remove event listener and unlock engine
     window.removeEventListener("keydown", this);
     Game.engine.unlock();
