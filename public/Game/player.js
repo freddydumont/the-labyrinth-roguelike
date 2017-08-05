@@ -28,8 +28,6 @@ Enemy.prototype.draw = function () {
 
 // act function locks the engine and waits for user input
 Player.prototype.act = function () {
-  console.log("test")
-  
   Game.engine.lock();
   // wait for user input; do stuff when user hits a key
   window.addEventListener("keydown", this);
@@ -48,7 +46,6 @@ Player.prototype.handleEvent = function (e) {
   keyMap[36] = 7;
 
   const code = e.keyCode;
-  console.log("test")
 
   // If the key code is not present in keyMap, do nothing
   if (!(code in keyMap)) { return; }

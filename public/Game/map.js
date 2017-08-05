@@ -30,9 +30,9 @@ Game.generateMap = function () {
   // call draw function
   this.drawWholeMap();
 
-  // call function to display player on a free cell
-  this.createBeing(freeCells, Player);
-  this.createBeing(freeCells, Enemy);
+  // call function to display entity on a free cell
+  this.player = this.createBeing(freeCells, Player);
+  this.enemy = this.createBeing(freeCells, Enemy);
 }
 
 // iterate through all the floor tiles and draw their visual representation

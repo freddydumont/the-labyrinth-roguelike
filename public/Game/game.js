@@ -20,6 +20,8 @@ let Game = {
         let scheduler = new ROT.Scheduler.Simple();
         scheduler.add(this.player, true);
 
+        // TODO: Add enemy to scheduler when he has an act function
+
         // start the engine with the scheduler
         this.engine = new ROT.Engine(scheduler);
         this.engine.start();
