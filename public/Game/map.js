@@ -11,7 +11,7 @@ Game.generateMap = function () {
   // generate map type
   let arena = new ROT.Map.Arena();
 
-  // store empty cells as array of arrays [[x1,y1],[x2,y2],...]
+  // stores empty coordinates as strings in array
   let freeCells = [];
 
   // create map
@@ -30,8 +30,9 @@ Game.generateMap = function () {
   // call draw function
   this.drawWholeMap();
 
-  // call function to display player on a free cell
-  this.createPlayer(freeCells);
+  // call function to display entity on a free cell
+  this.player = this.createBeing(freeCells, Player);
+  this.enemy = this.createBeing(freeCells, Enemy, "E", "red");
 }
 
 // iterate through all the floor tiles and draw their visual representation

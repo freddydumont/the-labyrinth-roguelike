@@ -12,12 +12,15 @@ let Game = {
 
         // Add the container to our HTML page
         document.getElementsByClassName("game-container")[0].appendChild(this.display.getContainer());
+
         // call map generation function
         this.generateMap();
 
         // create scheduler and add player to it
         let scheduler = new ROT.Scheduler.Simple();
         scheduler.add(this.player, true);
+
+        // TODO: Add enemy to scheduler when he has an act function
 
         // start the engine with the scheduler
         this.engine = new ROT.Engine(scheduler);
