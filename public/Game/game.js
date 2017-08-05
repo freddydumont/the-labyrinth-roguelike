@@ -12,6 +12,7 @@ let Game = {
 
         // Add the container to our HTML page
         document.getElementsByClassName("game-container")[0].appendChild(this.display.getContainer());
+
         // call map generation function
         this.generateMap();
 

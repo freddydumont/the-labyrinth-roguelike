@@ -1,5 +1,6 @@
 // Initialize Player in Game namespace
 Game.player = null;
+Game.enemy = null;
 
 // constructor function for Player
 let Player = function (x, y) {
@@ -13,8 +14,22 @@ Player.prototype.draw = function () {
   Game.display.draw(this._x, this._y, "@", "#ff0")
 }
 
+// constructor function for Enemy
+let Enemy = function (x, y) {
+  this._x = x;
+  this._y = y;
+  this.draw();
+}
+
+// define draw function in Enemy prototype
+Enemy.prototype.draw = function () {
+  Game.display.draw(this._x, this._y, "E", "red")
+}
+
 // act function locks the engine and waits for user input
 Player.prototype.act = function () {
+  console.log("test")
+  
   Game.engine.lock();
   // wait for user input; do stuff when user hits a key
   window.addEventListener("keydown", this);
@@ -33,6 +48,7 @@ Player.prototype.handleEvent = function (e) {
   keyMap[36] = 7;
 
   const code = e.keyCode;
+  console.log("test")
 
   // If the key code is not present in keyMap, do nothing
   if (!(code in keyMap)) { return; }
@@ -59,12 +75,12 @@ Player.prototype.handleEvent = function (e) {
   Game.engine.unlock();
 }
 
-// Create player on a random free cell
-Game.createPlayer = function (freeCells) {
+// Create being on a random free cell
+Game.createBeing = function (freeCells, being) {
   // random a position for Player to spawn in
   let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
   var key = freeCells.splice(index, 1)[0];
   let x = key[0];
   let y = key[1];
-  this.player = new Player(x, y);
+  return new being(x, y);
 }
