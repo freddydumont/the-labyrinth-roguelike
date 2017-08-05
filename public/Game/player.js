@@ -42,7 +42,9 @@ Player.prototype.handleEvent = function (e) {
   const newX = this._x + dir[0];
   const newY = this._y + dir[1];
   const newKey = newX + "," + newY;
-  if (!(newKey in Game.map)) { return; }
+
+  // if inside map and not a wall
+  if (!(newKey in Game.map) || (Game.map[newKey] == "#")) { return; }
 
   // redraw old position
   Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y]);
