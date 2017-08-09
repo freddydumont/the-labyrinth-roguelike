@@ -17,7 +17,7 @@ Game.generateMap = function () {
   // create map
   let mapCallback = function (x, y, wall) {
     let key = x + "," + y;
-
+    
     if (!wall) {
       freeCells.push([x, y]);
       this.map[key] = ".";
