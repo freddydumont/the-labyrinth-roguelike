@@ -1,5 +1,7 @@
 import { ROT, Game } from './game';
-import { Player, Enemy, createBeing } from './player';
+import Player from './player';
+import Enemy from './enemy';
+import { createEntity } from './entity';
 /**
  * This function generates a map and stores free cells in an array
  * by using a map generation algorithm fron ROT
@@ -30,8 +32,8 @@ export const generateMap = function() {
   _drawWholeMap();
 
   // call function to display entity on a free cell
-  Game.player = createBeing(freeCells, Player);
-  Game.enemy = createBeing(freeCells, Enemy, 'E', 'red');
+  Game.player = createEntity(freeCells, Player);
+  Game.enemy = createEntity(freeCells, Enemy, 'E', 'red');
 };
 
 // iterate through all the floor tiles and draw their visual representation
