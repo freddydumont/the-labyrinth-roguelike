@@ -9,6 +9,10 @@ export default class GameContainer extends Component {
     } else {
       // Initialize the game
       Game.init();
+      // Add the container to our HTML page
+      document
+        .getElementsByClassName('game-container')[0]
+        .appendChild(Game.display.getContainer());
     }
   }
   render() {
