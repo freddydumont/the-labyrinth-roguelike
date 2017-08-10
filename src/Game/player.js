@@ -1,3 +1,4 @@
+import { ROT, Game } from './game';
 
 class Being {
   constructor(x, y, symbol, color) {
@@ -8,7 +9,7 @@ class Being {
     this.draw();
   }
   draw() {
-    Game.display.draw(this._x, this._y, this._symbol, this._color)
+    Game.display.draw(this._x, this._y, this._symbol, this._color);
   }
 
   getX() {
@@ -20,14 +21,14 @@ class Being {
   }
 }
 
-class Player extends Being {
-  constructor(x, y, symbol = "@", color = "yellow") {
+export class Player extends Being {
+  constructor(x, y, symbol = '@', color = 'yellow') {
     super(x, y, symbol, color);
   }
   act() {
     Game.engine.lock();
     // wait for user input; do stuff when user hits a key
-    window.addEventListener("keydown", this);
+    window.addEventListener('keydown', this);
   }
 
   handleEvent(e) {
@@ -44,19 +45,23 @@ class Player extends Being {
     const code = e.keyCode;
 
     // If the key code is not present in keyMap, do nothing
-    if (!(code in keyMap)) { return; }
+    if (!(code in keyMap)) {
+      return;
+    }
 
     // If the key code is present, check whether the PC can move in that direction
     const dir = ROT.DIRS[8][keyMap[code]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
-    const newKey = newX + "," + newY;
+    const newKey = newX + ',' + newY;
 
     // if inside map and not a wall
-    if (!(newKey in Game.map) || (Game.map[newKey] == "#")) { return; }
+    if (!(newKey in Game.map) || Game.map[newKey] === '#') {
+      return;
+    }
 
     // redraw old position
-    Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y]);
+    Game.display.draw(this._x, this._y, Game.map[this._x + ',' + this._y]);
 
     // redraw new position
     this._x = newX;
@@ -66,16 +71,12 @@ class Player extends Being {
     console.log('player:', this.getX(), this.getY());
     console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
     // turn has ended, remove event listener and unlock engine
-    window.removeEventListener("keydown", this);
+    window.removeEventListener('keydown', this);
     Game.engine.unlock();
   }
 }
 
-class Enemy extends Being {
-  constructor(x, y, symbol, color) {
-    super(x, y, symbol, color);
-  }
-
+export class Enemy extends Being {
   // TODO: Add field of view
   act() {
     // get player coodinates
@@ -84,24 +85,24 @@ class Enemy extends Being {
 
     // passableCallback tells the pathfinder what areas are passable
     // TODO: update with Game.passableCells when available
-    const passableCallback = function (x, y) {
-      return (x + "," + y in Game.map);
-    }
+    const passableCallback = function(x, y) {
+      return x + ',' + y in Game.map;
+    };
 
     // patchfinding algorithm -- topology makes the enemy move in 4 directions only
     const astar = new ROT.Path.AStar(x, y, passableCallback, { topology: 4 });
 
     // compute finds the shortest path and pushes it to path
     let path = [];
-    const pathCallback = function (x, y) {
+    const pathCallback = function(x, y) {
       path.push([x, y]);
-    }
+    };
     astar.compute(this._x, this._y, pathCallback);
 
     // remove enemy position
     path.shift();
 
-    if (path.length == 1) {
+    if (path.length === 1) {
       // enemy and player and next to each other
       // Game.engine.lock();
       console.log('collision imminent');
@@ -111,7 +112,7 @@ class Enemy extends Being {
       y = path[0][1];
 
       // redraw old position
-      Game.display.draw(this._x, this._y, Game.map[this._x + "," + this._y]);
+      Game.display.draw(this._x, this._y, Game.map[this._x + ',' + this._y]);
 
       // draw enemy at new position
       this._x = x;
@@ -122,11 +123,11 @@ class Enemy extends Being {
 }
 
 // Create being on a random free cell
-Game.createBeing = function (freeCells, being, symbol, color) {
+export const createBeing = function(freeCells, being, symbol, color) {
   // random a position for Player to spawn in
   let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-  var key = freeCells.splice(index, 1)[0];
+  let key = freeCells.splice(index, 1)[0];
   let x = key[0];
   let y = key[1];
   return new being(x, y, symbol, color);
-}
+};

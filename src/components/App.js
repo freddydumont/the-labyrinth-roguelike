@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import logo from '../logo.svg';
 import '../styles/App.css';
 import GameContainer from './GameContainer';
-import GameBase from './Game';
-
-let w = Math.floor(window.innerWidth / 10.2),
-  h = Math.floor(window.innerHeight / 19);
 
 class App extends Component {
   render() {
@@ -19,7 +15,6 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <GameContainer />
-        <GameBase width={w} height={h} />
       </div>
     );
   }
