@@ -1,22 +1,14 @@
 import React, { Component } from 'react';
+import { ROT, Game } from '../Game/game';
 
 export default class GameContainer extends Component {
-  componentWillMount() {
-    // Add corresponding script when you add a file in /public/Game/
-    let scripts = {
-      rot: document.createElement('script'),
-      game: document.createElement('script'),
-      map: document.createElement('script'),
-      player: document.createElement('script')
-    };
-
-    for (let script in scripts) {
-      // add settings to script
-      scripts[script].src = `./Game/${script}.js`;
-      scripts[script].async = false;
-
-      // append script to page
-      document.body.appendChild(scripts[script]);
+  componentDidMount() {
+    // Check if rot.js can work on this browser
+    if (!ROT.isSupported()) {
+      alert("The rot.js library isn't supported by your browser.");
+    } else {
+      // Initialize the game
+      Game.init();
     }
   }
   render() {
