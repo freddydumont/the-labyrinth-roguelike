@@ -1,4 +1,3 @@
-import { generateMap } from './map';
 import * as Screen from './screens';
 
 export const ROT = window.ROT;
@@ -52,7 +51,7 @@ export let Game = {
   },
   startGame: function() {
     // call map generation function
-    generateMap();
+    // generateMap();
 
     // create scheduler and add beings to it
     let scheduler = new ROT.Scheduler.Simple();

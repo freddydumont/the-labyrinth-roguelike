@@ -2,7 +2,7 @@
  * A glyph simply wraps around a character a foreground color, and a background color
  * The properties can be fetched using getter methods.
  */
-Game.Glyph = class Glyph {
+export default class Glyph {
   constructor(chr = ' ', foreground = 'white', background = 'black') {
     this._chr = chr;
     this._foreground = foreground;
@@ -20,4 +20,4 @@ Game.Glyph = class Glyph {
   getForeground() {
     return this._foreground;
   }
-};
+}

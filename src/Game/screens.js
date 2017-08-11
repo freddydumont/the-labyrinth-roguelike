@@ -1,4 +1,5 @@
 import { ROT, Game } from './game';
+import * as Map from './map';
 
 // Define our initial start screen
 export const startScreen = {
@@ -27,12 +28,14 @@ export const startScreen = {
 export const playScreen = {
   enter: function() {
     console.log('Entered play screen.');
+    Map.generateMap();
   },
   exit: function() {
     console.log('Exited play screen.');
   },
   render: function(display) {
-    Game.startGame();
+    Map.renderMap(display);
+    // Game.startGame();
   },
   handleInput: function(inputType, inputData) {
     if (inputType === 'keydown') {

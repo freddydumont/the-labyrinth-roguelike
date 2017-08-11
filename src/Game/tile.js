@@ -1,9 +1,10 @@
+import Glyph from './glyph';
 /**
  * For now a tile simply contains a glyph, but in the future it will keep all sorts
  * of useful information such as whether characters can walk on this tile and it will
  * also describe how players can interact with the tile.
  */
-Game.Tile = class Tile {
+export default class Tile {
   constructor(glyph) {
     this._glyph = glyph;
   }
@@ -11,10 +12,10 @@ Game.Tile = class Tile {
   getGlyph() {
     return this._glyph;
   }
-};
+}
 
 // nullTile will be returned whenever we try to access an out of bounds tiles
-Game.Tile.nullTile = new Game.Tile(new Game.Glyph());
+Tile.nullTile = new Tile(new Glyph());
 // floor and wall tiles
-Game.Tile.floorTile = new Game.Tile(new Game.Glyph('.'));
-Game.Tile.wallTile = new Game.Tile(new Game.Glyph('#', 'goldenrod'));
+Tile.floorTile = new Tile(new Glyph('.'));
+Tile.wallTile = new Tile(new Glyph('#', 'goldenrod'));
