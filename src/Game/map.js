@@ -79,13 +79,13 @@ export const renderMap = function(display) {
   for (let x = 0; x < Map._map.getWidth(); x++) {
     for (let y = 0; y < Map._map.getHeight(); y++) {
       // Fetch the glyph for the tile and render it to the screen
-      let glyph = Map._map.getTile(x, y).getGlyph();
+      let tile = Map._map.getTile(x, y);
       display.draw(
         x,
         y,
-        glyph.getChar(),
-        glyph.getForeground(),
-        glyph.getBackground()
+        tile.getChar(),
+        tile.getForeground(),
+        tile.getBackground()
       );
     }
   }
