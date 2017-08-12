@@ -50,9 +50,6 @@ export let Game = {
     }
   },
   startGame: function() {
-    // call map generation function
-    // generateMap();
-
     // create scheduler and add beings to it
     let scheduler = new ROT.Scheduler.Simple();
     scheduler.add(this.player, true);

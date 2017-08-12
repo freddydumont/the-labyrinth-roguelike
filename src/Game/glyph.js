@@ -3,14 +3,14 @@
  * The properties can be fetched using getter methods.
  */
 export default class Glyph {
-  constructor(chr = ' ', foreground = 'white', background = 'black') {
-    this._chr = chr;
-    this._foreground = foreground;
-    this._background = background;
+  constructor(props = {}) {
+    this._char = props['character'] || ' ';
+    this._foreground = props['foreground'] || 'white';
+    this._background = props['background'] || 'black';
   }
 
   getChar() {
-    return this._chr;
+    return this._char;
   }
 
   getBackground() {
