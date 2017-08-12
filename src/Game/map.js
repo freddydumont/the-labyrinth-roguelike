@@ -10,7 +10,7 @@ import { createEntity } from './entity';
  */
 export const generateMap = function() {
   // generate map type
-  let arena = new ROT.Map.Arena();
+  let arena = new ROT.Map.Arena(Game.gameW, Game.gameH);
 
   // stores empty coordinates as strings in array
   let freeCells = [];
