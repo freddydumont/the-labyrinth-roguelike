@@ -11,7 +11,7 @@ export default class Enemy extends Entity {
     // passableCallback tells the pathfinder what areas are passable
     // TODO: update with Game.passableCells when available
     const passableCallback = function(x, y) {
-      return x + ',' + y in Game.map;
+      return x + ',' + y in Game._map;
     };
 
     // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -37,7 +37,7 @@ export default class Enemy extends Entity {
       y = path[0][1];
 
       // redraw old position
-      Game.display.draw(this._x, this._y, Game.map[this._x + ',' + this._y]);
+      Game.display.draw(this._x, this._y, Game._map[this._x + ',' + this._y]);
 
       // draw enemy at new position
       this._x = x;
