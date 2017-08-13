@@ -1,4 +1,5 @@
 import { ROT, Game } from './game';
+import Tile from './tile';
 import Entity from './entity';
 
 export default class Player extends Entity {
@@ -30,15 +31,22 @@ export default class Player extends Entity {
     const dir = ROT.DIRS[8][keyMap[code]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
-    const newKey = newX + ',' + newY;
+    const newKey = Game._map.getTile(newX, newY);
 
-    // if inside map and not a wall
-    if (!(newKey in Game.map) || Game.map[newKey] === '#') {
+    // if oustide of map or wall, can't move
+    if (newKey === Tile.nullTile || newKey === Tile.wallTile) {
       return;
     }
 
     // redraw old position
-    Game.display.draw(this._x, this._y, Game.map[this._x + ',' + this._y]);
+    let oldKey = Game._map.getTile(this._x, this._y);
+    Game.display.draw(
+      this._x,
+      this._y,
+      oldKey.getChar(),
+      oldKey.getForeground(),
+      oldKey.getBackground()
+    );
 
     // redraw new position
     this._x = newX;

@@ -53,12 +53,12 @@ export const generateMap = function() {
   let arena = new ROT.Map.Arena();
 
   // stores empty coordinates as strings in array
-  Game.freeCells = [];
+  let freeCells = [];
 
   // create map
   let mapCallback = function(x, y, wall) {
     if (!wall) {
-      Game.freeCells.push([x, y]);
+      freeCells.push([x, y]);
       map[x][y] = Tile.floorTile;
     } else {
       map[x][y] = Tile.wallTile;
@@ -67,15 +67,17 @@ export const generateMap = function() {
   arena.create(mapCallback);
 
   // Create our map from the tiles
-  Map._map = new Map(map);
+  Game._map = new Map(map);
+  // add freeCells to map
+  Game._map.freeCells = freeCells;
 };
 
 export const renderMap = function(display) {
   // Iterate through all map cells
-  for (let x = 0; x < Map._map.getWidth(); x++) {
-    for (let y = 0; y < Map._map.getHeight(); y++) {
+  for (let x = 0; x < Game._map.getWidth(); x++) {
+    for (let y = 0; y < Game._map.getHeight(); y++) {
       // Fetch the glyph for the tile and render it to the screen
-      let tile = Map._map.getTile(x, y);
+      let tile = Game._map.getTile(x, y);
       display.draw(
         x,
         y,
@@ -87,12 +89,12 @@ export const renderMap = function(display) {
   }
 
   // call function to display entity on a free cell
-  Game.player = createEntity(Game.freeCells, Player, {
+  Game.player = createEntity(Game._map.freeCells, Player, {
     name: 'player',
     character: '@',
     foreground: 'yellow'
   });
-  Game.enemy = createEntity(Game.freeCells, Enemy, {
+  Game.enemy = createEntity(Game._map.freeCells, Enemy, {
     name: 'enemy',
     character: 'E',
     foreground: 'red'

@@ -35,7 +35,7 @@ export const playScreen = {
   },
   render: function(display) {
     Map.renderMap(display);
-    // Game.startGame();
+    Game.startGame();
   },
   handleInput: function(inputType, inputData) {
     if (inputType === 'keydown') {
