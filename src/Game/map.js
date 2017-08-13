@@ -53,12 +53,12 @@ export const generateMap = function() {
   let arena = new ROT.Map.Arena();
 
   // stores empty coordinates as strings in array
-  let freeCells = [];
+  Game.freeCells = [];
 
   // create map
   let mapCallback = function(x, y, wall) {
     if (!wall) {
-      freeCells.push([x, y]);
+      Game.freeCells.push([x, y]);
       map[x][y] = Tile.floorTile;
     } else {
       map[x][y] = Tile.wallTile;
@@ -68,10 +68,6 @@ export const generateMap = function() {
 
   // Create our map from the tiles
   Map._map = new Map(map);
-
-  // // call function to display entity on a free cell
-  // Game.player = createEntity(freeCells, Player);
-  // Game.enemy = createEntity(freeCells, Enemy, 'E', 'red');
 };
 
 export const renderMap = function(display) {
@@ -89,4 +85,16 @@ export const renderMap = function(display) {
       );
     }
   }
+
+  // call function to display entity on a free cell
+  Game.player = createEntity(Game.freeCells, Player, {
+    name: 'player',
+    character: '@',
+    foreground: 'yellow'
+  });
+  Game.enemy = createEntity(Game.freeCells, Enemy, {
+    name: 'enemy',
+    character: 'E',
+    foreground: 'red'
+  });
 };

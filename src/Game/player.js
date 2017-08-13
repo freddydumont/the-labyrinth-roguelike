@@ -2,10 +2,6 @@ import { ROT, Game } from './game';
 import Entity from './entity';
 
 export default class Player extends Entity {
-  constructor(x, y, symbol = '@', color = 'yellow') {
-    super(x, y, symbol, color);
-  }
-
   act() {
     Game.engine.lock();
     // wait for user input; do stuff when user hits a key
