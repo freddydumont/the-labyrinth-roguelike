@@ -40,11 +40,11 @@ class Map {
  */
 export const generateMap = function() {
   let map = [];
-  for (let x = 0; x < 36; x++) {
+  for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
     // Create the nested array for the y values
     map.push([]);
     // Add all the tiles
-    for (let y = 0; y < 25; y++) {
+    for (let y = 0; y < ROT.DEFAULT_HEIGHT; y++) {
       map[x].push(Tile.nullTile);
     }
   }

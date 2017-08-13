@@ -1,3 +1,4 @@
+import * as tiles from './tiles';
 import * as Screen from './screens';
 
 export const ROT = window.ROT;
@@ -10,7 +11,7 @@ export let Game = {
   display: null,
   _currentScreen: null,
   engine: null,
-  _map: {},
+  map: {},
 
   init: function() {
     // create display with rot defaults
@@ -50,6 +51,10 @@ export let Game = {
     }
   },
   startGame: function() {
+    // call map generation function
+    tiles._init();
+  },
+  startEngine: function() {
     // create scheduler and add beings to it
     let scheduler = new ROT.Scheduler.Simple();
     scheduler.add(this.player, true);
