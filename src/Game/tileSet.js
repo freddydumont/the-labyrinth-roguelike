@@ -14,7 +14,7 @@ export const _init = function() {
     tileHeight: 16,
     tileSet: tileSet,
     tileMap: {
-      '#': [0, 0],
+      '#': [0, 96],
       '.': [0, 48],
       '@': [336, 0],
       E: [368, 128]
