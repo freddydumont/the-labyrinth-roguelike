@@ -1,5 +1,5 @@
 import { Game } from './game';
-import { generateMap } from './map';
+import * as Screen from './screens';
 
 export const _init = function() {
   // loads our tileSet into our page to use
@@ -17,17 +17,17 @@ export const _init = function() {
       '#': [0, 0],
       '.': [0, 48],
       '@': [336, 0],
-      E: [368, 128],
-      ' ': [48, 48]
+      E: [368, 128]
     }
   };
 
   // sets the current Rot.display with options
   Game.display.setOptions(options);
 
-  // wait for tileSet load
+  // wait for tileSet load before calling
+  // draw functions
   tileSet.onload = function() {
-    generateMap();
+    Game.switchScreen(Screen.playScreen);
     Game.startEngine();
   };
 };
