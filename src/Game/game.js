@@ -1,4 +1,4 @@
-import * as tiles from './tiles';
+import * as TileSet from './tileSet';
 import * as Screen from './screens';
 
 export const ROT = window.ROT;
@@ -52,7 +52,7 @@ export let Game = {
   },
   startGame: function() {
     // call map generation function
-    tiles._init();
+    TileSet._init();
   },
   startEngine: function() {
     // create scheduler and add beings to it
