@@ -18,7 +18,7 @@ export const startScreen = {
     // When [Enter] is pressed, go to the play screen
     if (inputType === 'keydown') {
       if (inputData.keyCode === ROT.VK_RETURN) {
-        Game.switchScreen(playScreen);
+        Game.startGame();
       }
     }
   }
@@ -35,7 +35,6 @@ export const playScreen = {
   },
   render: function(display) {
     Map.renderMap(display);
-    Game.startGame();
   },
   handleInput: function(inputType, inputData) {
     if (inputType === 'keydown') {
