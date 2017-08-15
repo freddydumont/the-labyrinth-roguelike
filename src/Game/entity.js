@@ -18,7 +18,7 @@ export default class Entity extends Glyph {
   }
 
   draw() {
-    Game.display.draw(this._x, this._y, this._char, this._foreground);
+    Game.display.draw(this._x, this._y, ['.', this._char], this._foreground);
   }
 
   // setters
