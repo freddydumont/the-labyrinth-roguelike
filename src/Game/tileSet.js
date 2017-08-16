@@ -2,7 +2,7 @@ import { Game } from './game';
 import * as Screen from './screens';
 
 export const _init = function() {
-  // loads our tileSet into our page to use
+  // Loads our tileSet into our page to use
   const tileSet = document.createElement('img');
   tileSet.src = require('./tileSet/Floor-Players.png');
 
@@ -21,12 +21,11 @@ export const _init = function() {
     }
   };
 
-  // sets the current Rot.display with options
-  Game.display.setOptions(options);
-
-  // wait for tileSet load before calling
-  // draw functions
+  // Wait for tileSet load
   tileSet.onload = function() {
+    // Sets the current Rot.display with options
+    Game.display.setOptions(options);
+    // Switch to play display and start game engine
     Game.switchScreen(Screen.playScreen);
     Game.startEngine();
   };
