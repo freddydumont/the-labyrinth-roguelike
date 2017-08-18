@@ -11,7 +11,7 @@ export let Game = {
   display: null,
   _currentScreen: null,
   engine: null,
-  map: {},
+  map: { freeCells: [] },
 
   init: function() {
     // create display with rot defaults

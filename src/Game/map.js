@@ -4,13 +4,42 @@ import Enemy from './enemy';
 import { createEntity } from './entity';
 import Tile from './tile';
 
-class Map {
-  constructor(tiles) {
-    this._tiles = tiles;
+export default class Map {
+  constructor() {
+    this._tiles = this.generateMap();
     // cache the width and height based on the
     // length of the dimensions of the tiles array
-    this._width = tiles.length;
-    this._height = tiles[0].length;
+    this._width = this._tiles.length;
+    this._height = this._tiles[0].length;
+  }
+  generateMap() {
+    let map = [];
+    for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
+      // Create the nested array for the y values
+      map.push([]);
+      // Add all the tiles
+      for (let y = 0; y < ROT.DEFAULT_HEIGHT; y++) {
+        map[x].push(Tile.nullTile);
+      }
+    }
+
+    // generate map type
+    let arena = new ROT.Map.Arena();
+
+    // create map
+    let mapCallback = (x, y, wall) => {
+      if (!wall) {
+        // stores empty coordinates
+        // add freeCells to map
+        Game.map.freeCells.push([x, y]);
+        map[x][y] = Tile.floorTile;
+      } else {
+        map[x][y] = Tile.wallTile;
+      }
+    };
+    arena.create(mapCallback);
+
+    return map;
   }
 
   // Standard getters
@@ -30,6 +59,15 @@ class Map {
       return this._tiles[x][y] || Tile.nullTile;
     }
   }
+  getRandomFloorPosition() {
+    // Randomly generate a tile which is a floor
+    var x, y;
+    do {
+      x = Math.floor(Math.random() * this._width);
+      y = Math.floor(Math.random() * this._width);
+    } while (this.getTile(x, y) !== Game.Tile.floorTile);
+    return { x: x, y: y };
+  }
 }
 
 /**
@@ -38,39 +76,6 @@ class Map {
  * 
  * It is also responsible for creating actors on free cells
  */
-export const generateMap = function() {
-  let map = [];
-  for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
-    // Create the nested array for the y values
-    map.push([]);
-    // Add all the tiles
-    for (let y = 0; y < ROT.DEFAULT_HEIGHT; y++) {
-      map[x].push(Tile.nullTile);
-    }
-  }
-
-  // generate map type
-  let arena = new ROT.Map.Arena();
-
-  // stores empty coordinates as strings in array
-  let freeCells = [];
-
-  // create map
-  let mapCallback = function(x, y, wall) {
-    if (!wall) {
-      freeCells.push([x, y]);
-      map[x][y] = Tile.floorTile;
-    } else {
-      map[x][y] = Tile.wallTile;
-    }
-  };
-  arena.create(mapCallback);
-
-  // Create our map from the tiles
-  Game._map = new Map(map);
-  // add freeCells to map
-  Game._map.freeCells = freeCells;
-};
 
 export const renderMap = function(display) {
   // Iterate through all map cells

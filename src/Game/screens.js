@@ -1,5 +1,5 @@
 import { ROT, Game } from './game';
-import * as Map from './map';
+import Map from './map';
 
 // Define our initial start screen
 export const startScreen = {
@@ -28,7 +28,7 @@ export const startScreen = {
 export const playScreen = {
   enter: function() {
     console.log('Entered play screen.');
-    Map.generateMap();
+    Game._map = new Map();
   },
   exit: function() {
     console.log('Exited play screen.');
