@@ -40,11 +40,9 @@ export default class Map {
     return { x: x, y: y };
   }
   /**
- * This function generates a map and stores free cells in an array
- * by using a map generation algorithm fron ROT
- * 
- * It is also responsible for creating actors on free cells
- */
+   * This function generates a map and stores free cells in an array
+   * by using a map generation algorithm fron ROT
+   */
   generateMap() {
     let map = [];
     for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
@@ -74,6 +72,7 @@ export default class Map {
 
     return map;
   }
+  // Function responsible for drawing map on display
   renderMap(display) {
     // Iterate through all map cells
     for (let x = 0; x < Game._map.getWidth(); x++) {
@@ -89,7 +88,11 @@ export default class Map {
         );
       }
     }
+    this.renderEntities();
+  }
 
+  // Function responsible for creating actors on free cells
+  renderEntities() {
     // call function to display entity on a free cell
     Game.player = createEntity(Game.map.freeCells, Player, {
       name: 'player',
