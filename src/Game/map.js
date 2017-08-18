@@ -12,6 +12,39 @@ export default class Map {
     this._width = this._tiles.length;
     this._height = this._tiles[0].length;
   }
+
+  // Standard getters
+  getWidth() {
+    return this._width;
+  }
+  getHeight() {
+    return this._height;
+  }
+
+  // Gets the tile for a given coordinate set
+  getTile(x, y) {
+    // Make sure we are inside the bounds. If we aren't, return a null tile.
+    if (x < 0 || x >= this._width || y < 0 || y >= this._height) {
+      return Tile.nullTile;
+    } else {
+      return this._tiles[x][y] || Tile.nullTile;
+    }
+  }
+  getRandomFloorPosition() {
+    // Randomly generate a tile which is a floor
+    var x, y;
+    do {
+      x = Math.floor(Math.random() * this._width);
+      y = Math.floor(Math.random() * this._width);
+    } while (this.getTile(x, y) !== Game.Tile.floorTile);
+    return { x: x, y: y };
+  }
+  /**
+ * This function generates a map and stores free cells in an array
+ * by using a map generation algorithm fron ROT
+ * 
+ * It is also responsible for creating actors on free cells
+ */
   generateMap() {
     let map = [];
     for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
@@ -41,67 +74,32 @@ export default class Map {
 
     return map;
   }
-
-  // Standard getters
-  getWidth() {
-    return this._width;
-  }
-  getHeight() {
-    return this._height;
-  }
-
-  // Gets the tile for a given coordinate set
-  getTile(x, y) {
-    // Make sure we are inside the bounds. If we aren't, return a null tile.
-    if (x < 0 || x >= this._width || y < 0 || y >= this._height) {
-      return Tile.nullTile;
-    } else {
-      return this._tiles[x][y] || Tile.nullTile;
+  renderMap(display) {
+    // Iterate through all map cells
+    for (let x = 0; x < Game._map.getWidth(); x++) {
+      for (let y = 0; y < Game._map.getHeight(); y++) {
+        // Fetch the glyph for the tile and render it to the screen
+        let tile = Game._map.getTile(x, y);
+        display.draw(
+          x,
+          y,
+          tile.getChar(),
+          tile.getForeground(),
+          tile.getBackground()
+        );
+      }
     }
-  }
-  getRandomFloorPosition() {
-    // Randomly generate a tile which is a floor
-    var x, y;
-    do {
-      x = Math.floor(Math.random() * this._width);
-      y = Math.floor(Math.random() * this._width);
-    } while (this.getTile(x, y) !== Game.Tile.floorTile);
-    return { x: x, y: y };
+
+    // call function to display entity on a free cell
+    Game.player = createEntity(Game.map.freeCells, Player, {
+      name: 'player',
+      character: '@',
+      foreground: 'yellow'
+    });
+    Game.enemy = createEntity(Game.map.freeCells, Enemy, {
+      name: 'enemy',
+      character: 'E',
+      foreground: 'red'
+    });
   }
 }
-
-/**
- * This function generates a map and stores free cells in an array
- * by using a map generation algorithm fron ROT
- * 
- * It is also responsible for creating actors on free cells
- */
-
-export const renderMap = function(display) {
-  // Iterate through all map cells
-  for (let x = 0; x < Game._map.getWidth(); x++) {
-    for (let y = 0; y < Game._map.getHeight(); y++) {
-      // Fetch the glyph for the tile and render it to the screen
-      let tile = Game._map.getTile(x, y);
-      display.draw(
-        x,
-        y,
-        tile.getChar(),
-        tile.getForeground(),
-        tile.getBackground()
-      );
-    }
-  }
-
-  // call function to display entity on a free cell
-  Game.player = createEntity(Game._map.freeCells, Player, {
-    name: 'player',
-    character: '@',
-    foreground: 'yellow'
-  });
-  Game.enemy = createEntity(Game._map.freeCells, Enemy, {
-    name: 'enemy',
-    character: 'E',
-    foreground: 'red'
-  });
-};
