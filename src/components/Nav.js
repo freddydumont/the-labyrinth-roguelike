@@ -5,27 +5,23 @@ import { logout } from '../actions';
 
 const Nav = ({ auth, dispatch }) => {
   return (
-    <nav className="flex justify-between">
-      <Link
-        to="/"
-        className="link dib black dim no-underline flex items-center pa3"
-        href=""
-      >
+    <nav className="bg-blue white flex justify-between">
+      <Link to="/" className="link dim white items-center flex ml3" href="">
         Home
       </Link>
       <div className="flex-grow pa3 flex items-center">
-        <Link to="/game" className="f6 link dib black dim mr3 mr4-ns">
+        <Link to="/game" className="link dim white mr3">
           Game
         </Link>
         {auth.uid
           ? <Link
               to="/"
-              className="f6 link dib black dim mr3 mr4-ns"
+              className="link dim white mr3"
               onClick={() => dispatch(logout())}
             >
               Logout
             </Link>
-          : <Link to="/login" className="f6 link dib black dim mr3 mr4-ns">
+          : <Link to="/login" className="link dim white mr3">
               Login
             </Link>}
       </div>
