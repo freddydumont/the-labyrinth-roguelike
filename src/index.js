@@ -1,8 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './styles/index.css';
-import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
+import firebase from './firebase';
+import configureStore from './store/configureStore';
+import Login from './components/Login';
+import Root from './router';
+import { Provider } from 'react-redux';
+import 'tachyons';
+import './styles/index.css';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = configureStore({});
+
+ReactDOM.render(
+  <Provider store={store}>
+    <Root />
+  </Provider>,
+  document.getElementById('root')
+);
+
 registerServiceWorker();
