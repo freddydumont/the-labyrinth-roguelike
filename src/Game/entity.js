@@ -13,10 +13,44 @@ export default class Entity extends Glyph {
     this._name = props['name'] || '';
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
+    // Setup mixins
+    this._attachedMixins = {};
+    this.setupMixins(props);
     // draw entity on initialisation
     this.draw();
   }
 
+  // Mixin functions
+  setupMixins(props) {
+    let mixins = props['mixins'] || [];
+    for (let i = 0; i < mixins.length; i++) {
+      // Copy over all properties from each mixin as long
+      // as it's not the name or the init property. We
+      // also make sure not to override a property that
+      // already exists on the entity.
+      for (let key in mixins[i]) {
+        if (key !== 'init' && key !== 'name' && !this.hasOwnProperty(key)) {
+          this[key] = mixins[i][key];
+        }
+      }
+      // Add the name of this mixin to our attached mixins
+      this._attachedMixins[mixins[i].name] = true;
+      // Finally call the init function if there is one
+      if (mixins[i].init) {
+        mixins[i].init.call(this, props);
+      }
+    }
+  }
+  hasMixins(obj) {
+    // Allow passing the mixin itself or the name as a string
+    if (typeof obj === 'object') {
+      return this._attachedMixins[obj.name];
+    } else {
+      return this._attachedMixins[obj];
+    }
+  }
+
+  // Draws character on display
   draw() {
     Game.display.draw(this._x, this._y, ['.', this._char], this._foreground);
   }
