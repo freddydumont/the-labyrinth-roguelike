@@ -7,9 +7,15 @@ export const login = uid => {
   };
 };
 
-export const toggleLoading = () => {
+export const loaded = () => {
   return {
-    type: 'TOGGLE_LOADING'
+    type: 'LOADED'
+  };
+};
+
+export const loading = () => {
+  return {
+    type: 'LOADING'
   };
 };
 

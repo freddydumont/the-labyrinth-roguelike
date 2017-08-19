@@ -10,10 +10,15 @@ export const authReducer = (state = { loading: true }, action) => {
       return {
         authed: false
       };
-    case 'TOGGLE_LOADING':
+    case 'LOADING':
       return {
         ...state,
-        loading: !state.loading
+        loading: true
+      };
+    case 'LOADED':
+      return {
+        ...state,
+        loading: false
       };
     default:
       return state;

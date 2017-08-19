@@ -34,14 +34,17 @@ function PublicRoute({ component: Component, authed, ...rest }) {
 
 class Root extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, auth } = this.props;
     this.removeListener = firebase.auth().onAuthStateChanged(user => {
+      console.log(user, auth.loading);
       if (user) {
         dispatch(actions.login(user.uid));
-        dispatch(actions.toggleLoading());
+        dispatch(actions.loaded());
       } else {
+        console.log(user, auth.loading);
         dispatch(actions.logout());
-        dispatch(actions.toggleLoading());
+        dispatch(actions.loaded());
+        console.log(user, auth.loading);
       }
     });
   }
