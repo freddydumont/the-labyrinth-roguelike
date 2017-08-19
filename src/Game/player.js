@@ -1,5 +1,4 @@
 import { ROT, Game } from './game';
-import Tile from './tile';
 import Entity from './entity';
 
 export default class Player extends Entity {
@@ -32,16 +31,10 @@ export default class Player extends Entity {
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
 
-    this.checkWalk(newX, newY);
-    this.newPosition(newX, newY);
-    this.endTurn();
-  }
-  checkWalk(newX, newY) {
-    const newKey = Game._map.getTile(newX, newY);
-
-    // if oustide of map or wall, can't move
-    if (newKey === Tile.nullTile || newKey === Tile.wallTile) {
-      return;
+    // Mixin.Moveable
+    if (this.tryMove(newX, newY)) {
+      this.newPosition(newX, newY);
+      this.endTurn();
     }
   }
   newPosition(newX, newY) {

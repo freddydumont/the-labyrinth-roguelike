@@ -3,6 +3,7 @@ import Player from './player';
 import Enemy from './enemy';
 import { createEntity } from './entity';
 import Tile from './tile';
+import Mixins from './mixins';
 
 export default class Map {
   constructor() {
@@ -88,7 +89,6 @@ export default class Map {
         );
       }
     }
-    this.renderEntities();
   }
 
   // Function responsible for creating actors on free cells
@@ -97,7 +97,8 @@ export default class Map {
     Game.player = createEntity(Game.map.freeCells, Player, {
       name: 'player',
       character: '@',
-      foreground: 'yellow'
+      foreground: 'yellow',
+      mixins: [Mixins.Moveable]
     });
     Game.enemy = createEntity(Game.map.freeCells, Enemy, {
       name: 'enemy',
