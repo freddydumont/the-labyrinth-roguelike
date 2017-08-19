@@ -85,7 +85,7 @@ export const createEntity = function(freeCells, entity, props) {
   let key = freeCells.splice(index, 1)[0];
   let x = key[0];
   let y = key[1];
-  return new entity({
+  return new Entity({
     ...props,
     x,
     y
