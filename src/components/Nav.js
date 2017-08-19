@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { logout } from '../actions';
+import { startLogout } from '../actions';
 
 const Nav = ({ auth, dispatch }) => {
   return (
@@ -13,11 +13,11 @@ const Nav = ({ auth, dispatch }) => {
         <Link to="/game" className="link dim white mr3">
           Game
         </Link>
-        {auth.uid
+        {auth.authed
           ? <Link
               to="/"
               className="link dim white mr3"
-              onClick={() => dispatch(logout())}
+              onClick={() => dispatch(startLogout())}
             >
               Logout
             </Link>

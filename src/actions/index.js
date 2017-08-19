@@ -24,6 +24,7 @@ export const startLogin = () => {
     return firebase.auth().signInWithPopup(githubProvider).then(
       result => {
         console.log('auth worked', result);
+        dispatch(login(result.user.uid));
       },
       error => {
         console.log('unable to auth', error);
@@ -41,6 +42,7 @@ export const logout = () => {
 export const startLogout = () => {
   return (dispatch, getState) => {
     return firebase.auth().signOut().then(() => {
+      dispatch(logout());
       console.log('loged out');
     });
   };
