@@ -1,3 +1,4 @@
+import * as TileSet from './tileSet';
 import * as Screen from './screens';
 
 export const ROT = window.ROT;
@@ -10,6 +11,9 @@ export let Game = {
   display: null,
   _currentScreen: null,
   engine: null,
+  // Holds map related variables
+  map: { freeCells: [] },
+  // Holds map
   _map: {},
 
   init: function() {
@@ -50,6 +54,10 @@ export let Game = {
     }
   },
   startGame: function() {
+    // call map generation function
+    TileSet._init();
+  },
+  startEngine: function() {
     // create scheduler and add beings to it
     let scheduler = new ROT.Scheduler.Simple();
     scheduler.add(this.player, true);

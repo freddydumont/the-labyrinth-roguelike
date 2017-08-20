@@ -1,5 +1,5 @@
 import { ROT, Game } from './game';
-import * as Map from './map';
+import Map from './map';
 
 // Define our initial start screen
 export const startScreen = {
@@ -18,7 +18,7 @@ export const startScreen = {
     // When [Enter] is pressed, go to the play screen
     if (inputType === 'keydown') {
       if (inputData.keyCode === ROT.VK_RETURN) {
-        Game.switchScreen(playScreen);
+        Game.startGame();
       }
     }
   }
@@ -28,14 +28,14 @@ export const startScreen = {
 export const playScreen = {
   enter: function() {
     console.log('Entered play screen.');
-    Map.generateMap();
+    Game._map = new Map();
   },
   exit: function() {
     console.log('Exited play screen.');
   },
   render: function(display) {
-    Map.renderMap(display);
-    Game.startGame();
+    Game._map.renderMap(display);
+    Game._map.renderEntities();
   },
   handleInput: function(inputType, inputData) {
     if (inputType === 'keydown') {
