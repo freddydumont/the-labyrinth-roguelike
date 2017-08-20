@@ -11,7 +11,10 @@ export let Game = {
   display: null,
   _currentScreen: null,
   engine: null,
-  map: {},
+  // Holds map related variables
+  map: { freeCells: [] },
+  // Holds map
+  _map: {},
 
   init: function() {
     // create display with rot defaults

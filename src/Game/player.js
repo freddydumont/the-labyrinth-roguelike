@@ -1,5 +1,4 @@
 import { ROT, Game } from './game';
-import Tile from './tile';
 import Entity from './entity';
 
 export default class Player extends Entity {
@@ -31,13 +30,14 @@ export default class Player extends Entity {
     const dir = ROT.DIRS[8][keyMap[code]];
     const newX = this._x + dir[0];
     const newY = this._y + dir[1];
-    const newKey = Game._map.getTile(newX, newY);
 
-    // if oustide of map or wall, can't move
-    if (newKey === Tile.nullTile || newKey === Tile.wallTile) {
-      return;
+    // Mixin.Moveable
+    if (this.tryMove(newX, newY)) {
+      this.newPosition(newX, newY);
+      this.endTurn();
     }
-
+  }
+  newPosition(newX, newY) {
     // redraw old position
     let oldKey = Game._map.getTile(this._x, this._y);
     Game.display.draw(
@@ -52,7 +52,8 @@ export default class Player extends Entity {
     this._x = newX;
     this._y = newY;
     this.draw();
-
+  }
+  endTurn() {
     console.log('player:', this.getX(), this.getY());
     console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
     // turn has ended, remove event listener and unlock engine
