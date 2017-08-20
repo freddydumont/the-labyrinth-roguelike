@@ -96,19 +96,13 @@ export default class Map {
       name: 'player',
       character: '@',
       foreground: 'yellow',
-      mixins: [
-        Mixins.Moveable,
-        Mixins.PlayerAct,
-        Mixins.PlayerHandleEvent,
-        Mixins.NewPosition,
-        Mixins.EndTurn
-      ]
+      mixins: [Mixins.PlayerAct, Mixins.PlayerHandleEvent, Mixins.EndTurn]
     });
     Game.enemy = new Being({
       name: 'enemy',
       character: 'E',
       foreground: 'red',
-      mixins: [Mixins.EnemyAct, Mixins.NewPosition]
+      mixins: [Mixins.EnemyAct]
     });
   }
 }

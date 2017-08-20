@@ -1,40 +1,13 @@
 import { ROT, Game } from './game';
 
 const Mixins = {
-  Moveable: {
-    // returns true if walkable else false
-    name: 'Moveable',
-    tryMove: (x, y) => {
-      var tile = Game._map.getTile(x, y);
-      // Check if we can walk on the tile
-      // and if so simply walk onto it
-      if (tile.isWalkable()) {
-        // Update the entity's position
-        this._x = x;
-        this._y = y;
-        return true;
-      }
-      return false;
-    }
-  },
-  NewPosition: {
-    // draws new position and deletes old
-    name: 'NewPosition',
-    newPosition: function(newX, newY) {
-      // redraw old position
-      let oldKey = Game._map.getTile(this._x, this._y);
-      Game.display.draw(
-        this._x,
-        this._y,
-        oldKey.getChar(),
-        oldKey.getForeground(),
-        oldKey.getBackground()
-      );
-
-      // redraw new position
-      this._x = newX;
-      this._y = newY;
-      this.draw();
+  // Player Specific Mixins
+  PlayerAct: {
+    name: 'PlayerAct',
+    act: function() {
+      Game.engine.lock();
+      // wait for user input; do stuff when user hits a key
+      window.addEventListener('keydown', this);
     }
   },
   EndTurn: {
@@ -46,15 +19,6 @@ const Mixins = {
       // turn has ended, remove event listener and unlock engine
       window.removeEventListener('keydown', this);
       Game.engine.unlock();
-    }
-  },
-  // Player Specific Mixins
-  PlayerAct: {
-    name: 'PlayerAct',
-    act: function() {
-      Game.engine.lock();
-      // wait for user input; do stuff when user hits a key
-      window.addEventListener('keydown', this);
     }
   },
   // Enemy Specific Mixins
@@ -83,7 +47,7 @@ const Mixins = {
       // remove enemy position
       path.shift();
 
-      if (path.length === 1) {
+      if (path.length < 2) {
         // enemy and player and next to each other
         // Game.engine.lock();
         console.log('collision imminent');
@@ -123,7 +87,7 @@ const Mixins = {
       const newX = this._x + dir[0];
       const newY = this._y + dir[1];
 
-      // Mixin.Moveable
+      // Checks if tile is walkable
       if (this.tryMove(newX, newY)) {
         this.newPosition(newX, newY);
         this.endTurn();
