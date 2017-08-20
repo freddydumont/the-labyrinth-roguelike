@@ -1,6 +1,10 @@
-import { ROT, Game } from './game';
 import Entity from './entity';
 
 export default class Being extends Entity {
-  // will be filled with defaults such as health, defense and attack
+  constructor(props) {
+    super(props);
+    this.health = 3;
+    this.def = 0;
+    this.attack = 1;
+  }
 }
