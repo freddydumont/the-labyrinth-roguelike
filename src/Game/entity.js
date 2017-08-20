@@ -8,7 +8,6 @@ import Glyph from './glyph';
 export default class Entity extends Glyph {
   constructor(props) {
     super(props);
-
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
     this._x = props['x'] || 0;
@@ -19,7 +18,10 @@ export default class Entity extends Glyph {
     // draw entity on initialisation
     this.draw();
   }
-
+  act() {
+    // Warning if entity is calling a non-existent act from scheduler
+    console.warn(this._name + ' has no act function.');
+  }
   // Mixin functions
   setupMixins(props) {
     let mixins = props['mixins'] || [];

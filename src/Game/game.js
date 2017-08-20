@@ -61,7 +61,7 @@ export let Game = {
     // create scheduler and add beings to it
     let scheduler = new ROT.Scheduler.Simple();
     scheduler.add(this.player, true);
-    // scheduler.add(this.enemy, true);
+    scheduler.add(this.enemy, true);
 
     // start the engine with the scheduler
     this.engine = new ROT.Engine(scheduler);

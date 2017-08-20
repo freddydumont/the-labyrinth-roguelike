@@ -48,8 +48,6 @@ const Mixins = {
       Game.engine.unlock();
     }
   },
-  // Enemy Specific Mixins
-
   // Player Specific Mixins
   PlayerAct: {
     name: 'PlayerAct',
@@ -57,6 +55,46 @@ const Mixins = {
       Game.engine.lock();
       // wait for user input; do stuff when user hits a key
       window.addEventListener('keydown', this);
+    }
+  },
+  // Enemy Specific Mixins
+  EnemyAct: {
+    name: 'EnemyAct',
+    act: function() {
+      // get player coodinates
+      let x = Game.player.getX();
+      let y = Game.player.getY();
+
+      // passableCallback tells the pathfinder which tiles are passable
+      const passableCallback = function(x, y) {
+        return Game._map.getTile(x, y).isWalkable();
+      };
+
+      // patchfinding algorithm -- topology makes the enemy move in 4 directions only
+      const astar = new ROT.Path.AStar(x, y, passableCallback, { topology: 4 });
+
+      // compute finds the shortest path and pushes it to path
+      let path = [];
+      const pathCallback = function(x, y) {
+        path.push([x, y]);
+      };
+      astar.compute(this._x, this._y, pathCallback);
+
+      // remove enemy position
+      path.shift();
+
+      if (path.length === 1) {
+        // enemy and player and next to each other
+        // Game.engine.lock();
+        console.log('collision imminent');
+      } else {
+        // get first coordinates of the path
+        x = path[0][0];
+        y = path[0][1];
+
+        // Draw new position
+        this.newPosition(x, y);
+      }
     }
   },
   PlayerHandleEvent: {

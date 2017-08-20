@@ -1,6 +1,5 @@
 import { ROT, Game } from './game';
 import Entity from './entity';
-import Enemy from './enemy';
 import { createEntity } from './entity';
 import Tile from './tile';
 import Mixins from './mixins';
@@ -106,10 +105,11 @@ export default class Map {
         Mixins.EndTurn
       ]
     });
-    Game.enemy = createEntity(Game.map.freeCells, Enemy, {
+    Game.enemy = createEntity(Game.map.freeCells, Entity, {
       name: 'enemy',
       character: 'E',
-      foreground: 'red'
+      foreground: 'red',
+      mixins: [Mixins.EnemyAct, Mixins.NewPosition]
     });
   }
 }
