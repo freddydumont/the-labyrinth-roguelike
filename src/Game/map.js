@@ -100,9 +100,9 @@ export default class Map {
   }
   removeEntity(entity) {
     // Find the entity in the list of entities if it is present
-    for (var i = 0; i < Game.map.entities.length; i++) {
-      if (Game.map.entities[i] === entity) {
-        Game.map.entities.splice(i, 1);
+    for (var i = 0; i < Game._map.entities.length; i++) {
+      if (Game._map.entities[i] === entity) {
+        Game._map.entities.splice(i, 1);
         break;
       }
     }
@@ -110,27 +110,26 @@ export default class Map {
     if (entity.hasMixin('Actor')) {
       Game.scheduler.remove(entity);
     }
+    // todo: redraw entity/tile
   }
   // Function responsible for creating actors on free cells
   renderEntities() {
     // call function to display entity on a free cell
     Game.player = new Being({
       name: 'player',
-      groupName: 'Actor',
       character: '@',
+      health: 1,
       foreground: 'yellow',
       mixins: [Mixins.PlayerAct, Mixins.PlayerHandleEvent, Mixins.EndTurn]
     });
     Game.enemy = new Being({
       name: 'enemy',
-      groupName: 'Actor',
       character: 'E',
       foreground: 'red',
       mixins: [Mixins.EnemyAct]
     });
     Game.enemy1 = new Being({
       name: 'enemy',
-      groupName: 'Actor',
       character: 'E',
       foreground: 'red',
       mixins: [Mixins.EnemyAct]

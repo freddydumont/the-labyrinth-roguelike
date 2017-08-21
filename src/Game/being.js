@@ -43,21 +43,22 @@ export default class Being extends Entity {
     console.log(this, this.health);
     console.log(entity, entity.health);
     // todo: entity color changed for .5s when taking damage
-    if (this.health <= 0) {
-      if (this.name === 'player') {
-        // todo: endgame
-        // event listener for enter then switchscreen
-        console.log('player died');
-        // Game.engine.lock();
-        return;
-      }
-      // todo: remove scheduler, remove entity
-      console.log(entity.getMap());
+    if (entity.health <= 0) {
+      // Remove scheduler, Remove entity
+      entity.getMap().removeEntity(entity);
       console.log(Game.scheduler);
     }
     if (this.name !== 'player') {
       // have the enemy fight back
       this.health -= entity.attack - this.defence;
+      if (this.health <= 0) {
+        // todo: endgame
+        // event listener for enter then switchscreen
+        console.log('player died');
+        window.removeEventListener('keydown', this);
+        Game.engine.lock();
+        return;
+      }
     }
   }
 }

@@ -51,7 +51,7 @@ export default class Entity extends Glyph {
       }
     }
   }
-  hasMixins(obj) {
+  hasMixin(obj) {
     // Allow passing the mixin itself or the name as a string
     if (typeof obj === 'object') {
       return this._attachedMixins[obj.name];

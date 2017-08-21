@@ -4,6 +4,7 @@ const Mixins = {
   // Player Specific Mixins
   PlayerAct: {
     name: 'PlayerAct',
+    groupName: 'Actor',
     act: function() {
       Game.engine.lock();
       // wait for user input; do stuff when user hits a key
@@ -24,6 +25,7 @@ const Mixins = {
   // Enemy Specific Mixins
   EnemyAct: {
     name: 'EnemyAct',
+    groupName: 'Actor',
     act: function() {
       // get player coodinates
       let x = Game.player.getX();
@@ -48,8 +50,6 @@ const Mixins = {
       path.shift();
       if (path.length <= 1) {
         // enemy and player and next to each other
-        // starts combat
-        this.combat(Game._map.getEntity(x, y));
         console.log('collision imminent');
       } else {
         // get first coordinates of the path
