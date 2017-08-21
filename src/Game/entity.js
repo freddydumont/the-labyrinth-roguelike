@@ -14,6 +14,7 @@ export default class Entity extends Glyph {
     this.createEntity();
     // Setup mixins
     this._attachedMixins = {};
+    this._attachedMixinGroups = {};
     this.setupMixins(props);
     // draw entity on initialisation
     this.draw();
@@ -39,6 +40,10 @@ export default class Entity extends Glyph {
       }
       // Add the name of this mixin to our attached mixins
       this._attachedMixins[mixins[i].name] = true;
+      // If a group name is present, add it
+      if (mixins[i].groupName) {
+        this._attachedMixinGroups[mixins[i].groupName] = true;
+      }
       // Finally call the init function if there is one
       if (mixins[i].init) {
         mixins[i].init.call(this, props);
@@ -50,7 +55,7 @@ export default class Entity extends Glyph {
     if (typeof obj === 'object') {
       return this._attachedMixins[obj.name];
     } else {
-      return this._attachedMixins[obj];
+      return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
   }
   // Create entity on a random free cell

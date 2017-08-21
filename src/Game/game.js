@@ -11,6 +11,7 @@ export let Game = {
   display: null,
   _currentScreen: null,
   engine: null,
+  scheduler: null,
   // Holds map related variables
   map: {
     freeCells: [],
@@ -65,6 +66,7 @@ export let Game = {
     this.scheduler = new ROT.Scheduler.Simple();
     this.scheduler.add(this.player, true);
     this.scheduler.add(this.enemy, true);
+    this.scheduler.add(this.enemy1, true);
 
     // start the engine with the scheduler
     this.engine = new ROT.Engine(this.scheduler);

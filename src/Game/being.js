@@ -4,9 +4,9 @@ import Entity from './entity';
 export default class Being extends Entity {
   constructor(props) {
     super(props);
-    this.health = 3;
-    this.defence = 0;
-    this.attack = 1;
+    this.health = props['health'] || 3;
+    this.defence = props['defence'] || 0;
+    this.attack = props['attack'] || 1;
   }
   newPosition(newX, newY) {
     // draws new position and deletes old
@@ -48,12 +48,14 @@ export default class Being extends Entity {
         // todo: endgame
         // event listener for enter then switchscreen
         console.log('player died');
-        Game.engine.lock();
+        // Game.engine.lock();
+        return;
       }
       // todo: remove scheduler, remove entity
     }
-    if (entity.name !== 'player') {
-      entity.act();
+    if (this.name !== 'player') {
+      // have the enemy fight back
+      this.health -= entity.attack - this.defence;
     }
   }
 }
