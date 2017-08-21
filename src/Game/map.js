@@ -1,12 +1,12 @@
 import { ROT, Game } from './game';
-import Player from './player';
-import Enemy from './enemy';
-import { createEntity } from './entity';
+import Entity from './entity';
 import Tile from './tile';
 import Mixins from './mixins';
 
 export default class Map {
   constructor() {
+    this.freeCells = [];
+    this.entities = [];
     this._tiles = this.generateMap();
     // cache the width and height based on the
     // length of the dimensions of the tiles array
@@ -21,7 +21,15 @@ export default class Map {
   getHeight() {
     return this._height;
   }
-
+  getEntity(x, y) {
+    // Returns entity if there is an entity at x,y
+    for (let entity of Game._map.entities) {
+      if (entity.getX() === x && entity.getY() === y) {
+        return entity;
+      }
+    }
+    return false;
+  }
   // Gets the tile for a given coordinate set
   getTile(x, y) {
     // Make sure we are inside the bounds. If we aren't, return a null tile.
@@ -63,7 +71,7 @@ export default class Map {
       if (!wall) {
         // stores empty coordinates
         // add freeCells to map
-        Game.map.freeCells.push([x, y]);
+        this.freeCells.push([x, y]);
         map[x][y] = Tile.floorTile;
       } else {
         map[x][y] = Tile.wallTile;
@@ -90,20 +98,66 @@ export default class Map {
       }
     }
   }
-
+  removeEntity(entity) {
+    // Find the entity in the list of entities if it is present
+    for (var i = 0; i < Game._map.entities.length; i++) {
+      if (Game._map.entities[i] === entity) {
+        Game._map.entities.splice(i, 1);
+        break;
+      }
+    }
+    // If the entity is an actor, remove them from the scheduler
+    if (entity.hasMixin('Actor')) {
+      Game.scheduler.remove(entity);
+    }
+    // todo: redraw entity/tile
+  }
   // Function responsible for creating actors on free cells
   renderEntities() {
     // call function to display entity on a free cell
-    Game.player = createEntity(Game.map.freeCells, Player, {
+    Game.player = new Entity({
       name: 'player',
       character: '@',
+      health: 3,
+      defence: 1,
+      attack: 2,
       foreground: 'yellow',
-      mixins: [Mixins.Moveable]
+      mixins: [
+        Mixins.PlayerAct,
+        Mixins.PlayerHandleEvent,
+        Mixins.EndTurn,
+        Mixins.Moveable,
+        Mixins.Combat,
+        Mixins.newPosition
+      ]
     });
-    Game.enemy = createEntity(Game.map.freeCells, Enemy, {
+    Game.enemy = new Entity({
       name: 'enemy',
       character: 'E',
-      foreground: 'red'
+      health: 1,
+      defence: 1,
+      attack: 2,
+      foreground: 'red',
+      mixins: [
+        Mixins.EnemyAct,
+        Mixins.newPosition,
+        Mixins.Moveable,
+        Mixins.Combat
+      ]
+    });
+    Game.enemy1 = new Entity({
+      name: 'enemy',
+      character: 'E',
+      health: 1,
+      defence: 1,
+      attack: 2,
+      foreground: 'red',
+      mixins: [
+        Mixins.EnemyAct,
+        Mixins.newPosition,
+        Mixins.Moveable,
+        Mixins.Combat
+      ]
     });
   }
 }
