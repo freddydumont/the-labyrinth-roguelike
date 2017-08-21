@@ -52,7 +52,7 @@ export default class Being extends Entity {
       }
       // todo: remove scheduler, remove entity
     }
-    if (entity.name != 'player') {
+    if (entity.name !== 'player') {
       entity.act();
     }
   }
