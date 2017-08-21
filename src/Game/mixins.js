@@ -16,6 +16,16 @@ const Mixins = {
       }
       return false;
     }
+  },
+  Sight: {
+    name: 'Sight',
+    groupName: 'Sight',
+    init: function(template) {
+      this._sightRadius = template['sightRadius'] || 5;
+    },
+    getSightRadius: function() {
+      return this._sightRadius;
+    }
   }
 };
 
