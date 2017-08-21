@@ -14,8 +14,8 @@ const Mixins = {
     // ends entity turn
     name: 'EndTurn',
     endTurn: function() {
-      console.log('player:', this.getX(), this.getY());
-      console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
+      // console.log('player:', this.getX(), this.getY());
+      // console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
       // turn has ended, remove event listener and unlock engine
       window.removeEventListener('keydown', this);
       Game.engine.unlock();
@@ -46,19 +46,20 @@ const Mixins = {
 
       // remove enemy position
       path.shift();
-
-      if (path.length < 2) {
+      if (path.length <= 1) {
         // enemy and player and next to each other
         // starts combat
-        this.combat();
+        this.combat(Game._map.getEntity(x, y));
         console.log('collision imminent');
       } else {
         // get first coordinates of the path
         x = path[0][0];
         y = path[0][1];
 
-        // Draw new position
-        this.newPosition(x, y);
+        // Checks if tile is walkable
+        if (this.tryMove(x, y)) {
+          this.newPosition(x, y);
+        }
       }
     }
   },

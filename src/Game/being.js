@@ -39,12 +39,14 @@ export default class Being extends Entity {
     return false;
   }
   combat(entity) {
-    this.health -= entity.attack - this.defence;
+    entity.health -= this.attack - entity.defence;
     console.log(this, this.health);
+    console.log(entity, entity.health);
     // todo: entity color changed for .5s when taking damage
     if (this.health <= 0) {
       if (this.name === 'player') {
         // todo: endgame
+        // event listener for enter then switchscreen
         console.log('player died');
         Game.engine.lock();
       }

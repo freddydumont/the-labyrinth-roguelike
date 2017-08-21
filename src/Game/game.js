@@ -62,12 +62,12 @@ export let Game = {
   },
   startEngine: function() {
     // create scheduler and add beings to it
-    let scheduler = new ROT.Scheduler.Simple();
-    scheduler.add(this.player, true);
-    scheduler.add(this.enemy, true);
+    this.scheduler = new ROT.Scheduler.Simple();
+    this.scheduler.add(this.player, true);
+    this.scheduler.add(this.enemy, true);
 
     // start the engine with the scheduler
-    this.engine = new ROT.Engine(scheduler);
+    this.engine = new ROT.Engine(this.scheduler);
     this.engine.start();
   }
 };
