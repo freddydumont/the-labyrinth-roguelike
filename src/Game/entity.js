@@ -8,6 +8,10 @@ import Glyph from './glyph';
 export default class Entity extends Glyph {
   constructor(props) {
     super(props);
+    // default stats
+    this.health = props['health'] || null;
+    this.defence = props['defence'] || null;
+    this.attack = props['attack'] || null;
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
     this._map = null;

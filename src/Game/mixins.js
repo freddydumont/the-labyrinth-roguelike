@@ -1,6 +1,66 @@
 import { ROT, Game } from './game';
 
 const Mixins = {
+  // General Mixins
+  newPosition: {
+    name: 'newPosition',
+    newPosition: function(newX, newY) {
+      // draws new position and deletes old
+      // redraw old position
+      let oldKey = Game._map.getTile(this._x, this._y);
+      Game.display.draw(
+        this._x,
+        this._y,
+        oldKey.getChar(),
+        oldKey.getForeground(),
+        oldKey.getBackground()
+      );
+
+      // redraw new position
+      this._x = newX;
+      this._y = newY;
+      this.draw();
+    }
+  },
+  Moveable: {
+    name: 'Moveable',
+    tryMove: function(x, y) {
+      // returns true if walkable else false
+      var tile = Game._map.getTile(x, y);
+      // returns being if there is one else false
+      let entity = Game._map.getEntity(x, y);
+      // Check if we can walk on the tile
+      if (tile.isWalkable() && !entity) return true;
+      // Fights entity at new position
+      if (entity) {
+        this.combat(entity);
+      }
+      return false;
+    }
+  },
+  Combat: {
+    name: 'Combat',
+    combat: function(entity) {
+      entity.health -= this.attack - entity.defence;
+      // todo: entity color changed for .5s when taking damage
+      if (entity.health <= 0) {
+        // Remove scheduler, Remove entity
+        entity.getMap().removeEntity(entity);
+      }
+      if (this.name !== 'player') {
+        // have the enemy fight back
+        this.health -= entity.attack - this.defence;
+        if (this.health <= 0) {
+          // todo: endgame
+          // event listener for enter then switchscreen
+          console.log('player died');
+          window.removeEventListener('keydown', this);
+          Game.engine.lock();
+          return;
+        }
+      }
+    }
+  },
   // Player Specific Mixins
   PlayerAct: {
     name: 'PlayerAct',
@@ -15,8 +75,6 @@ const Mixins = {
     // ends entity turn
     name: 'EndTurn',
     endTurn: function() {
-      // console.log('player:', this.getX(), this.getY());
-      // console.log('enemy:', Game.enemy.getX(), Game.enemy.getY());
       // turn has ended, remove event listener and unlock engine
       window.removeEventListener('keydown', this);
       Game.engine.unlock();
