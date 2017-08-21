@@ -12,6 +12,9 @@ export default class Map {
     // length of the dimensions of the tiles array
     this._width = this._tiles.length;
     this._height = this._tiles[0].length;
+    // setup the FOV
+    this._fov = [];
+    this.setupFov();
   }
 
   // Standard getters
@@ -20,6 +23,9 @@ export default class Map {
   }
   getHeight() {
     return this._height;
+  }
+  getFov() {
+    return this._fov;
   }
 
   // Gets the tile for a given coordinate set
@@ -105,5 +111,15 @@ export default class Map {
       character: 'E',
       foreground: 'red'
     });
+  }
+
+  // TODO: update to account for depth when available
+  setupFov() {
+    this._fov = new ROT.FOV.DiscreteShadowcasting(
+      (x, y) => {
+        return !this.getTile(x, y).isBlockingLight();
+      },
+      { topology: 4 }
+    );
   }
 }
