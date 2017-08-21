@@ -49,7 +49,8 @@ const Mixins = {
 
       if (path.length < 2) {
         // enemy and player and next to each other
-        // Game.engine.lock();
+        // starts combat
+        this.combat();
         console.log('collision imminent');
       } else {
         // get first coordinates of the path

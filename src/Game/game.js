@@ -12,7 +12,10 @@ export let Game = {
   _currentScreen: null,
   engine: null,
   // Holds map related variables
-  map: { freeCells: [] },
+  map: {
+    freeCells: [],
+    entities: []
+  },
   // Holds map
   _map: {},
 

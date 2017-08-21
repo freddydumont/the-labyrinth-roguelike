@@ -17,6 +17,8 @@ export default class Entity extends Glyph {
     this.setupMixins(props);
     // draw entity on initialisation
     this.draw();
+    // add entity to our list of entities
+    Game.map.entities.push(this);
   }
   act() {
     // Warning if entity is calling a non-existent act from scheduler

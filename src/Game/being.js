@@ -5,7 +5,7 @@ export default class Being extends Entity {
   constructor(props) {
     super(props);
     this.health = 3;
-    this.def = 0;
+    this.defence = 0;
     this.attack = 1;
   }
   newPosition(newX, newY) {
@@ -28,10 +28,27 @@ export default class Being extends Entity {
   tryMove(x, y) {
     // returns true if walkable else false
     var tile = Game._map.getTile(x, y);
+    // returns being if there is one else false
+    let entity = Game._map.getEntity(x, y);
     // Check if we can walk on the tile
-    if (tile.isWalkable()) {
-      return true;
+    if (tile.isWalkable() && !entity) return true;
+    // Fights entity at new position
+    if (entity) {
+      this.combat(entity);
     }
     return false;
+  }
+  combat(entity) {
+    this.health -= entity.attack - this.defence;
+    console.log(this, this.health);
+    // todo: entity color changed for .5s when taking damage
+    if (this.health <= 0) {
+      if (this.name === 'player') {
+        // todo: endgame
+        console.log('player died');
+        Game.engine.lock();
+      }
+      // todo: remove scheduler, remove entity
+    }
   }
 }

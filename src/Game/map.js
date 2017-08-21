@@ -19,7 +19,15 @@ export default class Map {
   getHeight() {
     return this._height;
   }
-
+  getEntity(x, y) {
+    // Returns entity if there is an entity at x,y
+    for (let entity of Game.map.entities) {
+      if (entity.getX() === x && entity.getY() === y) {
+        return entity;
+      }
+    }
+    return false;
+  }
   // Gets the tile for a given coordinate set
   getTile(x, y) {
     // Make sure we are inside the bounds. If we aren't, return a null tile.
