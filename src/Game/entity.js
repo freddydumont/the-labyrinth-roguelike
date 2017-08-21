@@ -10,6 +10,7 @@ export default class Entity extends Glyph {
     super(props);
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
+    this._map = null;
     // find empty tile for entity
     this.createEntity();
     // Setup mixins
@@ -19,7 +20,7 @@ export default class Entity extends Glyph {
     // draw entity on initialisation
     this.draw();
     // add entity to our list of entities
-    Game.map.entities.push(this);
+    Game._map.entities.push(this);
   }
   act() {
     // Warning if entity is calling a non-existent act from scheduler
@@ -61,10 +62,11 @@ export default class Entity extends Glyph {
   // Create entity on a random free cell
   createEntity() {
     // random a position for Player to spawn in
-    let index = Math.floor(ROT.RNG.getUniform() * Game.map.freeCells.length);
-    let key = Game.map.freeCells.splice(index, 1)[0];
+    let index = Math.floor(ROT.RNG.getUniform() * Game._map.freeCells.length);
+    let key = Game._map.freeCells.splice(index, 1)[0];
     this._x = key[0] || 0;
     this._y = key[1] || 0;
+    this.setMap(Game._map);
   }
   // Draws character on display
   draw() {
@@ -81,6 +83,9 @@ export default class Entity extends Glyph {
   setY(y) {
     this._y = y;
   }
+  setMap(map) {
+    this._map = map;
+  }
 
   // getters
   getName() {
@@ -91,5 +96,8 @@ export default class Entity extends Glyph {
   }
   getY() {
     return this._y;
+  }
+  getMap() {
+    return this._map;
   }
 }

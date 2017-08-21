@@ -52,6 +52,8 @@ export default class Being extends Entity {
         return;
       }
       // todo: remove scheduler, remove entity
+      console.log(entity.getMap());
+      console.log(Game.scheduler);
     }
     if (this.name !== 'player') {
       // have the enemy fight back

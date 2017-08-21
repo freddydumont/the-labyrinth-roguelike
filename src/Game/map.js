@@ -5,6 +5,8 @@ import Mixins from './mixins';
 
 export default class Map {
   constructor() {
+    this.freeCells = [];
+    this.entities = [];
     this._tiles = this.generateMap();
     // cache the width and height based on the
     // length of the dimensions of the tiles array
@@ -21,7 +23,7 @@ export default class Map {
   }
   getEntity(x, y) {
     // Returns entity if there is an entity at x,y
-    for (let entity of Game.map.entities) {
+    for (let entity of Game._map.entities) {
       if (entity.getX() === x && entity.getY() === y) {
         return entity;
       }
@@ -69,7 +71,7 @@ export default class Map {
       if (!wall) {
         // stores empty coordinates
         // add freeCells to map
-        Game.map.freeCells.push([x, y]);
+        this.freeCells.push([x, y]);
         map[x][y] = Tile.floorTile;
       } else {
         map[x][y] = Tile.wallTile;
