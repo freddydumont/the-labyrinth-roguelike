@@ -1,5 +1,5 @@
 import { ROT, Game } from './game';
-import Map, { generateMap, renderMap } from './map';
+import * as Maps from './map';
 import * as Messages from './messages';
 import Entity from './entity';
 import Entities from './entities';
@@ -34,10 +34,10 @@ export const playScreen = {
 
   enter: function() {
     console.log('Entered play screen.');
-    let map = generateMap(80, 24);
+    let map = Maps.generateMap(80, 24);
     // Create our map from the tiles and player
     this._player = new Entity(Entities.Player);
-    this._map = new Map(map, this._player);
+    this._map = new Maps.Map(map, this._player);
     // Start the map's engine
     this._map.getEngine().start();
   },
@@ -47,7 +47,7 @@ export const playScreen = {
   },
 
   render: function(display) {
-    renderMap.call(this, display);
+    Maps.renderMap.call(this, display);
     Messages.renderMessages.call(this, display);
   },
 

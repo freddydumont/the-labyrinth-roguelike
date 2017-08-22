@@ -5,7 +5,7 @@ import Entity from './entity';
 import Tile from './tile';
 import Entities from './entities';
 
-export default class Map {
+export class Map {
   constructor(tiles, player) {
     this._tiles = tiles;
     // cache the width and height based on the
