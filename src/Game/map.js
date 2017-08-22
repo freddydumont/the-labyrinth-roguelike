@@ -1,7 +1,7 @@
 import { ROT, Game } from './game';
 import Entity from './entity';
 import Tile from './tile';
-import Mixins from './mixins';
+import Entities from './entities';
 
 export default class Map {
   constructor() {
@@ -115,49 +115,8 @@ export default class Map {
   // Function responsible for creating actors on free cells
   renderEntities() {
     // call function to display entity on a free cell
-    Game.player = new Entity({
-      name: 'player',
-      character: '@',
-      health: 3,
-      defence: 1,
-      attack: 2,
-      foreground: 'yellow',
-      mixins: [
-        Mixins.PlayerAct,
-        Mixins.PlayerHandleEvent,
-        Mixins.EndTurn,
-        Mixins.Moveable,
-        Mixins.Combat,
-        Mixins.newPosition
-      ]
-    });
-    Game.enemy = new Entity({
-      name: 'enemy',
-      character: 'E',
-      health: 1,
-      defence: 1,
-      attack: 2,
-      foreground: 'red',
-      mixins: [
-        Mixins.EnemyAct,
-        Mixins.newPosition,
-        Mixins.Moveable,
-        Mixins.Combat
-      ]
-    });
-    Game.enemy1 = new Entity({
-      name: 'enemy',
-      character: 'E',
-      health: 1,
-      defence: 1,
-      attack: 2,
-      foreground: 'red',
-      mixins: [
-        Mixins.EnemyAct,
-        Mixins.newPosition,
-        Mixins.Moveable,
-        Mixins.Combat
-      ]
-    });
+    Game.player = new Entity(Entities.Player);
+    Game.enemy = new Entity(Entities.Enemy);
+    Game.enemy1 = new Entity(Entities.Enemy);
   }
 }
