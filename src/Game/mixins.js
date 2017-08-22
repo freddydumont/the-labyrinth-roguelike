@@ -69,9 +69,9 @@ const Mixins = {
     name: 'Moveable',
     tryMove: function(x, y, map) {
       // returns true if walkable else false
-      let tile = Game._map.getTile(x, y);
+      let tile = map.getTile(x, y);
       // returns being if there is one else false
-      let target = Game._map.getEntity(x, y);
+      let target = map.getEntityAt(x, y);
       // If an entity was present at the tile
       if (target) {
         // If we are an attacker, try to attack the target

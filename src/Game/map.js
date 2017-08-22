@@ -178,7 +178,6 @@ export const generateMap = function(width, height) {
  * Renders map and entities on display. Accounts for a map larger than screen.
  */
 export const renderMap = function(display) {
-  console.log(this);
   const screenWidth = Game.getScreenWidth();
   const screenHeight = Game.getScreenHeight();
   // Make sure the x-axis doesn't go to the left of the left bound

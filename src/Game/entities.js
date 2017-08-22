@@ -23,7 +23,7 @@ const Entities = {
     defenseValue: 5,
     attackValue: 3,
     mixins: [
-      Mixins.EnemyActor,
+      //Mixins.EnemyActor,
       Mixins.Moveable,
       Mixins.Attacker,
       Mixins.Destructible
