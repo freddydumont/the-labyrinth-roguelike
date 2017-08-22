@@ -11,7 +11,8 @@ const Entities = {
       Mixins.PlayerActor,
       Mixins.Moveable,
       Mixins.Attacker,
-      Mixins.Destructible
+      Mixins.Destructible,
+      Mixins.MessageRecipient
     ]
   },
 
