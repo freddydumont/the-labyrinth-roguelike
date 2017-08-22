@@ -38,7 +38,7 @@ export default class Map {
 
   getEntityAt(x, y) {
     // Returns entity if there is an entity at x,y
-    for (let entity of this.entities) {
+    for (let entity of this._entities) {
       if (entity.getX() === x && entity.getY() === y) {
         return entity;
       }
@@ -141,63 +141,86 @@ export default class Map {
     }
     // todo: redraw entity/tile
   }
-
-  // /**
-  //  * This function generates a map and stores free cells in an array
-  //  * by using a map generation algorithm fron ROT
-  //  */
-  // generateMap() {
-  //   let map = [];
-  //   for (let x = 0; x < ROT.DEFAULT_WIDTH; x++) {
-  //     // Create the nested array for the y values
-  //     map.push([]);
-  //     // Add all the tiles
-  //     for (let y = 0; y < ROT.DEFAULT_HEIGHT; y++) {
-  //       map[x].push(Tile.nullTile);
-  //     }
-  //   }
-
-  //   // generate map type
-  //   let arena = new ROT.Map.Arena();
-
-  //   // create map
-  //   let mapCallback = (x, y, wall) => {
-  //     if (!wall) {
-  //       // stores empty coordinates
-  //       // add freeCells to map
-  //       this.freeCells.push([x, y]);
-  //       map[x][y] = Tile.floorTile;
-  //     } else {
-  //       map[x][y] = Tile.wallTile;
-  //     }
-  //   };
-  //   arena.create(mapCallback);
-
-  //   return map;
-  // }
-  // // Function responsible for drawing map on display
-  // renderMap(display) {
-  //   // Iterate through all map cells
-  //   for (let x = 0; x < Game._map.getWidth(); x++) {
-  //     for (let y = 0; y < Game._map.getHeight(); y++) {
-  //       // Fetch the glyph for the tile and render it to the screen
-  //       let tile = Game._map.getTile(x, y);
-  //       display.draw(
-  //         x,
-  //         y,
-  //         tile.getChar(),
-  //         tile.getForeground(),
-  //         tile.getBackground()
-  //       );
-  //     }
-  //   }
-  // }
-
-  // Function responsible for creating actors on free cells
-  // renderEntities() {
-  //   // call function to display entity on a free cell
-  //   Game.player = createEntity(this.freeCells, Entity, Entities.Player);
-  //   Game.enemy = createEntity(this.freeCells, Entity, Entities.Enemy);
-  //   Game.enemy1 = createEntity(this.freeCells, Entity, Entities.Enemy);
-  // }
 }
+
+/**
+* Generates a map and stores free cells in an array
+* by using a map generation algorithm fron ROT
+*/
+export const generateMap = function(width, height) {
+  let map = [];
+  for (let x = 0; x < width; x++) {
+    // Create the nested array for the y values
+    map.push([]);
+    // Add all the tiles
+    for (let y = 0; y < height; y++) {
+      map[x].push(Tile.nullTile);
+    }
+  }
+
+  // generate map type
+  let arena = new ROT.Map.Arena();
+
+  // create map
+  let mapCallback = (x, y, wall) => {
+    if (!wall) {
+      map[x][y] = Tile.floorTile;
+    } else {
+      map[x][y] = Tile.wallTile;
+    }
+  };
+  arena.create(mapCallback);
+
+  return map;
+};
+
+/**
+ * Renders map and entities on display. Accounts for a map larger than screen.
+ */
+export const renderMap = function(display) {
+  console.log(this);
+  const screenWidth = Game.getScreenWidth();
+  const screenHeight = Game.getScreenHeight();
+  // Make sure the x-axis doesn't go to the left of the left bound
+  let topLeftX = Math.max(0, this._player.getX() - screenWidth / 2);
+  // Make sure we still have enough space to fit an entire game screen
+  topLeftX = Math.min(topLeftX, this._map.getWidth() - screenWidth);
+  // Make sure the y-axis doesn't above the top bound
+  let topLeftY = Math.max(0, this._player.getY() - screenHeight / 2);
+  // Make sure we still have enough space to fit an entire game screen
+  topLeftY = Math.min(topLeftY, this._map.getHeight() - screenHeight);
+  // Iterate through all visible map cells
+  for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
+    for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
+      // Fetch the glyph for the tile and render it to the screen at the offset position.
+      let tile = this._map.getTile(x, y);
+      display.draw(
+        x - topLeftX,
+        y - topLeftY,
+        tile.getChar(),
+        tile.getForeground(),
+        tile.getBackground()
+      );
+    }
+  }
+  // Render the entities
+  let entities = this._map.getEntities();
+  for (let i = 0; i < entities.length; i++) {
+    let entity = entities[i];
+    // Only render the entity if they would show up on the screen
+    if (
+      entity.getX() >= topLeftX &&
+      entity.getY() >= topLeftY &&
+      entity.getX() < topLeftX + screenWidth &&
+      entity.getY() < topLeftY + screenHeight
+    ) {
+      display.draw(
+        entity.getX() - topLeftX,
+        entity.getY() - topLeftY,
+        entity.getChar(),
+        entity.getForeground(),
+        entity.getBackground()
+      );
+    }
+  }
+};
