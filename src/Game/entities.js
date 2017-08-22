@@ -8,12 +8,10 @@ const Entities = {
     maxHp: 40,
     attackValue: 10,
     mixins: [
-      Mixins.PlayerAct,
-      Mixins.PlayerHandleEvent,
-      Mixins.EndTurn,
+      Mixins.PlayerActor,
       Mixins.Moveable,
-      Mixins.Combat,
-      Mixins.newPosition
+      Mixins.Attacker,
+      Mixins.Destructible
     ]
   },
 
@@ -25,10 +23,10 @@ const Entities = {
     defenseValue: 5,
     attackValue: 3,
     mixins: [
-      Mixins.EnemyAct,
-      Mixins.newPosition,
+      Mixins.EnemyActor,
       Mixins.Moveable,
-      Mixins.Combat
+      Mixins.Attacker,
+      Mixins.Destructible
     ]
   }
 };

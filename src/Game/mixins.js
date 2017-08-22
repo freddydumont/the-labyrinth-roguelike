@@ -65,88 +65,52 @@ const Mixins = {
     }
   },
 
-  // General Mixins
-  newPosition: {
-    name: 'newPosition',
-    newPosition: function(newX, newY) {
-      // draws new position and deletes old
-      // redraw old position
-      let oldKey = Game._map.getTile(this._x, this._y);
-      Game._display.draw(
-        this._x,
-        this._y,
-        oldKey.getChar(),
-        oldKey.getForeground(),
-        oldKey.getBackground()
-      );
-
-      // redraw new position
-      this._x = newX;
-      this._y = newY;
-      this.draw();
-    }
-  },
   Moveable: {
     name: 'Moveable',
-    tryMove: function(x, y) {
+    tryMove: function(x, y, map) {
       // returns true if walkable else false
       let tile = Game._map.getTile(x, y);
       // returns being if there is one else false
-      let entity = Game._map.getEntity(x, y);
-      // Check if we can walk on the tile
-      if (tile.isWalkable() && !entity) return true;
-      // Fights entity at new position
-      if (entity) {
-        this.combat(entity);
+      let target = Game._map.getEntity(x, y);
+      // If an entity was present at the tile
+      if (target) {
+        // If we are an attacker, try to attack the target
+        if (this.hasMixin('Attacker')) {
+          this.attack(target);
+          return true;
+        } else {
+          // If not nothing we can do, but we can't move to the tile
+          return false;
+        }
+        // Check if we can walk on the tile and if so simply walk onto it
+      } else if (tile.isWalkable()) {
+        // Update the entity's position
+        this._x = x;
+        this._y = y;
+        return true;
       }
       return false;
     }
   },
-  Combat: {
-    name: 'Combat',
-    combat: function(entity) {
-      entity.health -= this.attack - entity.defence;
-      // todo: entity color changed for .5s when taking damage
-      if (entity.health <= 0) {
-        // Remove scheduler, Remove entity
-        entity.getMap().removeEntity(entity);
-      }
-      if (this.name !== 'player') {
-        // have the enemy fight back
-        this.health -= entity.attack - this.defence;
-        if (this.health <= 0) {
-          // todo: endgame
-          // event listener for enter then switchscreen
-          console.log('player died');
-          window.removeEventListener('keydown', this);
-          Game.engine.lock();
-          return;
-        }
-      }
-    }
-  },
+
   // Player Specific Mixins
-  PlayerAct: {
-    name: 'PlayerAct',
+  PlayerActor: {
+    name: 'PlayerActor',
     groupName: 'Actor',
     act: function() {
-      Game.engine.lock();
-      // wait for user input; do stuff when user hits a key
-      window.addEventListener('keydown', this);
+      // Re-render the screen
+      Game.refresh();
+      // Lock the engine and wait asynchronously
+      // for the player to press a key.
+      this.getMap().getEngine().lock();
+      // // Clear the message queue
+      // this.clearMessages();
     }
   },
-  EndTurn: {
-    // ends entity turn
-    name: 'EndTurn',
-    endTurn: function() {
-      // turn has ended, remove event listener and unlock engine
-      window.removeEventListener('keydown', this);
-      Game.engine.unlock();
-    }
-  },
+
   // Enemy Specific Mixins
-  EnemyAct: {
-    name: 'EnemyAct',
+  EnemyActor: {
+    name: 'EnemyActor',
     groupName: 'Actor',
     act: function() {
       // get player coodinates
@@ -156,6 +120,24 @@ const Mixins = {
       // passableCallback tells the pathfinder which tiles are passable
       const passableCallback = function(x, y) {
         return Game._map.getTile(x, y).isWalkable();
+      };
+
+      const newPosition = function(newX, newY) {
+        // draws new position and deletes old
+        // redraw old position
+        let oldKey = Game._map.getTile(this._x, this._y);
+        Game._display.draw(
+          this._x,
+          this._y,
+          oldKey.getChar(),
+          oldKey.getForeground(),
+          oldKey.getBackground()
+        );
+
+        // redraw new position
+        this._x = newX;
+        this._y = newY;
+        this.draw();
       };
 
       // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -179,42 +161,9 @@ const Mixins = {
         y = path[0][1];
 
         // Checks if tile is walkable
-        if (this.tryMove(x, y)) {
-          this.newPosition(x, y);
+        if (this.tryMove(x, y, Game._map)) {
+          newPosition(x, y);
         }
-      }
-    }
-  },
-  PlayerHandleEvent: {
-    // handles movement event
-    name: 'PlayerHandleEvent',
-    handleEvent: function(e) {
-      let keyMap = {};
-      keyMap[38] = 0;
-      keyMap[33] = 1;
-      keyMap[39] = 2;
-      keyMap[34] = 3;
-      keyMap[40] = 4;
-      keyMap[35] = 5;
-      keyMap[37] = 6;
-      keyMap[36] = 7;
-
-      const code = e.keyCode;
-
-      // If the key code is not present in keyMap, do nothing
-      if (!(code in keyMap)) {
-        return;
-      }
-
-      // If the key code is present, check whether the PC can move in that direction
-      const dir = ROT.DIRS[8][keyMap[code]];
-      const newX = this._x + dir[0];
-      const newY = this._y + dir[1];
-
-      // Checks if tile is walkable
-      if (this.tryMove(newX, newY)) {
-        this.newPosition(newX, newY);
-        this.endTurn();
       }
     }
   }
