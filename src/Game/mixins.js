@@ -124,8 +124,8 @@ const Mixins = {
       // Lock the engine and wait asynchronously
       // for the player to press a key.
       this.getMap().getEngine().lock();
-      // // Clear the message queue
-      // this.clearMessages();
+      // Clear the message queue
+      this.clearMessages();
     }
   },
 
