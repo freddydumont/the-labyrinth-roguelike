@@ -32,6 +32,15 @@ Tile.floorTile = new Tile({
 });
 Tile.wallTile = new Tile({
   character: '#',
-  foreground: 'goldenrod',
-  isDiggable: true
+  foreground: 'goldenrod'
+});
+Tile.stairsUpTile = new Tile({
+  character: '<',
+  foreground: 'white',
+  isWalkable: true
+});
+Tile.stairsDownTile = new Tile({
+  character: '>',
+  foreground: 'white',
+  isWalkable: true
 });
