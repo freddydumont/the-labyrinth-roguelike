@@ -1,5 +1,6 @@
 import { ROT, Game } from './game';
 import Entity from './entity';
+import { createEntity } from './entity';
 import Tile from './tile';
 import Entities from './entities';
 
@@ -115,8 +116,8 @@ export default class Map {
   // Function responsible for creating actors on free cells
   renderEntities() {
     // call function to display entity on a free cell
-    Game.player = new Entity(Entities.Player);
-    Game.enemy = new Entity(Entities.Enemy);
-    Game.enemy1 = new Entity(Entities.Enemy);
+    Game.player = createEntity(Game.map.freeCells, Entity, Entities.Player);
+    Game.enemy = createEntity(Game.map.freeCells, Entity, Entities.Player);
+    Game.enemy1 = createEntity(Game.map.freeCells, Entity, Entities.Player);
   }
 }

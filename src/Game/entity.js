@@ -10,9 +10,8 @@ export default class Entity extends Glyph {
     super(props);
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
-    this._map = null;
-    // find empty tile for entity
-    this.createEntity();
+    this._x = props['x'] || 0;
+    this._y = props['y'] || 0;
     // Setup mixins
     this._attachedMixins = {};
     this._attachedMixinGroups = {};
@@ -59,15 +58,7 @@ export default class Entity extends Glyph {
       return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
   }
-  // Create entity on a random free cell
-  createEntity() {
-    // random a position for Player to spawn in
-    let index = Math.floor(ROT.RNG.getUniform() * Game._map.freeCells.length);
-    let key = Game._map.freeCells.splice(index, 1)[0];
-    this._x = key[0] || 0;
-    this._y = key[1] || 0;
-    this.setMap(Game._map);
-  }
+
   // Draws character on display
   draw() {
     Game._display.draw(this._x, this._y, ['.', this._char], this._foreground);
@@ -101,3 +92,17 @@ export default class Entity extends Glyph {
     return this._map;
   }
 }
+
+// Create entity on a random free cell
+export const createEntity = function(freeCells, entity, props) {
+  // random a position for Player to spawn in
+  let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+  let key = freeCells.splice(index, 1)[0];
+  let x = key[0];
+  let y = key[1];
+  return new Entity({
+    ...props,
+    x,
+    y
+  });
+};
