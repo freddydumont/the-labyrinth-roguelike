@@ -72,7 +72,7 @@ const Mixins = {
       // draws new position and deletes old
       // redraw old position
       let oldKey = Game._map.getTile(this._x, this._y);
-      Game.display.draw(
+      Game._display.draw(
         this._x,
         this._y,
         oldKey.getChar(),

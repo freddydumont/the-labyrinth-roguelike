@@ -14,7 +14,7 @@ export default class GameContainer extends Component {
       // Add the container to our HTML page
       document
         .getElementsByClassName('game-container')[0]
-        .appendChild(Game.display.getContainer());
+        .appendChild(Game._display.getContainer());
     }
   }
   render() {

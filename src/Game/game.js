@@ -8,7 +8,7 @@ ROT.DEFAULT_HEIGHT = 25;
 ROT.DEFAULT_WIDTH = 36;
 
 export let Game = {
-  display: null,
+  _display: null,
   _currentScreen: null,
   engine: null,
   scheduler: null,
@@ -16,7 +16,7 @@ export let Game = {
 
   init: function() {
     // create display with rot defaults
-    this.display = new ROT.Display();
+    this._display = new ROT.Display();
     let game = this;
 
     var bindEventToScreen = function(event) {
@@ -34,7 +34,7 @@ export let Game = {
     Game.switchScreen(Screen.startScreen);
   },
   getDisplay: function() {
-    return this.display;
+    return this._display;
   },
   switchScreen: function(screen) {
     // If we had a screen before, notify it that we exited
