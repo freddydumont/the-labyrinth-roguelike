@@ -1,5 +1,7 @@
 import { ROT, Game } from './game';
-import Map from './map';
+import Map, { generateMap, renderMap } from './map';
+import Entity from './entity';
+import Entities from './entities';
 
 // Define our initial start screen
 export const startScreen = {
@@ -18,7 +20,7 @@ export const startScreen = {
     // When [Enter] is pressed, go to the play screen
     if (inputType === 'keydown') {
       if (inputData.keyCode === ROT.VK_RETURN) {
-        Game.startGame();
+        Game.switchScreen(playScreen);
       }
     }
   }
@@ -26,21 +28,49 @@ export const startScreen = {
 
 // Define our playing screen
 export const playScreen = {
+  _map: null,
+  _player: null,
+
   enter: function() {
     console.log('Entered play screen.');
-    Game._map = new Map();
+    let map = generateMap(80, 24);
+    // Create our map from the tiles and player
+    this._player = new Entity(Entities.Player);
+    this._map = new Map(map, this._player);
+    // Start the map's engine
+    this._map.getEngine().start();
   },
+
   exit: function() {
     console.log('Exited play screen.');
   },
+
   render: function(display) {
-    Game._map.renderMap(display);
-    Game._map.renderEntities();
+    renderMap.call(this, display);
   },
+
   handleInput: function(inputType, inputData) {
     if (inputType === 'keydown') {
-      return;
+      // Movement
+      if (inputData.keyCode === ROT.VK_LEFT) {
+        this.move(-1, 0);
+      } else if (inputData.keyCode === ROT.VK_RIGHT) {
+        this.move(1, 0);
+      } else if (inputData.keyCode === ROT.VK_UP) {
+        this.move(0, -1);
+      } else if (inputData.keyCode === ROT.VK_DOWN) {
+        this.move(0, 1);
+      }
+      // Unlock the engine
+      this._map.getEngine().unlock();
     }
+  },
+
+  move: function(dX, dY) {
+    let newX = this._player.getX() + dX;
+    let newY = this._player.getY() + dY;
+    // Try to move to the new cell
+    this._player.tryMove(newX, newY, this._map);
   }
 };
 

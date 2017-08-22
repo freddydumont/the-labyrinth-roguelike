@@ -1,88 +1,116 @@
 import { ROT, Game } from './game';
 
 const Mixins = {
-  // General Mixins
-  newPosition: {
-    name: 'newPosition',
-    newPosition: function(newX, newY) {
-      // draws new position and deletes old
-      // redraw old position
-      let oldKey = Game._map.getTile(this._x, this._y);
-      Game.display.draw(
-        this._x,
-        this._y,
-        oldKey.getChar(),
-        oldKey.getForeground(),
-        oldKey.getBackground()
-      );
-
-      // redraw new position
-      this._x = newX;
-      this._y = newY;
-      this.draw();
+  // This mixin signifies an entity can take damage and be destroyed
+  Destructible: {
+    name: 'Destructible',
+    init: function(props) {
+      this._maxHp = props['maxHp'] || 10;
+      // We allow taking in health from the props incase we want
+      // the entity to start with a different amount of HP than the
+      // max specified.
+      this._hp = props['hp'] || this._maxHp;
+      this._defenseValue = props['defenseValue'] || 0;
+    },
+    getDefenseValue: function() {
+      return this._defenseValue;
+    },
+    getHp: function() {
+      return this._hp;
+    },
+    getMaxHp: function() {
+      return this._maxHp;
+    },
+    takeDamage: function(attacker, damage) {
+      this._hp -= damage;
+      // If have 0 or less HP, then remove ourseles from the map
+      if (this._hp <= 0) {
+        // Game.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+        // Game.sendMessage(this, 'You die!');
+        this.getMap().removeEntity(this);
+      }
     }
   },
+
+  // This signifies our entity can attack basic destructible enities
+  Attacker: {
+    name: 'Attacker',
+    groupName: 'Attacker',
+    init: function(props) {
+      this._attackValue = props['attackValue'] || 1;
+    },
+    getAttackValue: function() {
+      return this._attackValue;
+    },
+    attack: function(target) {
+      // If the target is destructible, calculate the damage
+      // based on attack and defense value
+      if (target.hasMixin('Destructible')) {
+        let attack = this.getAttackValue();
+        let defense = target.getDefenseValue();
+        let max = Math.max(0, attack - defense);
+        let damage = 1 + Math.floor(Math.random() * max);
+
+        // Game.sendMessage(this, 'You strike the %s for %d damage!', [
+        //   target.getName(),
+        //   damage
+        // ]);
+        // Game.sendMessage(target, 'The %s strikes you for %d damage!', [
+        //   this.getName(),
+        //   damage
+        // ]);
+
+        target.takeDamage(this, damage);
+      }
+    }
+  },
+
   Moveable: {
     name: 'Moveable',
-    tryMove: function(x, y) {
+    tryMove: function(x, y, map) {
       // returns true if walkable else false
-      var tile = Game._map.getTile(x, y);
+      let tile = map.getTile(x, y);
       // returns being if there is one else false
-      let entity = Game._map.getEntity(x, y);
-      // Check if we can walk on the tile
-      if (tile.isWalkable() && !entity) return true;
-      // Fights entity at new position
-      if (entity) {
-        this.combat(entity);
+      let target = map.getEntityAt(x, y);
+      // If an entity was present at the tile
+      if (target) {
+        // If we are an attacker, try to attack the target
+        if (this.hasMixin('Attacker')) {
+          this.attack(target);
+          return true;
+        } else {
+          // If not nothing we can do, but we can't move to the tile
+          return false;
+        }
+        // Check if we can walk on the tile and if so simply walk onto it
+      } else if (tile.isWalkable()) {
+        // Update the entity's position
+        this._x = x;
+        this._y = y;
+        return true;
       }
       return false;
     }
   },
-  Combat: {
-    name: 'Combat',
-    combat: function(entity) {
-      entity.health -= this.attack - entity.defence;
-      // todo: entity color changed for .5s when taking damage
-      if (entity.health <= 0) {
-        // Remove scheduler, Remove entity
-        entity.getMap().removeEntity(entity);
-      }
-      if (this.name !== 'player') {
-        // have the enemy fight back
-        this.health -= entity.attack - this.defence;
-        if (this.health <= 0) {
-          // todo: endgame
-          // event listener for enter then switchscreen
-          console.log('player died');
-          window.removeEventListener('keydown', this);
-          Game.engine.lock();
-          return;
-        }
-      }
-    }
-  },
+
   // Player Specific Mixins
-  PlayerAct: {
-    name: 'PlayerAct',
+  PlayerActor: {
+    name: 'PlayerActor',
     groupName: 'Actor',
     act: function() {
-      Game.engine.lock();
-      // wait for user input; do stuff when user hits a key
-      window.addEventListener('keydown', this);
+      // Re-render the screen
+      Game.refresh();
+      // Lock the engine and wait asynchronously
+      // for the player to press a key.
+      this.getMap().getEngine().lock();
+      // // Clear the message queue
+      // this.clearMessages();
     }
   },
-  EndTurn: {
-    // ends entity turn
-    name: 'EndTurn',
-    endTurn: function() {
-      // turn has ended, remove event listener and unlock engine
-      window.removeEventListener('keydown', this);
-      Game.engine.unlock();
-    }
-  },
+
   // Enemy Specific Mixins
-  EnemyAct: {
-    name: 'EnemyAct',
+  EnemyActor: {
+    name: 'EnemyActor',
     groupName: 'Actor',
     act: function() {
       // get player coodinates
@@ -92,6 +120,24 @@ const Mixins = {
       // passableCallback tells the pathfinder which tiles are passable
       const passableCallback = function(x, y) {
         return Game._map.getTile(x, y).isWalkable();
+      };
+
+      const newPosition = function(newX, newY) {
+        // draws new position and deletes old
+        // redraw old position
+        let oldKey = Game._map.getTile(this._x, this._y);
+        Game._display.draw(
+          this._x,
+          this._y,
+          oldKey.getChar(),
+          oldKey.getForeground(),
+          oldKey.getBackground()
+        );
+
+        // redraw new position
+        this._x = newX;
+        this._y = newY;
+        this.draw();
       };
 
       // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -115,42 +161,9 @@ const Mixins = {
         y = path[0][1];
 
         // Checks if tile is walkable
-        if (this.tryMove(x, y)) {
-          this.newPosition(x, y);
+        if (this.tryMove(x, y, Game._map)) {
+          newPosition(x, y);
         }
-      }
-    }
-  },
-  PlayerHandleEvent: {
-    // handles movement event
-    name: 'PlayerHandleEvent',
-    handleEvent: function(e) {
-      let keyMap = {};
-      keyMap[38] = 0;
-      keyMap[33] = 1;
-      keyMap[39] = 2;
-      keyMap[34] = 3;
-      keyMap[40] = 4;
-      keyMap[35] = 5;
-      keyMap[37] = 6;
-      keyMap[36] = 7;
-
-      const code = e.keyCode;
-
-      // If the key code is not present in keyMap, do nothing
-      if (!(code in keyMap)) {
-        return;
-      }
-
-      // If the key code is present, check whether the PC can move in that direction
-      const dir = ROT.DIRS[8][keyMap[code]];
-      const newX = this._x + dir[0];
-      const newY = this._y + dir[1];
-
-      // Checks if tile is walkable
-      if (this.tryMove(newX, newY)) {
-        this.newPosition(newX, newY);
-        this.endTurn();
       }
     }
   }
