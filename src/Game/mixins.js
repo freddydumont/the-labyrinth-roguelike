@@ -1,6 +1,70 @@
 import { ROT, Game } from './game';
 
 const Mixins = {
+  // This mixin signifies an entity can take damage and be destroyed
+  Destructible: {
+    name: 'Destructible',
+    init: function(props) {
+      this._maxHp = props['maxHp'] || 10;
+      // We allow taking in health from the props incase we want
+      // the entity to start with a different amount of HP than the
+      // max specified.
+      this._hp = props['hp'] || this._maxHp;
+      this._defenseValue = props['defenseValue'] || 0;
+    },
+    getDefenseValue: function() {
+      return this._defenseValue;
+    },
+    getHp: function() {
+      return this._hp;
+    },
+    getMaxHp: function() {
+      return this._maxHp;
+    },
+    takeDamage: function(attacker, damage) {
+      this._hp -= damage;
+      // If have 0 or less HP, then remove ourseles from the map
+      if (this._hp <= 0) {
+        // Game.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+        // Game.sendMessage(this, 'You die!');
+        this.getMap().removeEntity(this);
+      }
+    }
+  },
+
+  // This signifies our entity can attack basic destructible enities
+  Attacker: {
+    name: 'Attacker',
+    groupName: 'Attacker',
+    init: function(props) {
+      this._attackValue = props['attackValue'] || 1;
+    },
+    getAttackValue: function() {
+      return this._attackValue;
+    },
+    attack: function(target) {
+      // If the target is destructible, calculate the damage
+      // based on attack and defense value
+      if (target.hasMixin('Destructible')) {
+        let attack = this.getAttackValue();
+        let defense = target.getDefenseValue();
+        let max = Math.max(0, attack - defense);
+        let damage = 1 + Math.floor(Math.random() * max);
+
+        // Game.sendMessage(this, 'You strike the %s for %d damage!', [
+        //   target.getName(),
+        //   damage
+        // ]);
+        // Game.sendMessage(target, 'The %s strikes you for %d damage!', [
+        //   this.getName(),
+        //   damage
+        // ]);
+
+        target.takeDamage(this, damage);
+      }
+    }
+  },
+
   // General Mixins
   newPosition: {
     name: 'newPosition',
@@ -26,7 +90,7 @@ const Mixins = {
     name: 'Moveable',
     tryMove: function(x, y) {
       // returns true if walkable else false
-      var tile = Game._map.getTile(x, y);
+      let tile = Game._map.getTile(x, y);
       // returns being if there is one else false
       let entity = Game._map.getEntity(x, y);
       // Check if we can walk on the tile
