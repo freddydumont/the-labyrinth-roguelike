@@ -1,6 +1,29 @@
 import { ROT, Game } from './game';
+import * as Messages from './messages';
+// to get player location
+import { playScreen } from './screens';
 
 const Mixins = {
+  /**
+   * Adds an internal array of messages and provide a method for receiving a message,
+   * as well methods for fetching and clearing the messages.
+   */
+  MessageRecipient: {
+    name: 'MessageRecipient',
+    init: function(props) {
+      this._messages = [];
+    },
+    receiveMessage: function(message) {
+      this._messages.push(message);
+    },
+    getMessages: function() {
+      return this._messages;
+    },
+    clearMessages: function() {
+      this._messages = [];
+    }
+  },
+
   // This mixin signifies an entity can take damage and be destroyed
   Destructible: {
     name: 'Destructible',
@@ -25,8 +48,8 @@ const Mixins = {
       this._hp -= damage;
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
-        // Game.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        // Game.sendMessage(this, 'You die!');
+        Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+        Messages.sendMessage(this, 'You die!');
         this.getMap().removeEntity(this);
       }
     }
@@ -51,14 +74,14 @@ const Mixins = {
         let max = Math.max(0, attack - defense);
         let damage = 1 + Math.floor(Math.random() * max);
 
-        // Game.sendMessage(this, 'You strike the %s for %d damage!', [
-        //   target.getName(),
-        //   damage
-        // ]);
-        // Game.sendMessage(target, 'The %s strikes you for %d damage!', [
-        //   this.getName(),
-        //   damage
-        // ]);
+        Messages.sendMessage(this, 'You strike the %s for %d damage!', [
+          target.getName(),
+          damage
+        ]);
+        Messages.sendMessage(target, 'The %s strikes you for %d damage!', [
+          this.getName(),
+          damage
+        ]);
 
         target.takeDamage(this, damage);
       }
@@ -103,8 +126,8 @@ const Mixins = {
       // Lock the engine and wait asynchronously
       // for the player to press a key.
       this.getMap().getEngine().lock();
-      // // Clear the message queue
-      // this.clearMessages();
+      // Clear the message queue
+      this.clearMessages();
     }
   },
 
@@ -112,32 +135,19 @@ const Mixins = {
   EnemyActor: {
     name: 'EnemyActor',
     groupName: 'Actor',
+    /**
+     * Gets player from playScreen and computes the shortest path to him.
+     * Then calls tryMove to approach the target and initiate combat.
+     */
     act: function() {
+      const player = playScreen.getPlayer();
       // get player coodinates
-      let x = Game.player.getX();
-      let y = Game.player.getY();
+      let x = player.getX();
+      let y = player.getY();
 
       // passableCallback tells the pathfinder which tiles are passable
       const passableCallback = function(x, y) {
-        return Game._map.getTile(x, y).isWalkable();
-      };
-
-      const newPosition = function(newX, newY) {
-        // draws new position and deletes old
-        // redraw old position
-        let oldKey = Game._map.getTile(this._x, this._y);
-        Game._display.draw(
-          this._x,
-          this._y,
-          oldKey.getChar(),
-          oldKey.getForeground(),
-          oldKey.getBackground()
-        );
-
-        // redraw new position
-        this._x = newX;
-        this._y = newY;
-        this.draw();
+        return player.getMap().getTile(x, y).isWalkable();
       };
 
       // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -152,19 +162,13 @@ const Mixins = {
 
       // remove enemy position
       path.shift();
-      if (path.length <= 1) {
-        // enemy and player and next to each other
-        console.log('collision imminent');
-      } else {
-        // get first coordinates of the path
-        x = path[0][0];
-        y = path[0][1];
 
-        // Checks if tile is walkable
-        if (this.tryMove(x, y, Game._map)) {
-          newPosition(x, y);
-        }
-      }
+      // get first coordinates of the path
+      x = path[0][0];
+      y = path[0][1];
+
+      // call tryMove function
+      this.tryMove(x, y, player.getMap());
     }
   }
 };
