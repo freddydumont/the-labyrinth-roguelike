@@ -24,7 +24,7 @@ export const _init = function() {
   // Wait for tileSet load
   tileSet.onload = function() {
     // Sets the current Rot.display with options
-    Game.display.setOptions(options);
+    Game._display.setOptions(options);
     // Switch to play display and start game engine
     Game.switchScreen(Screen.playScreen);
     Game.startEngine();

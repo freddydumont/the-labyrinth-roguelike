@@ -1,4 +1,3 @@
-import { ROT, Game } from './game';
 import Glyph from './glyph';
 
 /**
@@ -8,16 +7,18 @@ import Glyph from './glyph';
 export default class Entity extends Glyph {
   constructor(props) {
     super(props);
-
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
-    // Setup mixins
+    this._map = null;
+    // Create an object which will keep track what mixins we have
+    // attached to this entity based on the name property
     this._attachedMixins = {};
+    // Create a similar object for groups
+    this._attachedMixinGroups = {};
+    // Setup the object's mixins
     this.setupMixins(props);
-    // draw entity on initialisation
-    this.draw();
   }
 
   // Mixin functions
@@ -35,24 +36,24 @@ export default class Entity extends Glyph {
       }
       // Add the name of this mixin to our attached mixins
       this._attachedMixins[mixins[i].name] = true;
+      // If a group name is present, add it
+      if (mixins[i].groupName) {
+        this._attachedMixinGroups[mixins[i].groupName] = true;
+      }
       // Finally call the init function if there is one
       if (mixins[i].init) {
         mixins[i].init.call(this, props);
       }
     }
   }
-  hasMixins(obj) {
+
+  hasMixin(obj) {
     // Allow passing the mixin itself or the name as a string
     if (typeof obj === 'object') {
       return this._attachedMixins[obj.name];
     } else {
-      return this._attachedMixins[obj];
+      return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
-  }
-
-  // Draws character on display
-  draw() {
-    Game.display.draw(this._x, this._y, ['.', this._char], this._foreground);
   }
 
   // setters
@@ -65,6 +66,9 @@ export default class Entity extends Glyph {
   setY(y) {
     this._y = y;
   }
+  setMap(map) {
+    this._map = map;
+  }
 
   // getters
   getName() {
@@ -76,18 +80,7 @@ export default class Entity extends Glyph {
   getY() {
     return this._y;
   }
+  getMap() {
+    return this._map;
+  }
 }
-
-// Create entity on a random free cell
-export const createEntity = function(freeCells, entity, props) {
-  // random a position for Player to spawn in
-  let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-  let key = freeCells.splice(index, 1)[0];
-  let x = key[0];
-  let y = key[1];
-  return new entity({
-    ...props,
-    x,
-    y
-  });
-};
