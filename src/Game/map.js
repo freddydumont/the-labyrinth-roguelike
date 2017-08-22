@@ -1,7 +1,6 @@
 import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
 import Entity from './entity';
-// import { createEntity } from './entity';
 import Tile from './tile';
 import Entities from './entities';
 

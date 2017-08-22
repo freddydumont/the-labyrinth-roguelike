@@ -1,4 +1,3 @@
-import { ROT, Game } from './game';
 import Glyph from './glyph';
 
 /**
@@ -85,17 +84,3 @@ export default class Entity extends Glyph {
     return this._map;
   }
 }
-
-// // Create entity on a random free cell
-// export const createEntity = function(freeCells, entity, props) {
-//   // random a position for Player to spawn in
-//   let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-//   let key = freeCells.splice(index, 1)[0];
-//   let x = key[0];
-//   let y = key[1];
-//   return new Entity({
-//     ...props,
-//     x,
-//     y
-//   });
-// };
