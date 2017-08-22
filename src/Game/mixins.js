@@ -1,4 +1,5 @@
 import { ROT, Game } from './game';
+import * as Messages from './messages';
 
 const Mixins = {
   /**
@@ -45,8 +46,8 @@ const Mixins = {
       this._hp -= damage;
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
-        // Game.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        // Game.sendMessage(this, 'You die!');
+        Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+        Messages.sendMessage(this, 'You die!');
         this.getMap().removeEntity(this);
       }
     }
@@ -71,14 +72,14 @@ const Mixins = {
         let max = Math.max(0, attack - defense);
         let damage = 1 + Math.floor(Math.random() * max);
 
-        // Game.sendMessage(this, 'You strike the %s for %d damage!', [
-        //   target.getName(),
-        //   damage
-        // ]);
-        // Game.sendMessage(target, 'The %s strikes you for %d damage!', [
-        //   this.getName(),
-        //   damage
-        // ]);
+        Messages.sendMessage(this, 'You strike the %s for %d damage!', [
+          target.getName(),
+          damage
+        ]);
+        Messages.sendMessage(target, 'The %s strikes you for %d damage!', [
+          this.getName(),
+          damage
+        ]);
 
         target.takeDamage(this, damage);
       }

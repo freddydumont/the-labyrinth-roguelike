@@ -1,4 +1,5 @@
 import { vsprintf } from 'sprintf-js';
+// see https://github.com/alexei/sprintf.js for formatting options
 import Mixins from './mixins';
 
 /**
