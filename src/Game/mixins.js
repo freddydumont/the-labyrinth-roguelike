@@ -1,5 +1,7 @@
 import { ROT, Game } from './game';
 import * as Messages from './messages';
+// to get player location
+import { playScreen } from './screens';
 
 const Mixins = {
   /**
@@ -133,32 +135,19 @@ const Mixins = {
   EnemyActor: {
     name: 'EnemyActor',
     groupName: 'Actor',
+    /**
+     * Gets player from playScreen and computes the shortest path to him.
+     * Then calls tryMove to approach the target and initiate combat.
+     */
     act: function() {
+      const player = playScreen.getPlayer();
       // get player coodinates
-      let x = Game.player.getX();
-      let y = Game.player.getY();
+      let x = player.getX();
+      let y = player.getY();
 
       // passableCallback tells the pathfinder which tiles are passable
       const passableCallback = function(x, y) {
-        return Game._map.getTile(x, y).isWalkable();
-      };
-
-      const newPosition = function(newX, newY) {
-        // draws new position and deletes old
-        // redraw old position
-        let oldKey = Game._map.getTile(this._x, this._y);
-        Game._display.draw(
-          this._x,
-          this._y,
-          oldKey.getChar(),
-          oldKey.getForeground(),
-          oldKey.getBackground()
-        );
-
-        // redraw new position
-        this._x = newX;
-        this._y = newY;
-        this.draw();
+        return player.getMap().getTile(x, y).isWalkable();
       };
 
       // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -173,19 +162,13 @@ const Mixins = {
 
       // remove enemy position
       path.shift();
-      if (path.length <= 1) {
-        // enemy and player and next to each other
-        console.log('collision imminent');
-      } else {
-        // get first coordinates of the path
-        x = path[0][0];
-        y = path[0][1];
 
-        // Checks if tile is walkable
-        if (this.tryMove(x, y, Game._map)) {
-          newPosition(x, y);
-        }
-      }
+      // get first coordinates of the path
+      x = path[0][0];
+      y = path[0][1];
+
+      // call tryMove function
+      this.tryMove(x, y, player.getMap());
     }
   }
 };

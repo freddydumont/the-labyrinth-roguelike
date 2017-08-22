@@ -73,6 +73,13 @@ export const playScreen = {
     let newY = this._player.getY() + dY;
     // Try to move to the new cell
     this._player.tryMove(newX, newY, this._map);
+  },
+
+  /**
+   * getPlayer function is a temporary solution to make enemy aware of player location
+   */
+  getPlayer: function() {
+    return this._player;
   }
 };
 
