@@ -1,4 +1,3 @@
-import { ROT, Game } from './game';
 import Glyph from './glyph';
 
 /**
@@ -8,28 +7,20 @@ import Glyph from './glyph';
 export default class Entity extends Glyph {
   constructor(props) {
     super(props);
-    // default stats
-    this.health = props['health'] || null;
-    this.defence = props['defence'] || null;
-    this.attack = props['attack'] || null;
     // Instantiate any properties from the passed object
     this._name = props['name'] || '';
+    this._x = props['x'] || 0;
+    this._y = props['y'] || 0;
     this._map = null;
-    // find empty tile for entity
-    this.createEntity();
-    // Setup mixins
+    // Create an object which will keep track what mixins we have
+    // attached to this entity based on the name property
     this._attachedMixins = {};
+    // Create a similar object for groups
     this._attachedMixinGroups = {};
+    // Setup the object's mixins
     this.setupMixins(props);
-    // draw entity on initialisation
-    this.draw();
-    // add entity to our list of entities
-    Game._map.entities.push(this);
   }
-  act() {
-    // Warning if entity is calling a non-existent act from scheduler
-    console.warn(this._name + ' has no act function.');
-  }
+
   // Mixin functions
   setupMixins(props) {
     let mixins = props['mixins'] || [];
@@ -55,6 +46,7 @@ export default class Entity extends Glyph {
       }
     }
   }
+
   hasMixin(obj) {
     // Allow passing the mixin itself or the name as a string
     if (typeof obj === 'object') {
@@ -62,19 +54,6 @@ export default class Entity extends Glyph {
     } else {
       return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
-  }
-  // Create entity on a random free cell
-  createEntity() {
-    // random a position for Player to spawn in
-    let index = Math.floor(ROT.RNG.getUniform() * Game._map.freeCells.length);
-    let key = Game._map.freeCells.splice(index, 1)[0];
-    this._x = key[0] || 0;
-    this._y = key[1] || 0;
-    this.setMap(Game._map);
-  }
-  // Draws character on display
-  draw() {
-    Game.display.draw(this._x, this._y, ['.', this._char], this._foreground);
   }
 
   // setters
