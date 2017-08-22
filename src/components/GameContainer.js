@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ROT, Game } from '../Game/game';
+import { startScreen } from '../Game/screens';
 
 import firebase, { firebaseRef } from '../firebase';
 
@@ -15,6 +16,8 @@ export default class GameContainer extends Component {
       document
         .getElementsByClassName('game-container')[0]
         .appendChild(Game._display.getContainer());
+      // Load the start screen
+      Game.switchScreen(startScreen);
     }
   }
   render() {
