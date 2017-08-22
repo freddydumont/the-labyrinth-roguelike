@@ -42,3 +42,21 @@ export const sendMessageNearby = function(
     }
   }
 };
+
+/**
+ * Render messages in the top left corner of the screen
+ * TODO: render messages in a dedicated message box
+ */
+export const renderMessages = function(display) {
+  // Get the messages in the player's queue and render them
+  const messages = this._player.getMessages();
+  let messageY = 0;
+  for (let i = 0; i < messages.length; i++) {
+    // Draw each message, adding the number of lines
+    messageY += display.drawText(
+      0,
+      messageY,
+      '%c{white}%b{black}' + messages[i]
+    );
+  }
+};

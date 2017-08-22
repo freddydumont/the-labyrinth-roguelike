@@ -1,5 +1,6 @@
 import { ROT, Game } from './game';
 import Map, { generateMap, renderMap } from './map';
+import * as Messages from './messages';
 import Entity from './entity';
 import Entities from './entities';
 
@@ -47,6 +48,7 @@ export const playScreen = {
 
   render: function(display) {
     renderMap.call(this, display);
+    Messages.renderMessages.call(this, display);
   },
 
   handleInput: function(inputType, inputData) {
