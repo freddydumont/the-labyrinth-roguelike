@@ -12,19 +12,16 @@ export default class Entity extends Glyph {
     this._name = props['name'] || '';
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
-    // Setup mixins
+    this._map = null;
+    // Create an object which will keep track what mixins we have
+    // attached to this entity based on the name property
     this._attachedMixins = {};
+    // Create a similar object for groups
     this._attachedMixinGroups = {};
+    // Setup the object's mixins
     this.setupMixins(props);
-    // draw entity on initialisation
-    this.draw();
-    // add entity to our list of entities
-    Game._map.entities.push(this);
   }
-  act() {
-    // Warning if entity is calling a non-existent act from scheduler
-    console.warn(this._name + ' has no act function.');
-  }
+
   // Mixin functions
   setupMixins(props) {
     let mixins = props['mixins'] || [];
@@ -50,6 +47,7 @@ export default class Entity extends Glyph {
       }
     }
   }
+
   hasMixin(obj) {
     // Allow passing the mixin itself or the name as a string
     if (typeof obj === 'object') {
@@ -57,11 +55,6 @@ export default class Entity extends Glyph {
     } else {
       return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
-  }
-
-  // Draws character on display
-  draw() {
-    Game._display.draw(this._x, this._y, ['.', this._char], this._foreground);
   }
 
   // setters
@@ -93,16 +86,16 @@ export default class Entity extends Glyph {
   }
 }
 
-// Create entity on a random free cell
-export const createEntity = function(freeCells, entity, props) {
-  // random a position for Player to spawn in
-  let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-  let key = freeCells.splice(index, 1)[0];
-  let x = key[0];
-  let y = key[1];
-  return new Entity({
-    ...props,
-    x,
-    y
-  });
-};
+// // Create entity on a random free cell
+// export const createEntity = function(freeCells, entity, props) {
+//   // random a position for Player to spawn in
+//   let index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
+//   let key = freeCells.splice(index, 1)[0];
+//   let x = key[0];
+//   let y = key[1];
+//   return new Entity({
+//     ...props,
+//     x,
+//     y
+//   });
+// };
