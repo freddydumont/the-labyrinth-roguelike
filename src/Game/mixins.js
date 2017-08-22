@@ -1,6 +1,26 @@
 import { ROT, Game } from './game';
 
 const Mixins = {
+  /**
+   * Adds an internal array of messages and provide a method for receiving a message,
+   * as well methods for fetching and clearing the messages.
+   */
+  MessageRecipient: {
+    name: 'MessageRecipient',
+    init: function(props) {
+      this._messages = [];
+    },
+    receiveMessage: function(message) {
+      this._messages.push(message);
+    },
+    getMessages: function() {
+      return this._messages;
+    },
+    clearMessages: function() {
+      this._messages = [];
+    }
+  },
+
   // This mixin signifies an entity can take damage and be destroyed
   Destructible: {
     name: 'Destructible',
