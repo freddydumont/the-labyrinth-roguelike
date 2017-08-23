@@ -32,6 +32,7 @@ export const startScreen = {
 export const playScreen = {
   _map: null,
   _player: null,
+  _gameEnded: false,
 
   enter: function() {
     // size parameters
@@ -57,6 +58,15 @@ export const playScreen = {
   },
 
   handleInput: function(inputType, inputData) {
+    // If the game is over, enter will bring the user to the losing screen.
+    if (this._gameEnded) {
+      if (inputType === 'keydown' && inputData.keyCode === ROT.VK_RETURN) {
+        Game.switchScreen(loseScreen);
+      }
+      // Return to make sure the user can't still play
+      return;
+    }
+
     if (inputType === 'keydown') {
       // Movement
       if (inputData.keyCode === ROT.VK_LEFT) {
@@ -96,11 +106,8 @@ export const playScreen = {
     this._player.tryMove(newX, newY, newZ, this._map);
   },
 
-  /**
-   * getPlayer function is a temporary solution to make enemy aware of player location
-   */
-  getPlayer: function() {
-    return this._player;
+  setGameEnded: function(gameEnded) {
+    this._gameEnded = gameEnded;
   }
 };
 
@@ -114,9 +121,17 @@ export const winScreen = {
   },
   render: function(display) {
     // Render our prompt to the screen
+    for (let i = 0; i < 22; i++) {
+      // Generate random background colors
+      const r = Math.round(Math.random() * 255);
+      const g = Math.round(Math.random() * 255);
+      const b = Math.round(Math.random() * 255);
+      const background = ROT.Color.toRGB([r, g, b]);
+      display.drawText(2, i + 1, '%b{' + background + '}You win!');
+    }
   },
   handleInput: function(inputType, inputData) {
-    return;
+    // nothing to do here
   }
 };
 
@@ -130,8 +145,11 @@ export const loseScreen = {
   },
   render: function(display) {
     // Render our prompt to the screen
+    for (let i = 0; i < 22; i++) {
+      display.drawText(2, i + 1, '%b{red}You lose! :(');
+    }
   },
   handleInput: function(inputType, inputData) {
-    return;
+    // nothing to do here
   }
 };

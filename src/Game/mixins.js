@@ -1,5 +1,6 @@
 import { Game } from './game';
 import * as Messages from './messages';
+import { playScreen } from './screens';
 
 const Mixins = {
   /**
@@ -47,8 +48,12 @@ const Mixins = {
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        Messages.sendMessage(this, 'You die!');
-        this.getMap().removeEntity(this);
+        // Check if the player died, and if so call their act method to prompt the user.
+        if (this.hasMixin(Mixins.PlayerActor)) {
+          this.act();
+        } else {
+          this.getMap().removeEntity(this);
+        }
       }
     }
   },
@@ -91,6 +96,15 @@ const Mixins = {
     name: 'PlayerActor',
     groupName: 'Actor',
     act: function() {
+      // Detect if the game is over
+      if (this.getHp() < 1) {
+        playScreen.setGameEnded(true);
+        // Send a last message to the player
+        Messages.sendMessage(
+          this,
+          'You have died... Press [Enter] to continue!'
+        );
+      }
       // Re-render the screen
       Game.refresh();
       // Lock the engine and wait asynchronously
