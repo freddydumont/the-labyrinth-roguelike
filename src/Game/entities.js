@@ -10,7 +10,6 @@ const Entities = {
     sightRadius: 6,
     mixins: [
       Mixins.PlayerActor,
-      Mixins.Moveable,
       Mixins.Attacker,
       Mixins.Destructible,
       Mixins.Sight,
@@ -25,12 +24,7 @@ const Entities = {
     maxHp: 15,
     defenseValue: 5,
     attackValue: 3,
-    mixins: [
-      Mixins.EnemyActor,
-      Mixins.Moveable,
-      Mixins.Attacker,
-      Mixins.Destructible
-    ]
+    mixins: [Mixins.EnemyActor, Mixins.Attacker, Mixins.Destructible]
   }
 };
 

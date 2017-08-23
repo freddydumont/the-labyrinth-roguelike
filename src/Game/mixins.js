@@ -1,6 +1,5 @@
 import { ROT, Game } from './game';
 import * as Messages from './messages';
-import Tile from './tile';
 // to get player location
 import { playScreen } from './screens';
 
@@ -86,51 +85,6 @@ const Mixins = {
 
         target.takeDamage(this, damage);
       }
-    }
-  },
-
-  Moveable: {
-    name: 'Moveable',
-    tryMove: function(x, y, z, map = this.getMap()) {
-      // returns true if walkable else false
-      let tile = map.getTile(x, y, this.getZ());
-      // returns being if there is one else false
-      let target = map.getEntityAt(x, y, this.getZ());
-      // If our z level changed, check if we are on stair
-      if (z < this.getZ()) {
-        if (tile !== Tile.stairsUpTile) {
-          Messages.sendMessage(this, "You can't go up here!");
-        } else {
-          Messages.sendMessage(this, 'You ascend to level %d!', [z + 1]);
-          this.setPosition(x, y, z);
-        }
-      } else if (z > this.getZ()) {
-        if (tile !== Tile.stairsDownTile) {
-          Messages.sendMessage(this, "You can't go down here!");
-        } else {
-          this.setPosition(x, y, z);
-          Messages.sendMessage(this, 'You descend to level %d!', [z + 1]);
-        }
-        // If an entity was present at the tile
-      } else if (target) {
-        // If we are an attacker, try to attack the target
-        if (this.hasMixin('Attacker')) {
-          this.attack(target);
-          return true;
-        } else {
-          // If not nothing we can do, but we can't move to the tile
-          return false;
-        }
-        // Check if we can walk on the tile and if so simply walk onto it
-      } else if (tile.isWalkable()) {
-        // Update the entity's position
-        this.setPosition(x, y, z);
-        return true;
-      } else if (tile.isDiggable()) {
-        map.dig(x, y, z);
-        return true;
-      }
-      return false;
     }
   },
 
