@@ -58,9 +58,18 @@ export default class Entity extends Glyph {
   }
 
   setPosition(x, y, z) {
+    // keep old position in memory
+    const oldX = this._x;
+    const oldY = this._y;
+    const oldZ = this._z;
+    // Update position
     this._x = x;
     this._y = y;
     this._z = z;
+    // If the entity is on a map, notify the map that the entity has moved.
+    if (this._map) {
+      this._map.updateEntityPosition(this, oldX, oldY, oldZ);
+    }
   }
 
   // setters
