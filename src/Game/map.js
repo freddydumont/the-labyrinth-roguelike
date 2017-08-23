@@ -23,6 +23,9 @@ export class Map {
     this.addEntityAtRandomPosition(player, 0);
     // add enemies
     this.addEntityAtRandomPosition(new Entity(Entities.Enemy), 0);
+    // setup the explored array
+    this._explored = new Array(this._depth);
+    this._setupExploredArray();
   }
 
   // Standard getters
@@ -185,6 +188,40 @@ export class Map {
     // Iterate through each depth level, setting up the field of vision
     for (let z = 0; z < this._depth; z++) {
       fillFov(z);
+    }
+  }
+
+  /**
+   * In order to keep track of what has been explored,
+   * we have a 3D array of booleans representing the world.
+   * If a given coordinate is set to true, then it has appeared in the player's
+   * field of vision before and is therefore considered to be 'explored'.
+   */
+  _setupExploredArray() {
+    for (let z = 0; z < this._depth; z++) {
+      this._explored[z] = new Array(this._width);
+      for (let x = 0; x < this._width; x++) {
+        this._explored[z][x] = new Array(this._height);
+        for (let y = 0; y < this._height; y++) {
+          this._explored[z][x][y] = false;
+        }
+      }
+    }
+  }
+
+  setExplored(x, y, z, state) {
+    // Only update if the tile is within bounds
+    if (this.getTile(x, y, z) !== Tile.nullTile) {
+      this._explored[z][x][y] = state;
+    }
+  }
+
+  isExplored(x, y, z) {
+    // Only return the value if within bounds
+    if (this.getTile(x, y, z) !== Tile.nullTile) {
+      return this._explored[z][x][y];
+    } else {
+      return false;
     }
   }
 }
