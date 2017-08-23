@@ -1,5 +1,6 @@
 import Glyph from './glyph';
 import Tile from './tile';
+import Mixins from './mixins';
 import * as Messages from './messages';
 
 /**
@@ -96,14 +97,18 @@ export default class Entity extends Glyph {
       }
       // If an entity was present at the tile
     } else if (target) {
-      // If we are an attacker, try to attack the target
-      if (this.hasMixin('Attacker')) {
+      // An entity can only attack if the entity has the Attacker mixin and
+      // either the entity or the target is the player.
+      if (
+        this.hasMixin('Attacker') &&
+        (this.hasMixin(Mixins.PlayerActor) ||
+          target.hasMixin(Mixins.PlayerActor))
+      ) {
         this.attack(target);
         return true;
-      } else {
-        // If not nothing we can do, but we can't move to the tile
-        return false;
       }
+      // If not nothing we can do, but we can't move to the tile
+      return false;
       // Check if we can walk on the tile and if so simply walk onto it
     } else if (tile.isWalkable()) {
       // Update the entity's position
@@ -111,8 +116,13 @@ export default class Entity extends Glyph {
       return true;
       // Check if the tile is diggable
     } else if (tile.isDiggable()) {
-      map.dig(x, y, z);
-      return true;
+      // Only dig if the the entity is the player
+      if (this.hasMixin(Mixins.PlayerActor)) {
+        map.dig(x, y, z);
+        return true;
+      }
+      // If not nothing we can do, but we can't move to the tile
+      return false;
     }
     return false;
   }

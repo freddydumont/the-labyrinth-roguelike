@@ -1,4 +1,4 @@
-import { ROT, Game } from './game';
+import { Game } from './game';
 import * as Messages from './messages';
 
 const Mixins = {
