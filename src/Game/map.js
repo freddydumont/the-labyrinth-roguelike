@@ -160,37 +160,6 @@ export class Map {
 }
 
 /**
-* Generates a map and stores free cells in an array
-* by using a map generation algorithm fron ROT
-*/
-export const generateMap = function(width, height) {
-  let map = [];
-  for (let x = 0; x < width; x++) {
-    // Create the nested array for the y values
-    map.push([]);
-    // Add all the tiles
-    for (let y = 0; y < height; y++) {
-      map[x].push(Tile.nullTile);
-    }
-  }
-
-  // generate map type
-  let arena = new ROT.Map.Arena();
-
-  // create map
-  let mapCallback = (x, y, wall) => {
-    if (!wall) {
-      map[x][y] = Tile.floorTile;
-    } else {
-      map[x][y] = Tile.wallTile;
-    }
-  };
-  arena.create(mapCallback);
-
-  return map;
-};
-
-/**
  * Renders map and entities on display. Accounts for a map larger than screen.
  */
 export const renderMap = function(display) {
@@ -208,7 +177,7 @@ export const renderMap = function(display) {
   for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
     for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
       // Fetch the glyph for the tile and render it to the screen at the offset position.
-      let tile = this._map.getTile(x, y);
+      let tile = this._map.getTile(x, y, this._player.getZ());
       display.draw(
         x - topLeftX,
         y - topLeftY,
@@ -227,7 +196,8 @@ export const renderMap = function(display) {
       entity.getX() >= topLeftX &&
       entity.getY() >= topLeftY &&
       entity.getX() < topLeftX + screenWidth &&
-      entity.getY() < topLeftY + screenHeight
+      entity.getY() < topLeftY + screenHeight &&
+      entity.getZ() === this._player.getZ()
     ) {
       display.draw(
         entity.getX() - topLeftX,

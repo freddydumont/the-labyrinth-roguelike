@@ -23,6 +23,7 @@ export let Game = {
 
     // Bind keyboard input events
     bindEventToScreen('keydown');
+    bindEventToScreen('keypress');
   },
 
   // Getters

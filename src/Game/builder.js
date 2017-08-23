@@ -1,4 +1,5 @@
-import Tile from './tile';
+import { ROT } from './game';
+import Tile, { getNeighborPositions } from './tile';
 /**
  * Builder is responsible for all map generation, thus all the tiles for a world.
  * We can then use these tiles to create a Map object.
@@ -127,7 +128,7 @@ export default class Builder {
     while (tiles.length > 0) {
       tile = tiles.pop();
       // Get the neighbors of the tile
-      neighbors = Tile.getNeighborPositions(tile.x, tile.y);
+      neighbors = getNeighborPositions(tile.x, tile.y);
       // Iterate through each neighbor, checking if we can use it to fill
       // and if so updating the region and adding it to our processing list.
       while (neighbors.length > 0) {
@@ -149,7 +150,7 @@ export default class Builder {
   _removeRegion(region, z) {
     for (let x = 0; x < this._width; x++) {
       for (let y = 0; y < this._height; y++) {
-        if (this._regions[z][x][y] == region) {
+        if (this._regions[z][x][y] === region) {
           // Clear the region and set the tile to a wall tile
           this._regions[z][x][y] = 0;
           this._tiles[z][x][y] = Tile.wallTile;

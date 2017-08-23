@@ -20,25 +20,25 @@ export default class Tile extends Glyph {
   isDiggable() {
     return this._isDiggable;
   }
-
-  /**
-   * return a list containing all 8 neighbors of a given tile, randomized
-   */
-  getNeighborPositions(x, y) {
-    let tiles = [];
-    // Generate all possible offsets
-    for (let dX = -1; dX < 2; dX++) {
-      for (let dY = -1; dY < 2; dY++) {
-        // Make sure it isn't the same tile
-        if (dX === 0 && dY === 0) {
-          continue;
-        }
-        tiles.push({ x: x + dX, y: y + dY });
-      }
-    }
-    return tiles.randomize();
-  }
 }
+
+/**
+* return a list containing all 8 neighbors of a given tile, randomized
+*/
+export const getNeighborPositions = function(x, y) {
+  let tiles = [];
+  // Generate all possible offsets
+  for (let dX = -1; dX < 2; dX++) {
+    for (let dY = -1; dY < 2; dY++) {
+      // Make sure it isn't the same tile
+      if (dX === 0 && dY === 0) {
+        continue;
+      }
+      tiles.push({ x: x + dX, y: y + dY });
+    }
+  }
+  return tiles.randomize();
+};
 
 // TODO: Move tiles to TileRepository instead of on Tile class
 // nullTile will be returned whenever we try to access an out of bounds tiles
