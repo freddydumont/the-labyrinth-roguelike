@@ -14,15 +14,23 @@ export class Map {
     // setup the FOV
     this._fov = [];
     this.setupFov();
-    // create a list which will hold the entities
-    this._entities = [];
+    // store our entities in a hash table indexed by position [x,y,z]
+    this._entities = {};
     // create the engine and scheduler
     this._scheduler = new ROT.Scheduler.Simple();
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
     this.addEntityAtRandomPosition(player, 0);
-    // add enemies
-    this.addEntityAtRandomPosition(new Entity(Entities.Enemy), 0);
+    // Add random enemies to each floor.
+    const enemies = [Entities.Bat, Entities.Newt, Entities.ToughGuy];
+    for (let z = 0; z < this._depth; z++) {
+      for (let i = 0; i < 15; i++) {
+        // Randomly select an enemy type
+        const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+        // Place the entity
+        this.addEntityAtRandomPosition(new Entity(enemy), z);
+      }
+    }
     // setup the explored array
     this._explored = new Array(this._depth);
     this._setupExploredArray();
@@ -48,15 +56,100 @@ export class Map {
     return this._fov[depth];
   }
 
+  /***********
+   * ENTITIES
+   ***********/
+
   getEntityAt(x, y, z) {
-    // Iterate through all entities searching for one with matching position
-    for (let entity of this._entities) {
-      if (entity.getX() === x && entity.getY() === y && entity.getZ() === z) {
-        return entity;
+    // Get the entity based on position key
+    return this._entities[x + ',' + y + ',' + z];
+  }
+
+  getEntitiesWithinRadius(centerX, centerY, centerZ, radius) {
+    let results = [];
+    // Determine our bounds
+    let leftX = centerX - radius;
+    let rightX = centerX + radius;
+    let topY = centerY - radius;
+    let bottomY = centerY + radius;
+    // Iterate through our entities, adding any which are within the bounds
+    for (let key in this._entities) {
+      let entity = this._entities[key];
+      if (
+        entity.getX() >= leftX &&
+        entity.getX() <= rightX &&
+        entity.getY() >= topY &&
+        entity.getY() <= bottomY &&
+        entity.getZ() === centerZ
+      ) {
+        results.push(entity);
       }
     }
-    return false;
+    return results;
   }
+
+  addEntityAtRandomPosition(entity, z) {
+    let position = this.getRandomFloorPosition(z);
+    entity.setX(position.x);
+    entity.setY(position.y);
+    entity.setZ(position.z);
+    this.addEntity(entity);
+  }
+
+  updateEntityPosition(entity, oldX, oldY, oldZ) {
+    // Delete the old key if it is the same entity and we have old positions.
+    if (oldX) {
+      const oldKey = oldX + ',' + oldY + ',' + oldZ;
+      if (this._entities[oldKey] === entity) {
+        delete this._entities[oldKey];
+      }
+    }
+    // Make sure the entity's position is within bounds
+    if (
+      entity.getX() < 0 ||
+      entity.getX() >= this._width ||
+      entity.getY() < 0 ||
+      entity.getY() >= this._height ||
+      entity.getZ() < 0 ||
+      entity.getZ() >= this._depth
+    ) {
+      throw new Error("Entity's position is out of bounds.");
+    }
+    // Sanity check to make sure there is no entity at the new position.
+    const key = entity.getX() + ',' + entity.getY() + ',' + entity.getZ();
+    if (this._entities[key]) {
+      throw new Error('Tried to add an entity at an occupied position.');
+    }
+    // Add the entity to the table of entities
+    this._entities[key] = entity;
+  }
+
+  addEntity(entity) {
+    // Update the entity's map
+    entity.setMap(this);
+    // Update the map with the entity's position
+    this.updateEntityPosition(entity);
+    // Add to scheduler if entity is an Actor
+    if (entity.hasMixin('Actor')) {
+      this._scheduler.add(entity, true);
+    }
+  }
+
+  removeEntity(entity) {
+    // Remove the entity from the map
+    const key = entity.getX() + ',' + entity.getY() + ',' + entity.getZ();
+    if (this._entities[key] === entity) {
+      delete this._entities[key];
+    }
+    // If the entity is an actor, remove them from the scheduler
+    if (entity.hasMixin('Actor')) {
+      this._scheduler.remove(entity);
+    }
+  }
+
+  /**************
+   * TILE RELATED
+   **************/
 
   // Gets the tile for a given coordinate set
   getTile(x, y, z) {
@@ -100,75 +193,11 @@ export class Map {
     }
   }
 
-  getEntitiesWithinRadius(centerX, centerY, centerZ, radius) {
-    let results = [];
-    // Determine our bounds
-    let leftX = centerX - radius;
-    let rightX = centerX + radius;
-    let topY = centerY - radius;
-    let bottomY = centerY + radius;
-    // Iterate through our entities, adding any which are within the bounds
-    for (let i = 0; i < this._entities.length; i++) {
-      if (
-        this._entities[i].getX() >= leftX &&
-        this._entities[i].getX() <= rightX &&
-        this._entities[i].getY() >= topY &&
-        this._entities[i].getY() <= bottomY &&
-        this._entities[i].getZ() === centerZ
-      ) {
-        results.push(this._entities[i]);
-      }
-    }
-    return results;
-  }
+  /***********
+   * FOV
+   ***********/
 
-  addEntity(entity) {
-    // Make sure the entity's position is within bounds
-    if (
-      entity.getX() < 0 ||
-      entity.getX() >= this._width ||
-      entity.getY() < 0 ||
-      entity.getY() >= this._height ||
-      entity.getZ() < 0 ||
-      entity.getZ() >= this._depth
-    ) {
-      throw new Error('Adding entity out of bounds.');
-    }
-    // Update the entity's map
-    entity.setMap(this);
-    // Add the entity to the list of entities
-    this._entities.push(entity);
-    // Check if this entity is an actor, and if so add them to the scheduler
-    if (entity.hasMixin('Actor')) {
-      this._scheduler.add(entity, true);
-    }
-  }
-
-  addEntityAtRandomPosition(entity, z) {
-    let position = this.getRandomFloorPosition(z);
-    entity.setX(position.x);
-    entity.setY(position.y);
-    entity.setZ(position.z);
-    this.addEntity(entity);
-  }
-
-  removeEntity(entity) {
-    // Find the entity in the list of entities if it is present
-    for (let i = 0; i < this._entities.length; i++) {
-      if (this._entities[i] === entity) {
-        this._entities.splice(i, 1);
-        break;
-      }
-    }
-    // If the entity is an actor, remove them from the scheduler
-    if (entity.hasMixin('Actor')) {
-      this._scheduler.remove(entity);
-    }
-  }
-
-  /**
-   * Setup each level's field of vision
-   */
+  // setup each level's field of vision
   setupFov() {
     /**
      * Function to call in the loop below.
@@ -228,6 +257,7 @@ export class Map {
 
 /**
  * Renders map and entities on display. Accounts for a map larger than screen.
+ * TODO: move function to a more appropriate place (inline in playScreen?)
  */
 export const renderMap = function(display) {
   const screenWidth = Game.getScreenWidth();
@@ -302,8 +332,8 @@ export const renderMap = function(display) {
 
   // Render the entities
   let entities = map.getEntities();
-  for (let i = 0; i < entities.length; i++) {
-    let entity = entities[i];
+  for (const key in entities) {
+    const entity = entities[key];
     // Only render the entity if they would show up on the screen
     if (
       entity.getX() >= topLeftX &&
