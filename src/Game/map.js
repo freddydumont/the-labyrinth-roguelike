@@ -11,6 +11,9 @@ export class Map {
     this._depth = this._tiles.length;
     this._width = this._tiles[0].length;
     this._height = this._tiles[0][0].length;
+    // setup the FOV
+    this._fov = [];
+    this.setupFov();
     // create a list which will hold the entities
     this._entities = [];
     // create the engine and scheduler
@@ -37,6 +40,9 @@ export class Map {
   }
   getEntities() {
     return this._entities;
+  }
+  getFov(depth) {
+    return this._fov[depth];
   }
 
   getEntityAt(x, y, z) {

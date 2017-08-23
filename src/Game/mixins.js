@@ -189,6 +189,19 @@ const Mixins = {
       // call tryMove function
       this.tryMove(x, y, z, player.getMap());
     }
+  },
+  /**
+   * This signifies our entity posseses a field of vision of a given radius.
+   */
+  Sight: {
+    name: 'Sight',
+    groupName: 'Sight',
+    init: function(template) {
+      this._sightRadius = template['sightRadius'] || 5;
+    },
+    getSightRadius: function() {
+      return this._sightRadius;
+    }
   }
 };
 
