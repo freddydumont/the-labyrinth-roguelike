@@ -1,6 +1,5 @@
-import { ROT, Game } from './game';
+import { Game } from './game';
 import * as Messages from './messages';
-// to get player location
 import { playScreen } from './screens';
 
 const Mixins = {
@@ -49,8 +48,12 @@ const Mixins = {
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        Messages.sendMessage(this, 'You die!');
-        this.getMap().removeEntity(this);
+        // Check if the player died, and if so call their act method to prompt the user.
+        if (this.hasMixin(Mixins.PlayerActor)) {
+          this.act();
+        } else {
+          this.getMap().removeEntity(this);
+        }
       }
     }
   },
@@ -88,39 +91,20 @@ const Mixins = {
     }
   },
 
-  Moveable: {
-    name: 'Moveable',
-    tryMove: function(x, y, map) {
-      // returns true if walkable else false
-      let tile = map.getTile(x, y);
-      // returns being if there is one else false
-      let target = map.getEntityAt(x, y);
-      // If an entity was present at the tile
-      if (target) {
-        // If we are an attacker, try to attack the target
-        if (this.hasMixin('Attacker')) {
-          this.attack(target);
-          return true;
-        } else {
-          // If not nothing we can do, but we can't move to the tile
-          return false;
-        }
-        // Check if we can walk on the tile and if so simply walk onto it
-      } else if (tile.isWalkable()) {
-        // Update the entity's position
-        this._x = x;
-        this._y = y;
-        return true;
-      }
-      return false;
-    }
-  },
-
   // Player Specific Mixins
   PlayerActor: {
     name: 'PlayerActor',
     groupName: 'Actor',
     act: function() {
+      // Detect if the game is over
+      if (this.getHp() < 1) {
+        playScreen.setGameEnded(true);
+        // Send a last message to the player
+        Messages.sendMessage(
+          this,
+          'You have died... Press [Enter] to continue!'
+        );
+      }
       // Re-render the screen
       Game.refresh();
       // Lock the engine and wait asynchronously
@@ -131,44 +115,35 @@ const Mixins = {
     }
   },
 
-  // Enemy Specific Mixins
-  EnemyActor: {
-    name: 'EnemyActor',
+  /**
+   * Move by 1 unit in a random direction every time act is called
+   */
+  WanderActor: {
+    name: 'WanderActor',
     groupName: 'Actor',
-    /**
-     * Gets player from playScreen and computes the shortest path to him.
-     * Then calls tryMove to approach the target and initiate combat.
-     */
     act: function() {
-      const player = playScreen.getPlayer();
-      // get player coodinates
-      let x = player.getX();
-      let y = player.getY();
+      // Flip coin to determine if moving by 1 in the positive or negative direction
+      const moveOffset = Math.round(Math.random()) === 1 ? 1 : -1;
+      // Flip coin to determine if moving in x direction or y direction
+      if (Math.round(Math.random()) === 1) {
+        this.tryMove(this.getX() + moveOffset, this.getY(), this.getZ());
+      } else {
+        this.tryMove(this.getX(), this.getY() + moveOffset, this.getZ());
+      }
+    }
+  },
 
-      // passableCallback tells the pathfinder which tiles are passable
-      const passableCallback = function(x, y) {
-        return player.getMap().getTile(x, y).isWalkable();
-      };
-
-      // patchfinding algorithm -- topology makes the enemy move in 4 directions only
-      const astar = new ROT.Path.AStar(x, y, passableCallback, { topology: 4 });
-
-      // compute finds the shortest path and pushes it to path
-      let path = [];
-      const pathCallback = function(x, y) {
-        path.push([x, y]);
-      };
-      astar.compute(this._x, this._y, pathCallback);
-
-      // remove enemy position
-      path.shift();
-
-      // get first coordinates of the path
-      x = path[0][0];
-      y = path[0][1];
-
-      // call tryMove function
-      this.tryMove(x, y, player.getMap());
+  /**
+   * This signifies our entity posseses a field of vision of a given radius.
+   */
+  Sight: {
+    name: 'Sight',
+    groupName: 'Sight',
+    init: function(template) {
+      this._sightRadius = template['sightRadius'] || 5;
+    },
+    getSightRadius: function() {
+      return this._sightRadius;
     }
   }
 };

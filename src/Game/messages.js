@@ -26,6 +26,7 @@ export const sendMessageNearby = function(
   map,
   centerX,
   centerY,
+  centerZ,
   message,
   args
 ) {
@@ -34,7 +35,7 @@ export const sendMessageNearby = function(
     message = vsprintf(message, args);
   }
   // Get the nearby entities
-  let entities = map.getEntitiesWithinRadius(centerX, centerY, 5);
+  let entities = map.getEntitiesWithinRadius(centerX, centerY, centerZ, 5);
   // Iterate through nearby entities, sending the message if they can receive it.
   for (let i = 0; i < entities.length; i++) {
     if (entities[i].hasMixin(Mixins.MessageRecipient)) {
