@@ -60,10 +60,10 @@ Tile.wallTile = new Tile({
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',
-  isWalkable: true
+  walkable: true
 });
 Tile.stairsDownTile = new Tile({
   character: '>',
   foreground: 'white',
-  isWalkable: true
+  walkable: true
 });

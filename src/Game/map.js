@@ -161,7 +161,32 @@ export class Map {
     if (entity.hasMixin('Actor')) {
       this._scheduler.remove(entity);
     }
-    // todo: redraw entity/tile
+  }
+
+  /**
+   * Setup each level's field of vision
+   */
+  setupFov() {
+    /**
+     * Function to call in the loop below.
+     * Creates a callback to figure out if light can pass through
+     */
+    const fillFov = z => {
+      this._fov.push(
+        new ROT.FOV.DiscreteShadowcasting(
+          (x, y) => {
+            return !this.getTile(x, y, z).isBlockingLight();
+          },
+          { topology: 4 }
+        )
+      );
+      console.log(this._fov);
+    };
+
+    // Iterate through each depth level, setting up the field of vision
+    for (let z = 0; z < this._depth; z++) {
+      fillFov(z);
+    }
   }
 }
 
