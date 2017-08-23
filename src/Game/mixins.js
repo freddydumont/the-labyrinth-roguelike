@@ -1,5 +1,6 @@
 import { ROT, Game } from './game';
 import * as Messages from './messages';
+import Tile from './tile';
 // to get player location
 import { playScreen } from './screens';
 
@@ -90,13 +91,28 @@ const Mixins = {
 
   Moveable: {
     name: 'Moveable',
-    tryMove: function(x, y, map) {
+    tryMove: function(x, y, z, map = this.getMap()) {
       // returns true if walkable else false
-      let tile = map.getTile(x, y);
+      let tile = map.getTile(x, y, this.getZ());
       // returns being if there is one else false
-      let target = map.getEntityAt(x, y);
-      // If an entity was present at the tile
-      if (target) {
+      let target = map.getEntityAt(x, y, this.getZ());
+      // If our z level changed, check if we are on stair
+      if (z < this.getZ()) {
+        if (tile !== Tile.stairsUpTile) {
+          Messages.sendMessage(this, "You can't go up here!");
+        } else {
+          Messages.sendMessage(this, 'You ascend to level %d!', [z + 1]);
+          this.setPosition(x, y, z);
+        }
+      } else if (z > this.getZ()) {
+        if (tile !== Tile.stairsDownTile) {
+          Messages.sendMessage(this, "You can't go down here!");
+        } else {
+          this.setPosition(x, y, z);
+          Messages.sendMessage(this, 'You descend to level %d!', [z + 1]);
+        }
+        // If an entity was present at the tile
+      } else if (target) {
         // If we are an attacker, try to attack the target
         if (this.hasMixin('Attacker')) {
           this.attack(target);
@@ -108,8 +124,10 @@ const Mixins = {
         // Check if we can walk on the tile and if so simply walk onto it
       } else if (tile.isWalkable()) {
         // Update the entity's position
-        this._x = x;
-        this._y = y;
+        this.setPosition(x, y, z);
+        return true;
+      } else if (tile.isDiggable()) {
+        map.dig(x, y, z);
         return true;
       }
       return false;
@@ -144,10 +162,11 @@ const Mixins = {
       // get player coodinates
       let x = player.getX();
       let y = player.getY();
+      let z = player.getZ();
 
       // passableCallback tells the pathfinder which tiles are passable
       const passableCallback = function(x, y) {
-        return player.getMap().getTile(x, y).isWalkable();
+        return player.getMap().getTile(x, y, z).isWalkable();
       };
 
       // patchfinding algorithm -- topology makes the enemy move in 4 directions only
@@ -168,7 +187,7 @@ const Mixins = {
       y = path[0][1];
 
       // call tryMove function
-      this.tryMove(x, y, player.getMap());
+      this.tryMove(x, y, z, player.getMap());
     }
   }
 };
