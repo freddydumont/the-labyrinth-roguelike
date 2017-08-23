@@ -54,7 +54,7 @@ Tile.floorTile = new Tile({
 });
 Tile.wallTile = new Tile({
   character: '#',
-  foreground: 'grey',
+  foreground: 'lightsteelblue',
   blocksLight: true
 });
 Tile.stairsUpTile = new Tile({

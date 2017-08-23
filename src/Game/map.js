@@ -232,33 +232,40 @@ export class Map {
 export const renderMap = function(display) {
   const screenWidth = Game.getScreenWidth();
   const screenHeight = Game.getScreenHeight();
+  const player = this._player;
+  const map = this._map;
   // Make sure the x-axis doesn't go to the left of the left bound
-  let topLeftX = Math.max(0, this._player.getX() - screenWidth / 2);
+  let topLeftX = Math.max(0, player.getX() - screenWidth / 2);
   // Make sure we still have enough space to fit an entire game screen
-  topLeftX = Math.min(topLeftX, this._map.getWidth() - screenWidth);
+  topLeftX = Math.min(topLeftX, map.getWidth() - screenWidth);
   // Make sure the y-axis doesn't above the top bound
-  let topLeftY = Math.max(0, this._player.getY() - screenHeight / 2);
+  let topLeftY = Math.max(0, player.getY() - screenHeight / 2);
   // Make sure we still have enough space to fit an entire game screen
-  topLeftY = Math.min(topLeftY, this._map.getHeight() - screenHeight);
+  topLeftY = Math.min(topLeftY, map.getHeight() - screenHeight);
+
   // This object keeps track of all visible map cells
   let visibleCells = {};
+  let currentDepth = player.getZ();
   // Find all visible cells and update the object
-  this._map
-    .getFov(this._player.getZ())
+  map
+    .getFov(currentDepth)
     .compute(
-      this._player.getX(),
-      this._player.getY(),
-      this._player.getSightRadius(),
-      function(x, y, radius, visibility) {
+      player.getX(),
+      player.getY(),
+      player.getSightRadius(),
+      (x, y, radius, visibility) => {
         visibleCells[x + ',' + y] = true;
+        // Mark cell as explored
+        map.setExplored(x, y, currentDepth, true);
       }
     );
+
   // Iterate through all visible map cells
   for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
     for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
       if (visibleCells[x + ',' + y]) {
         // Fetch the glyph for the tile and render it to the screen at the offset position.
-        let tile = this._map.getTile(x, y, this._player.getZ());
+        let tile = map.getTile(x, y, player.getZ());
         display.draw(
           x - topLeftX,
           y - topLeftY,
@@ -269,8 +276,32 @@ export const renderMap = function(display) {
       }
     }
   }
+
+  // Render the explored map cells
+  for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
+    for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
+      if (map.isExplored(x, y, currentDepth)) {
+        // Fetch the glyph for the tile and render it to the screen
+        // at the offset position.
+        const tile = map.getTile(x, y, currentDepth);
+        // The foreground color becomes dark gray if the tile has been
+        // explored but is not visible
+        let foreground = visibleCells[x + ',' + y]
+          ? tile.getForeground()
+          : 'darkGray';
+        display.draw(
+          x - topLeftX,
+          y - topLeftY,
+          tile.getChar(),
+          foreground,
+          tile.getBackground()
+        );
+      }
+    }
+  }
+
   // Render the entities
-  let entities = this._map.getEntities();
+  let entities = map.getEntities();
   for (let i = 0; i < entities.length; i++) {
     let entity = entities[i];
     // Only render the entity if they would show up on the screen
@@ -279,7 +310,7 @@ export const renderMap = function(display) {
       entity.getY() >= topLeftY &&
       entity.getX() < topLeftX + screenWidth &&
       entity.getY() < topLeftY + screenHeight &&
-      entity.getZ() === this._player.getZ()
+      entity.getZ() === player.getZ()
     ) {
       if (visibleCells[entity.getX() + ',' + entity.getY()]) {
         display.draw(
@@ -292,11 +323,9 @@ export const renderMap = function(display) {
       }
     }
   }
+
   // Render player HP
   let stats = '%c{white}%b{black}';
-  stats += vsprintf('HP: %d/%d ', [
-    this._player.getHp(),
-    this._player.getMaxHp()
-  ]);
+  stats += vsprintf('HP: %d/%d ', [player.getHp(), player.getMaxHp()]);
   display.drawText(0, screenHeight, stats);
 };
