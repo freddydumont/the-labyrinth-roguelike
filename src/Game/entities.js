@@ -17,14 +17,32 @@ const Entities = {
     ]
   },
 
-  Enemy: {
-    name: 'enemy',
+  Bat: {
+    name: 'bat',
+    character: 'B',
+    foreground: 'white',
+    maxHp: 5,
+    attackValue: 4,
+    mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
+  },
+
+  Newt: {
+    name: 'newt',
+    character: ':',
+    foreground: 'yellow',
+    maxHp: 3,
+    attackValue: 2,
+    mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
+  },
+
+  ToughGuy: {
+    name: 'tough guy',
     character: 'E',
     foreground: 'red',
     maxHp: 15,
     defenseValue: 5,
     attackValue: 3,
-    mixins: [Mixins.EnemyActor, Mixins.Attacker, Mixins.Destructible]
+    mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
   }
 };
 

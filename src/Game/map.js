@@ -21,8 +21,16 @@ export class Map {
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
     this.addEntityAtRandomPosition(player, 0);
-    // add enemies
-    this.addEntityAtRandomPosition(new Entity(Entities.Enemy), 0);
+    // Add random enemies to each floor.
+    const enemies = [Entities.Bat, Entities.Newt, Entities.ToughGuy];
+    for (let z = 0; z < this._depth; z++) {
+      for (let i = 0; i < 15; i++) {
+        // Randomly select an enemy type
+        const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+        // Place the entity
+        this.addEntityAtRandomPosition(new Entity(enemy), z);
+      }
+    }
     // setup the explored array
     this._explored = new Array(this._depth);
     this._setupExploredArray();

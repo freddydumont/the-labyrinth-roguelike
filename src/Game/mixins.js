@@ -1,7 +1,5 @@
 import { ROT, Game } from './game';
 import * as Messages from './messages';
-// to get player location
-import { playScreen } from './screens';
 
 const Mixins = {
   /**
@@ -103,47 +101,24 @@ const Mixins = {
     }
   },
 
-  // Enemy Specific Mixins
-  EnemyActor: {
-    name: 'EnemyActor',
+  /**
+   * Move by 1 unit in a random direction every time act is called
+   */
+  WanderActor: {
+    name: 'WanderActor',
     groupName: 'Actor',
-    /**
-     * Gets player from playScreen and computes the shortest path to him.
-     * Then calls tryMove to approach the target and initiate combat.
-     */
     act: function() {
-      const player = playScreen.getPlayer();
-      // get player coodinates
-      let x = player.getX();
-      let y = player.getY();
-      let z = player.getZ();
-
-      // passableCallback tells the pathfinder which tiles are passable
-      const passableCallback = function(x, y) {
-        return player.getMap().getTile(x, y, z).isWalkable();
-      };
-
-      // patchfinding algorithm -- topology makes the enemy move in 4 directions only
-      const astar = new ROT.Path.AStar(x, y, passableCallback, { topology: 4 });
-
-      // compute finds the shortest path and pushes it to path
-      let path = [];
-      const pathCallback = function(x, y) {
-        path.push([x, y]);
-      };
-      astar.compute(this._x, this._y, pathCallback);
-
-      // remove enemy position
-      path.shift();
-
-      // get first coordinates of the path
-      x = path[0][0];
-      y = path[0][1];
-
-      // call tryMove function
-      this.tryMove(x, y, z, player.getMap());
+      // Flip coin to determine if moving by 1 in the positive or negative direction
+      const moveOffset = Math.round(Math.random()) === 1 ? 1 : -1;
+      // Flip coin to determine if moving in x direction or y direction
+      if (Math.round(Math.random()) === 1) {
+        this.tryMove(this.getX() + moveOffset, this.getY(), this.getZ());
+      } else {
+        this.tryMove(this.getX(), this.getY() + moveOffset, this.getZ());
+      }
     }
   },
+
   /**
    * This signifies our entity posseses a field of vision of a given radius.
    */
