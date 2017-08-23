@@ -180,7 +180,6 @@ export class Map {
           { topology: 4 }
         )
       );
-      console.log(this._fov);
     };
 
     // Iterate through each depth level, setting up the field of vision
@@ -204,18 +203,33 @@ export const renderMap = function(display) {
   let topLeftY = Math.max(0, this._player.getY() - screenHeight / 2);
   // Make sure we still have enough space to fit an entire game screen
   topLeftY = Math.min(topLeftY, this._map.getHeight() - screenHeight);
+  // This object keeps track of all visible map cells
+  let visibleCells = {};
+  // Find all visible cells and update the object
+  this._map
+    .getFov(this._player.getZ())
+    .compute(
+      this._player.getX(),
+      this._player.getY(),
+      this._player.getSightRadius(),
+      function(x, y, radius, visibility) {
+        visibleCells[x + ',' + y] = true;
+      }
+    );
   // Iterate through all visible map cells
   for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
     for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
-      // Fetch the glyph for the tile and render it to the screen at the offset position.
-      let tile = this._map.getTile(x, y, this._player.getZ());
-      display.draw(
-        x - topLeftX,
-        y - topLeftY,
-        tile.getChar(),
-        tile.getForeground(),
-        tile.getBackground()
-      );
+      if (visibleCells[x + ',' + y]) {
+        // Fetch the glyph for the tile and render it to the screen at the offset position.
+        let tile = this._map.getTile(x, y, this._player.getZ());
+        display.draw(
+          x - topLeftX,
+          y - topLeftY,
+          tile.getChar(),
+          tile.getForeground(),
+          tile.getBackground()
+        );
+      }
     }
   }
   // Render the entities
@@ -230,13 +244,15 @@ export const renderMap = function(display) {
       entity.getY() < topLeftY + screenHeight &&
       entity.getZ() === this._player.getZ()
     ) {
-      display.draw(
-        entity.getX() - topLeftX,
-        entity.getY() - topLeftY,
-        entity.getChar(),
-        entity.getForeground(),
-        entity.getBackground()
-      );
+      if (visibleCells[entity.getX() + ',' + entity.getY()]) {
+        display.draw(
+          entity.getX() - topLeftX,
+          entity.getY() - topLeftY,
+          entity.getChar(),
+          entity.getForeground(),
+          entity.getBackground()
+        );
+      }
     }
   }
   // Render player HP
