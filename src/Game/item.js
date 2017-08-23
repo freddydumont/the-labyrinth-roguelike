@@ -1,6 +1,6 @@
-import Glpyhs from './glpyh';
+import Glpyh from './glpyh';
 
-export default class Items extends Glpyhs {
+export default class Items extends Glpyh {
   constructor(props = {}) {
     // Call the glyph's construtor with our set of properties
     super(props);
