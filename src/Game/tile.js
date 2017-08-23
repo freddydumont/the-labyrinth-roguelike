@@ -50,7 +50,7 @@ Tile.floorTile = new Tile({
 });
 Tile.wallTile = new Tile({
   character: '#',
-  foreground: 'goldenrod'
+  foreground: 'grey'
 });
 Tile.stairsUpTile = new Tile({
   character: '<',
