@@ -8,17 +8,21 @@ export default class Tile extends Glyph {
   constructor(props = {}) {
     // call Glyph constructor, see glyph.js for expected props
     super(props);
-    // Set up the properties. We use false by default.
-    this._isWalkable = props['isWalkable'] || false;
-    this._isDiggable = props['isDiggable'] || false;
+    // Set up the properties with their defaults.
+    this._walkable = props['walkable'] || false;
+    this._diggable = props['diggable'] || false;
+    this._blocksLight = props['blocksLight'] || false;
   }
 
   // Standard getters
   isWalkable() {
-    return this._isWalkable;
+    return this._walkable;
   }
   isDiggable() {
-    return this._isDiggable;
+    return this._diggable;
+  }
+  isBlockingLight() {
+    return this._blocksLight;
   }
 }
 
@@ -46,19 +50,20 @@ Tile.nullTile = new Tile({});
 // floor and wall tiles
 Tile.floorTile = new Tile({
   character: '.',
-  isWalkable: true
+  walkable: true
 });
 Tile.wallTile = new Tile({
   character: '#',
-  foreground: 'grey'
+  foreground: 'lightsteelblue',
+  blocksLight: true
 });
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',
-  isWalkable: true
+  walkable: true
 });
 Tile.stairsDownTile = new Tile({
   character: '>',
   foreground: 'white',
-  isWalkable: true
+  walkable: true
 });

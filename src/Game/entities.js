@@ -7,11 +7,13 @@ const Entities = {
     foreground: 'yellow',
     maxHp: 40,
     attackValue: 10,
+    sightRadius: 6,
     mixins: [
       Mixins.PlayerActor,
       Mixins.Moveable,
       Mixins.Attacker,
       Mixins.Destructible,
+      Mixins.Sight,
       Mixins.MessageRecipient
     ]
   },
