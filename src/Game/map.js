@@ -7,19 +7,19 @@ import Entities from './entities';
 export class Map {
   constructor(tiles, player) {
     this._tiles = tiles;
-    // cache the width and height based on the
-    // length of the dimensions of the tiles array
-    this._width = this._tiles.length;
-    this._height = this._tiles[0].length;
+    // cache dimensions
+    this._depth = this._tiles.length;
+    this._width = this._tiles[0].length;
+    this._height = this._tiles[0][0].length;
     // create a list which will hold the entities
     this._entities = [];
     // create the engine and scheduler
     this._scheduler = new ROT.Scheduler.Simple();
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
-    this.addEntityAtRandomPosition(player);
+    this.addEntityAtRandomPosition(player, 0);
     // add enemies
-    this.addEntityAtRandomPosition(new Entity(Entities.Enemy));
+    this.addEntityAtRandomPosition(new Entity(Entities.Enemy), 0);
   }
 
   // Standard getters
@@ -29,6 +29,9 @@ export class Map {
   getHeight() {
     return this._height;
   }
+  getDepth() {
+    return this._depth;
+  }
   getEngine() {
     return this._engine;
   }
@@ -36,10 +39,10 @@ export class Map {
     return this._entities;
   }
 
-  getEntityAt(x, y) {
-    // Returns entity if there is an entity at x,y
+  getEntityAt(x, y, z) {
+    // Iterate through all entities searching for one with matching position
     for (let entity of this._entities) {
-      if (entity.getX() === x && entity.getY() === y) {
+      if (entity.getX() === x && entity.getY() === y && entity.getZ() === z) {
         return entity;
       }
     }
@@ -47,39 +50,48 @@ export class Map {
   }
 
   // Gets the tile for a given coordinate set
-  getTile(x, y) {
+  getTile(x, y, z) {
     // Make sure we are inside the bounds. If we aren't, return a null tile.
-    if (x < 0 || x >= this._width || y < 0 || y >= this._height) {
+    if (
+      x < 0 ||
+      x >= this._width ||
+      y < 0 ||
+      y >= this._height ||
+      z < 0 ||
+      z >= this._depth
+    ) {
       return Tile.nullTile;
     } else {
-      return this._tiles[x][y] || Tile.nullTile;
+      return this._tiles[z][x][y] || Tile.nullTile;
     }
   }
 
-  isEmptyFloor(x, y) {
+  isEmptyFloor(x, y, z) {
     // Check if the tile is floor and also has no entity
-    return this.getTile(x, y) === Tile.floorTile && !this.getEntityAt(x, y);
+    return (
+      this.getTile(x, y, z) === Tile.floorTile && !this.getEntityAt(x, y, z)
+    );
   }
 
-  getRandomFloorPosition() {
+  getRandomFloorPosition(z) {
     // Randomly generate a tile which is a floor
     let x, y;
     do {
       x = Math.floor(Math.random() * this._width);
       y = Math.floor(Math.random() * this._width);
-    } while (!this.isEmptyFloor(x, y));
-    return { x: x, y: y };
+    } while (!this.isEmptyFloor(x, y, z));
+    return { x: x, y: y, z: z };
   }
 
   // dig function if implemented later
-  dig(x, y) {
+  dig(x, y, z) {
     // If the tile is diggable, update it to a floor
-    if (this.getTile(x, y).isDiggable()) {
-      this._tiles[x][y] = Game.Tile.floorTile;
+    if (this.getTile(x, y, z).isDiggable()) {
+      this._tiles[z][x][y] = Tile.floorTile;
     }
   }
 
-  getEntitiesWithinRadius(centerX, centerY, radius) {
+  getEntitiesWithinRadius(centerX, centerY, centerZ, radius) {
     let results = [];
     // Determine our bounds
     let leftX = centerX - radius;
@@ -92,7 +104,8 @@ export class Map {
         this._entities[i].getX() >= leftX &&
         this._entities[i].getX() <= rightX &&
         this._entities[i].getY() >= topY &&
-        this._entities[i].getY() <= bottomY
+        this._entities[i].getY() <= bottomY &&
+        this._entities[i].getZ() === centerZ
       ) {
         results.push(this._entities[i]);
       }
@@ -106,7 +119,9 @@ export class Map {
       entity.getX() < 0 ||
       entity.getX() >= this._width ||
       entity.getY() < 0 ||
-      entity.getY() >= this._height
+      entity.getY() >= this._height ||
+      entity.getZ() < 0 ||
+      entity.getZ() >= this._depth
     ) {
       throw new Error('Adding entity out of bounds.');
     }
@@ -120,10 +135,11 @@ export class Map {
     }
   }
 
-  addEntityAtRandomPosition(entity) {
-    let position = this.getRandomFloorPosition();
+  addEntityAtRandomPosition(entity, z) {
+    let position = this.getRandomFloorPosition(z);
     entity.setX(position.x);
     entity.setY(position.y);
+    entity.setZ(position.z);
     this.addEntity(entity);
   }
 
@@ -144,37 +160,6 @@ export class Map {
 }
 
 /**
-* Generates a map and stores free cells in an array
-* by using a map generation algorithm fron ROT
-*/
-export const generateMap = function(width, height) {
-  let map = [];
-  for (let x = 0; x < width; x++) {
-    // Create the nested array for the y values
-    map.push([]);
-    // Add all the tiles
-    for (let y = 0; y < height; y++) {
-      map[x].push(Tile.nullTile);
-    }
-  }
-
-  // generate map type
-  let arena = new ROT.Map.Arena();
-
-  // create map
-  let mapCallback = (x, y, wall) => {
-    if (!wall) {
-      map[x][y] = Tile.floorTile;
-    } else {
-      map[x][y] = Tile.wallTile;
-    }
-  };
-  arena.create(mapCallback);
-
-  return map;
-};
-
-/**
  * Renders map and entities on display. Accounts for a map larger than screen.
  */
 export const renderMap = function(display) {
@@ -192,7 +177,7 @@ export const renderMap = function(display) {
   for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
     for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
       // Fetch the glyph for the tile and render it to the screen at the offset position.
-      let tile = this._map.getTile(x, y);
+      let tile = this._map.getTile(x, y, this._player.getZ());
       display.draw(
         x - topLeftX,
         y - topLeftY,
@@ -211,7 +196,8 @@ export const renderMap = function(display) {
       entity.getX() >= topLeftX &&
       entity.getY() >= topLeftY &&
       entity.getX() < topLeftX + screenWidth &&
-      entity.getY() < topLeftY + screenHeight
+      entity.getY() < topLeftY + screenHeight &&
+      entity.getZ() === this._player.getZ()
     ) {
       display.draw(
         entity.getX() - topLeftX,

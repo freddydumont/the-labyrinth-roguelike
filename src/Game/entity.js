@@ -11,6 +11,7 @@ export default class Entity extends Glyph {
     this._name = props['name'] || '';
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
+    this._z = props['z'] || 0;
     this._map = null;
     // Create an object which will keep track what mixins we have
     // attached to this entity based on the name property
@@ -56,6 +57,12 @@ export default class Entity extends Glyph {
     }
   }
 
+  setPosition(x, y, z) {
+    this._x = x;
+    this._y = y;
+    this._z = z;
+  }
+
   // setters
   setName(name) {
     this._name = name;
@@ -65,6 +72,9 @@ export default class Entity extends Glyph {
   }
   setY(y) {
     this._y = y;
+  }
+  setZ(z) {
+    this._z = z;
   }
   setMap(map) {
     this._map = map;
@@ -79,6 +89,9 @@ export default class Entity extends Glyph {
   }
   getY() {
     return this._y;
+  }
+  getZ() {
+    return this._z;
   }
   getMap() {
     return this._map;
