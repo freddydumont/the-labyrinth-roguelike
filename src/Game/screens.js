@@ -94,6 +94,74 @@ let Screen = {
           case ROT.VK_DOWN:
             this.move(0, 1, 0);
             break;
+          case ROT.VK_I:
+            if (
+              this._player.getItems().filter(function(x) {
+                return x;
+              }).length === 0
+            ) {
+              // If the player has no items, send a message and don't take a turn
+              Messages.sendMessage(
+                this._player,
+                'You are not carrying anything!'
+              );
+              Game.refresh();
+            } else {
+              // Show the inventory
+              Screen.inventoryScreen.setup(
+                this._player,
+                this._player.getItems()
+              );
+              this.setSubScreen(Screen.inventoryScreen);
+            }
+            return;
+          case ROT.VK_D:
+            if (
+              this._player.getItems().filter(function(x) {
+                return x;
+              }).length === 0
+            ) {
+              // If the player has no items, send a message and don't take a turn
+              Messages.sendMessage(this._player, 'You have nothing to drop!');
+              Game.refresh();
+            } else {
+              // Show the drop screen
+              Screen.dropScreen.setup(this._player, this._player.getItems());
+              this.setSubScreen(Screen.dropScreen);
+            }
+            return;
+          case ROT.VK_COMMA:
+            const items = this._map.getItemsAt(
+              this._player.getX(),
+              this._player.getY(),
+              this._player.getZ()
+            );
+            // If there are no items, show a message
+            if (!items) {
+              Messages.sendMessage(
+                this._player,
+                'There is nothing here to pick up.'
+              );
+            } else if (items.length === 1) {
+              // If only one item, try to pick it up
+              const item = items[0];
+              if (this._player.pickupItems([0])) {
+                Messages.sendMessage(this._player, 'You pick up %s.', [
+                  item.describeA()
+                ]);
+              } else {
+                Messages.sendMessage(
+                  this._player,
+                  'Your inventory is full! Nothing was picked up.'
+                );
+              }
+            } else {
+              // Show the pickup screen if there are many items
+              Screen.pickupScreen.setup(this._player, items);
+              this.setSubScreen(Screen.pickupScreen);
+              return;
+            }
+            break;
           default:
             //not a valid key
             return;
