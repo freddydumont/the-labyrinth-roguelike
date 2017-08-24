@@ -25,3 +25,8 @@ body {
   padding: 0.5rem;
   cursor: pointer;
 }
+
+.back-button {
+  top: 1.7rem;
+  left: 1.7rem;
+}

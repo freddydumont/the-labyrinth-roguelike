@@ -4,7 +4,6 @@ import { Route, Redirect } from 'react-router-dom';
 
 const PublicRoute = ({ component: Component, auth, ...rest }) => {
   const { authed } = auth;
-  console.log(authed);
 
   return (
     <Route
