@@ -34,8 +34,6 @@ export class Map {
       for (let i = 0; i < 10; i++) {
         // Add a random entity
         this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
-        console.log(this._items);
-        console.log(this._entities);
       }
     }
     // setup the explored array
@@ -344,6 +342,8 @@ export const renderMap = function(display) {
           // If we have items, we want to render the top most item
           if (items) {
             tile = items[items.length - 1];
+            console.log(x, y, tile);
+            console.log(tile.getChar());
           }
           // Check if we have an entity at the position
           if (map.getEntityAt(x, y, currentDepth)) {
