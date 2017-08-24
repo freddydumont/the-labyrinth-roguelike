@@ -33,6 +33,7 @@ export const playScreen = {
   _map: null,
   _player: null,
   _gameEnded: false,
+  _subScreen: null,
 
   enter: function() {
     // size parameters
@@ -53,6 +54,12 @@ export const playScreen = {
   },
 
   render: function(display) {
+    // Render subscreen if there is one
+    if (this._subScreen) {
+      this._subScreen.render(display);
+      return;
+    }
+    // render map and messages
     Maps.renderMap.call(this, display);
     Messages.renderMessages.call(this, display);
   },
@@ -64,6 +71,12 @@ export const playScreen = {
         Game.switchScreen(loseScreen);
       }
       // Return to make sure the user can't still play
+      return;
+    }
+
+    // Handle subscreen input if there is one
+    if (this._subScreen) {
+      this._subScreen.handleInput(inputType, inputData);
       return;
     }
 
@@ -108,6 +121,12 @@ export const playScreen = {
 
   setGameEnded: function(gameEnded) {
     this._gameEnded = gameEnded;
+  },
+
+  setSubScreen: function(subScreen) {
+    this._subScreen = subScreen;
+    // Refresh screen on changing the subscreen
+    Game.refresh();
   }
 };
 
