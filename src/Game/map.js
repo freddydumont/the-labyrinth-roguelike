@@ -1,8 +1,8 @@
 import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
-import Entity from './entity';
 import Tile from './tile';
-import Entities from './entities';
+import { EntityRepository } from './entities';
+import { ItemRepository } from './items';
 
 export class Map {
   constructor(tiles, player) {
@@ -24,13 +24,18 @@ export class Map {
     // add the player
     this.addEntityAtRandomPosition(player, 0);
     // Add random enemies to each floor.
-    const enemies = [Entities.Bat, Entities.Newt, Entities.ToughGuy];
     for (let z = 0; z < this._depth; z++) {
+      // 15 entities per floor
       for (let i = 0; i < 15; i++) {
-        // Randomly select an enemy type
-        const enemy = enemies[Math.floor(Math.random() * enemies.length)];
-        // Place the entity
-        this.addEntityAtRandomPosition(new Entity(enemy), z);
+        // Add a random entity
+        this.addEntityAtRandomPosition(EntityRepository.createRandom(), z);
+      }
+      // 10 items per floor
+      for (let i = 0; i < 10; i++) {
+        // Add a random entity
+        this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
+        console.log(this._items);
+        console.log(this._entities);
       }
     }
     // setup the explored array
