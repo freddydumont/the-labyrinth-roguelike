@@ -5,7 +5,7 @@ import Entity from './entity';
 import { Player } from './entities';
 import Builder from './builder';
 
-const Screen = {
+let Screen = {
   startScreen: {
     enter: function() {
       console.log('Entered start screen.');
@@ -171,8 +171,6 @@ const Screen = {
   }
 };
 
-export default Screen;
-
 class ItemListScreen {
   constructor(template) {
     // Set up based on the template
@@ -284,3 +282,40 @@ class ItemListScreen {
     }
   }
 }
+
+Screen.inventoryScreen = new ItemListScreen({
+  caption: 'Inventory',
+  canSelect: false
+});
+
+Screen.pickupScreen = new ItemListScreen({
+  caption: 'Choose the items you wish to pickup',
+  canSelect: true,
+  canSelectMultipleItems: true,
+
+  ok: function(selectedItems) {
+    // Try to pick up all items, messaging the player if they couldn't all be
+    // picked up.
+    if (!this._player.pickupItems(Object.keys(selectedItems))) {
+      Game.sendMessage(
+        this._player,
+        'Your inventory is full! Not all items were picked up.'
+      );
+    }
+    return true;
+  }
+});
+
+Screen.dropScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to drop',
+  canSelect: true,
+  canSelectMultipleItems: false,
+
+  ok: function(selectedItems) {
+    // Drop the selected item
+    this._player.dropItem(Object.keys(selectedItems)[0]);
+    return true;
+  }
+});
+
+export default Screen;
