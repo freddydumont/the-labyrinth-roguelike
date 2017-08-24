@@ -368,6 +368,53 @@ export const renderMap = function(display) {
     }
   }
 
+  // Render the explored map cells
+  for (let x = topLeftX; x < topLeftX + screenWidth; x++) {
+    for (let y = topLeftY; y < topLeftY + screenHeight; y++) {
+      if (map.isExplored(x, y, currentDepth)) {
+        // Fetch the glyph for the tile and render it to the screen
+        // at the offset position.
+        const tile = map.getTile(x, y, currentDepth);
+        // The foreground color becomes dark gray if the tile has been
+        // explored but is not visible
+        let foreground = visibleCells[x + ',' + y]
+          ? tile.getForeground()
+          : 'darkGray';
+        display.draw(
+          x - topLeftX,
+          y - topLeftY,
+          tile.getChar(),
+          foreground,
+          tile.getBackground()
+        );
+      }
+    }
+  }
+
+  // Render the entities
+  let entities = map.getEntities();
+  for (const key in entities) {
+    const entity = entities[key];
+    // Only render the entity if they would show up on the screen
+    if (
+      entity.getX() >= topLeftX &&
+      entity.getY() >= topLeftY &&
+      entity.getX() < topLeftX + screenWidth &&
+      entity.getY() < topLeftY + screenHeight &&
+      entity.getZ() === player.getZ()
+    ) {
+      if (visibleCells[entity.getX() + ',' + entity.getY()]) {
+        display.draw(
+          entity.getX() - topLeftX,
+          entity.getY() - topLeftY,
+          entity.getChar(),
+          entity.getForeground(),
+          entity.getBackground()
+        );
+      }
+    }
+  }
+
   // Render player HP
   let stats = '%c{white}%b{black}';
   stats += vsprintf('HP: %d/%d ', [player.getHp(), player.getMaxHp()]);
