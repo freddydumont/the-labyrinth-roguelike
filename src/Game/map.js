@@ -338,36 +338,11 @@ export const renderMap = function(display) {
       if (visibleCells[x + ',' + y]) {
         // Fetch the glyph for the tile and render it to the screen at the offset position.
         let tile = map.getTile(x, y, player.getZ());
-        var foreground = tile.getForeground();
-        // If we are at a cell that is in the field of vision, we need
-        // to check if there are items or entities.
-        if (visibleCells[x + ',' + y]) {
-          // Check for items first, since we want to draw entities
-          // over items.
-          var items = map.getItemsAt(x, y, currentDepth);
-          // If we have items, we want to render the top most item
-          if (items) {
-            tile = items[items.length - 1];
-            console.log(x, y, tile);
-            console.log(tile.getChar());
-          }
-          // Check if we have an entity at the position
-          if (map.getEntityAt(x, y, currentDepth)) {
-            tile = map.getEntityAt(x, y, currentDepth);
-          }
-          // Update the foreground color in case our glyph changed
-          foreground = tile.getForeground();
-        } else {
-          // Since the tile was previously explored but is not
-          // visible, we want to change the foreground color to
-          // dark gray.
-          foreground = 'darkGray';
-        }
         display.draw(
           x - topLeftX,
           y - topLeftY,
           tile.getChar(),
-          foreground,
+          tile.getForeground(),
           tile.getBackground()
         );
       }
