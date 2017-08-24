@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ROT, Game } from '../Game/game';
-import { startScreen } from '../Game/screens';
+import Screen from '../Game/screens';
 import GameControler from './GameControler';
 
 export default class GameContainer extends Component {
@@ -16,7 +16,7 @@ export default class GameContainer extends Component {
         .getElementsByClassName('game-container')[0]
         .appendChild(Game._display.getContainer());
       // Load the start screen
-      Game.switchScreen(startScreen);
+      Game.switchScreen(Screen.startScreen);
     }
   }
   render() {

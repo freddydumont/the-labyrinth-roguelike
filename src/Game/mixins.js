@@ -1,6 +1,6 @@
 import { Game } from './game';
 import * as Messages from './messages';
-import { playScreen } from './screens';
+import Screen from './screens';
 
 const Mixins = {
   /**
@@ -98,7 +98,7 @@ const Mixins = {
     act: function() {
       // Detect if the game is over
       if (this.getHp() < 1) {
-        playScreen.setGameEnded(true);
+        Screen.playScreen.setGameEnded(true);
         // Send a last message to the player
         Messages.sendMessage(
           this,
