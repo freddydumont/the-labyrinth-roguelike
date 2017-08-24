@@ -221,4 +221,66 @@ class ItemListScreen {
       }
     }
   }
+
+  /**
+   * Helper function which takes care of gathering the selected items,
+   * calls the ok function with a hashtable mapping indexes to items,
+   * and ends the turn if necessary.
+   */
+  executeOkFunction() {
+    // Gather the selected items.
+    let selectedItems = {};
+    for (const key in this._selectedIndices) {
+      selectedItems[key] = this._items[key];
+    }
+    // Switch back to the play screen.
+    playScreen.setSubScreen(undefined);
+    // Call the OK function and end the player's turn if it returns true.
+    if (this._okFunction(selectedItems)) {
+      this._player.getMap().getEngine().unlock();
+    }
+  }
+
+  handleInput(inputType, inputData) {
+    if (inputType === 'keydown') {
+      // If the user hits escape, hits enter and can't select an item, or hits
+      // enter without any items selected, simply cancel out
+      if (
+        inputData.keyCode === ROT.VK_ESCAPE ||
+        (inputData.keyCode === ROT.VK_RETURN &&
+          (!this._canSelectItem ||
+            Object.keys(this._selectedIndices).length === 0))
+      ) {
+        playScreen.setSubScreen(undefined);
+        // Handle pressing return when items are selected
+      } else if (inputData.keyCode === ROT.VK_RETURN) {
+        this.executeOkFunction();
+        // Handle pressing a letter if we can select
+      } else if (
+        this._canSelectItem &&
+        inputData.keyCode >= ROT.VK_A &&
+        inputData.keyCode <= ROT.VK_Z
+      ) {
+        // Check if it maps to a valid item by subtracting 'a' from the character
+        // to know what letter of the alphabet we used.
+        const index = inputData.keyCode - ROT.VK_A;
+        if (this._items[index]) {
+          // If multiple selection is allowed, toggle the selection status, else
+          // select the item and exit the screen
+          if (this._canSelectMultipleItems) {
+            if (this._selectedIndices[index]) {
+              delete this._selectedIndices[index];
+            } else {
+              this._selectedIndices[index] = true;
+            }
+            // Redraw screen
+            Game.refresh();
+          } else {
+            this._selectedIndices[index] = true;
+            this.executeOkFunction();
+          }
+        }
+      }
+    }
+  }
 }
