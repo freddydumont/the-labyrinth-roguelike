@@ -1,6 +1,6 @@
-import Tile from './tile';
+import Glyph from './glyph';
 
-export default class Items extends Tile {
+export default class Item extends Glyph {
   constructor(props = {}) {
     // Call the glyph's construtor with our set of properties
     super(props);
