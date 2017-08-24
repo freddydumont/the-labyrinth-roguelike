@@ -60,15 +60,18 @@ export class Map {
   getFov(depth) {
     return this._fov[depth];
   }
+
   /***********
    * ITEMS
    ***********/
+
   getItemsAt(x, y, z) {
     return this._items[x + ',' + y + ',' + z];
   }
+
   setItemsAt(x, y, z, items) {
     // If our items array is empty, then delete the key from the table.
-    var key = x + ',' + y + ',' + z;
+    const key = x + ',' + y + ',' + z;
     if (items.length === 0) {
       if (this._items[key]) {
         delete this._items[key];
@@ -78,20 +81,23 @@ export class Map {
       this._items[key] = items;
     }
   }
-  addItemAtRandomPosition(item, z) {
-    var position = this.getRandomFloorPosition(z);
-    this.addItem(position.x, position.y, position.z, item);
-  }
+
   addItem(x, y, z, item) {
     // If we already have items at that position, simply append the item to the
     // list of items.
-    var key = x + ',' + y + ',' + z;
+    const key = x + ',' + y + ',' + z;
     if (this._items[key]) {
       this._items[key].push(item);
     } else {
       this._items[key] = [item];
     }
   }
+
+  addItemAtRandomPosition(item, z) {
+    const position = this.getRandomFloorPosition(z);
+    this.addItem(position.x, position.y, position.z, item);
+  }
+
   /***********
    * ENTITIES
    ***********/
