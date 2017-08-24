@@ -1,9 +1,9 @@
-class Repository {
+export default class Repository {
   // A repository has a name and a constructor. The constructor is used to create
   // items in the repository.
   constructor(name, ctor) {
     this._name = name;
-    this.template = {};
+    this._templates = {};
     this._ctor = ctor;
   }
   // Define a new named template.
