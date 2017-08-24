@@ -113,6 +113,15 @@ export default class Entity extends Glyph {
     } else if (tile.isWalkable()) {
       // Update the entity's position
       this.setPosition(x, y, z);
+      // Notify the entity if there are items at this position
+      const items = this.getMap().getItemsAt(x, y, z);
+      if (items) {
+        if (items.length === 1) {
+          Messages.sendMessage(this, 'You see %s.', [items[0].describeA()]);
+        } else {
+          Messages.sendMessage(this, 'There are several objects here.');
+        }
+      }
       return true;
       // Check if the tile is diggable
     } else if (tile.isDiggable()) {
