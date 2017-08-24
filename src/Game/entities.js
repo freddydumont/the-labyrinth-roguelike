@@ -2,22 +2,20 @@ import Mixins from './mixins';
 import Repository from './repository';
 import Entity from './entity';
 
-const Entities = {
-  Player: {
-    name: 'player',
-    character: '@',
-    foreground: 'yellow',
-    maxHp: 40,
-    attackValue: 10,
-    sightRadius: 6,
-    mixins: [
-      Mixins.PlayerActor,
-      Mixins.Attacker,
-      Mixins.Destructible,
-      Mixins.Sight,
-      Mixins.MessageRecipient
-    ]
-  }
+export const Player = {
+  name: 'player',
+  character: '@',
+  foreground: 'yellow',
+  maxHp: 40,
+  attackValue: 10,
+  sightRadius: 6,
+  mixins: [
+    Mixins.PlayerActor,
+    Mixins.Attacker,
+    Mixins.Destructible,
+    Mixins.Sight,
+    Mixins.MessageRecipient
+  ]
 };
 
 export const EntityRepository = new Repository('entities', Entity);
@@ -49,5 +47,3 @@ EntityRepository.define('newt', {
   attackValue: 2,
   mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
 });
-
-export default Entities;
