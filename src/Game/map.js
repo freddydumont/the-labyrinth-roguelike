@@ -1,8 +1,8 @@
 import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
-import Entity from './entity';
 import Tile from './tile';
-import Entities from './entities';
+import { EntityRepository } from './entities';
+import { ItemRepository } from './items';
 
 export class Map {
   constructor(tiles, player) {
@@ -16,19 +16,24 @@ export class Map {
     this.setupFov();
     // store our entities in a hash table indexed by position [x,y,z]
     this._entities = {};
+    // Create a table which will hold the items
+    this._items = {};
     // create the engine and scheduler
     this._scheduler = new ROT.Scheduler.Simple();
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
     this.addEntityAtRandomPosition(player, 0);
     // Add random enemies to each floor.
-    const enemies = [Entities.Bat, Entities.Newt, Entities.ToughGuy];
     for (let z = 0; z < this._depth; z++) {
+      // 15 entities per floor
       for (let i = 0; i < 15; i++) {
-        // Randomly select an enemy type
-        const enemy = enemies[Math.floor(Math.random() * enemies.length)];
-        // Place the entity
-        this.addEntityAtRandomPosition(new Entity(enemy), z);
+        // Add a random entity
+        this.addEntityAtRandomPosition(EntityRepository.createRandom(), z);
+      }
+      // 10 items per floor
+      for (let i = 0; i < 10; i++) {
+        // Add a random entity
+        this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
       }
     }
     // setup the explored array
@@ -54,6 +59,43 @@ export class Map {
   }
   getFov(depth) {
     return this._fov[depth];
+  }
+
+  /***********
+   * ITEMS
+   ***********/
+
+  getItemsAt(x, y, z) {
+    return this._items[x + ',' + y + ',' + z];
+  }
+
+  setItemsAt(x, y, z, items) {
+    // If our items array is empty, then delete the key from the table.
+    const key = x + ',' + y + ',' + z;
+    if (items.length === 0) {
+      if (this._items[key]) {
+        delete this._items[key];
+      }
+    } else {
+      // Simply update the items at that key
+      this._items[key] = items;
+    }
+  }
+
+  addItem(x, y, z, item) {
+    // If we already have items at that position, simply append the item to the
+    // list of items.
+    const key = x + ',' + y + ',' + z;
+    if (this._items[key]) {
+      this._items[key].push(item);
+    } else {
+      this._items[key] = [item];
+    }
+  }
+
+  addItemAtRandomPosition(item, z) {
+    const position = this.getRandomFloorPosition(z);
+    this.addItem(position.x, position.y, position.z, item);
   }
 
   /***********
@@ -313,18 +355,34 @@ export const renderMap = function(display) {
       if (map.isExplored(x, y, currentDepth)) {
         // Fetch the glyph for the tile and render it to the screen
         // at the offset position.
-        const tile = map.getTile(x, y, currentDepth);
-        // The foreground color becomes dark gray if the tile has been
-        // explored but is not visible
-        let foreground = visibleCells[x + ',' + y]
-          ? tile.getForeground()
-          : 'darkGray';
+        let glyph = map.getTile(x, y, currentDepth);
+        let foreground = glyph.getForeground();
+        // If we are at a cell that is in the field of vision, we need
+        // to check if there are items or entities.
+        if (visibleCells[x + ',' + y]) {
+          // Check for items first, since we want to draw entities over items.
+          const items = map.getItemsAt(x, y, currentDepth);
+          // If we have items, we want to render the top most item
+          if (items) {
+            glyph = items[items.length - 1];
+          }
+          // Check if we have an entity at the position
+          if (map.getEntityAt(x, y, currentDepth)) {
+            glyph = map.getEntityAt(x, y, currentDepth);
+          }
+          // Update the foreground color in case our glyph changed
+          foreground = glyph.getForeground();
+        } else {
+          // Since the tile was previously explored but is not visible,
+          // we want to change the foreground color to dark gray.
+          foreground = 'darkgray';
+        }
         display.draw(
           x - topLeftX,
           y - topLeftY,
-          tile.getChar(),
+          glyph.getChar(),
           foreground,
-          tile.getBackground()
+          glyph.getBackground()
         );
       }
     }

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { ROT, Game } from '../Game/game';
 import { startScreen } from '../Game/screens';
 
-import firebase, { firebaseRef } from '../firebase';
-
 export default class GameContainer extends Component {
   componentDidMount() {
     // Check if rot.js can work on this browser

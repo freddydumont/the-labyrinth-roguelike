@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router';
 
 class Login extends Component {
   onLogin() {
@@ -10,8 +9,6 @@ class Login extends Component {
   }
 
   render() {
-    const { auth } = this.props;
-
     return (
       <div>
         <h1 className="page-title">Rougelike Game</h1>

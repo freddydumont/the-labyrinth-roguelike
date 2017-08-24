@@ -1,4 +1,4 @@
-import firebase, { firebaseRef, githubProvider } from '../firebase';
+import firebase, { githubProvider } from '../firebase';
 
 export const login = uid => {
   return {

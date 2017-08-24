@@ -2,7 +2,7 @@ import { ROT, Game } from './game';
 import * as Maps from './map';
 import * as Messages from './messages';
 import Entity from './entity';
-import Entities from './entities';
+import { Player } from './entities';
 import Builder from './builder';
 
 // Define our initial start screen
@@ -41,7 +41,7 @@ export const playScreen = {
       depth = 6;
     // declare tiles and player
     let tiles = new Builder(width, height, depth).getTiles();
-    this._player = new Entity(Entities.Player);
+    this._player = new Entity(Player);
     // build map with tiles and player
     this._map = new Maps.Map(tiles, this._player);
     // Start the map's engine
