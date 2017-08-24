@@ -153,3 +153,53 @@ export const loseScreen = {
     // nothing to do here
   }
 };
+
+class ItemListScreen {
+  constructor(template) {
+    // Set up based on the template
+    this._caption = template['caption'];
+    this._okFunction = template['ok'];
+    // Whether the user can select items at all.
+    this._canSelectItem = template['canSelect'];
+    // Whether the user can select multiple items.
+    this._canSelectMultipleItems = template['canSelectMultipleItems'];
+  }
+
+  setup(player, items) {
+    this._player = player;
+    // Should be called before switching to the screen.
+    this._items = items;
+    // Clean set of selected indices
+    this._selectedIndices = {};
+  }
+
+  // Render a list of items as well as the selection states and the caption.
+  render(display) {
+    const letters = 'abcdefghijklmnopqrstuvwxyz';
+    // Render the caption in the top row
+    display.drawText(0, 0, this._caption);
+    let row = 0;
+    for (let i = 0; i < this._items.length; i++) {
+      // If we have an item, we want to render it.
+      if (this._items[i]) {
+        // Get the letter matching the item's index
+        const letter = letters.substring(i, i + 1);
+        // If we have selected an item, show a +, else show a dash between
+        // the letter and the item's name.
+        const selectionState =
+          this._canSelectItem &&
+          this._canSelectMultipleItems &&
+          this._selectedIndices[i]
+            ? '+'
+            : '-';
+        // Render at the correct row and add 2.
+        display.drawText(
+          0,
+          2 + row,
+          letter + ' ' + selectionState + ' ' + this._items[i].describe()
+        );
+        row++;
+      }
+    }
+  }
+}
