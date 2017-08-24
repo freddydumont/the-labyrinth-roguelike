@@ -1,19 +1,23 @@
+/**
+ * A repository has a name and a constructor. The constructor is used to create
+ * items in the repository.
+ */
 export default class Repository {
-  // A repository has a name and a constructor. The constructor is used to create
-  // items in the repository.
   constructor(name, ctor) {
     this._name = name;
     this._templates = {};
     this._ctor = ctor;
   }
+
   // Define a new named template.
   define(name, template) {
     this._templates[name] = template;
   }
+
   // Create an object based on a template.
   create(name) {
     // Make sure there is a template with the given name.
-    var template = this._templates[name];
+    const template = this._templates[name];
 
     if (!template) {
       throw new Error(
@@ -24,6 +28,7 @@ export default class Repository {
     // Create the object, passing the template as an argument
     return new this._ctor(template);
   }
+
   // Create an object based on a random template
   createRandom() {
     // Pick a random key and create an object based off of it.
