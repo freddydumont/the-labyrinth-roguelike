@@ -157,7 +157,16 @@ const Mixins = {
     },
 
     getItems: function() {
-      return this._items;
+      // filter the items array and return false if empty
+      if (
+        this._items.filter(item => {
+          return item;
+        }).length === 0
+      ) {
+        return false;
+      } else {
+        return this._items;
+      }
     },
 
     getItem: function(i) {

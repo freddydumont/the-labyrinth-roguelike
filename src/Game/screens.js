@@ -95,11 +95,7 @@ let Screen = {
             this.move(0, 1, 0);
             break;
           case ROT.VK_I:
-            if (
-              this._player.getItems().filter(function(x) {
-                return x;
-              }).length === 0
-            ) {
+            if (!this._player.getItems()) {
               // If the player has no items, send a message and don't take a turn
               Messages.sendMessage(
                 this._player,
@@ -116,11 +112,7 @@ let Screen = {
             }
             return;
           case ROT.VK_D:
-            if (
-              this._player.getItems().filter(function(x) {
-                return x;
-              }).length === 0
-            ) {
+            if (!this._player.getItems()) {
               // If the player has no items, send a message and don't take a turn
               Messages.sendMessage(this._player, 'You have nothing to drop!');
               Game.refresh();
