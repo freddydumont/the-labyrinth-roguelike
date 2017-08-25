@@ -2,8 +2,9 @@ import { Game } from './game';
 import * as Messages from './messages';
 import Screen from './screens';
 
-const Mixins = {
+const EntityMixins = {
   FoodConsumer: {
+    // Handles fullness meter of player.
     name: 'FoodConsumer',
     init: function(template) {
       this._maxFullness = template['maxFullness'] || 1000;
@@ -41,7 +42,7 @@ const Mixins = {
         return 'Full';
         // Anything else = not hungry
       } else {
-        return 'Not Hungry';
+        return `Not Hungry`;
       }
     }
   },
@@ -287,4 +288,4 @@ const Mixins = {
   }
 };
 
-export default Mixins;
+export default EntityMixins;

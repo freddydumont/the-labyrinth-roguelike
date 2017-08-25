@@ -1,6 +1,6 @@
 import DynamicGlyph from './dynamicglyph';
 import Tile from './tile';
-import Mixins from './mixins';
+import EntityMixins from './entitymixins';
 import * as Messages from './messages';
 
 /**
@@ -30,7 +30,7 @@ export default class Entity extends DynamicGlyph {
     }
 
     // Check if the player died, and if so call their act method to prompt the user.
-    if (this.hasMixin(Mixins.PlayerActor)) {
+    if (this.hasMixin(EntityMixins.PlayerActor)) {
       this.act();
     } else {
       this.getMap().removeEntity(this);
@@ -77,8 +77,8 @@ export default class Entity extends DynamicGlyph {
       // either the entity or the target is the player.
       if (
         this.hasMixin('Attacker') &&
-        (this.hasMixin(Mixins.PlayerActor) ||
-          target.hasMixin(Mixins.PlayerActor))
+        (this.hasMixin(EntityMixins.PlayerActor) ||
+          target.hasMixin(EntityMixins.PlayerActor))
       ) {
         this.attack(target);
         return true;
@@ -102,7 +102,7 @@ export default class Entity extends DynamicGlyph {
       // Check if the tile is diggable
     } else if (tile.isDiggable()) {
       // Only dig if the the entity is the player
-      if (this.hasMixin(Mixins.PlayerActor)) {
+      if (this.hasMixin(EntityMixins.PlayerActor)) {
         map.dig(x, y, z);
         return true;
       }
