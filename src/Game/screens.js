@@ -129,6 +129,15 @@ let Screen = {
               this.setSubScreen(Screen.dropScreen);
             }
             return;
+          case ROT.VK_E:
+            // Show the drop screen
+            if (Screen.eatScreen.setup(this._player, this._player.getItems())) {
+              this.setSubScreen(Screen.eatScreen);
+            } else {
+              Messages.sendMessage(this._player, 'You have nothing to eat!');
+              Game.refresh();
+            }
+            return;
           case ROT.VK_COMMA:
             const items = this._map.getItemsAt(
               this._player.getX(),
@@ -251,6 +260,12 @@ class ItemListScreen {
     // Set up based on the template
     this._caption = template['caption'];
     this._okFunction = template['ok'];
+    // By default, we use the identity function
+    this._isAcceptableFunction =
+      template['isAcceptable'] ||
+      function(x) {
+        return x;
+      };
     // Whether the user can select items at all.
     this._canSelectItem = template['canSelect'];
     // Whether the user can select multiple items.
@@ -258,11 +273,26 @@ class ItemListScreen {
   }
 
   setup(player, items) {
+    // Return if player has no items
+    if (!items) return false;
     this._player = player;
     // Should be called before switching to the screen.
-    this._items = items;
+    let count = 0;
+    // Iterate over each item, keeping only the aceptable ones and counting
+    // the number of acceptable items.
+    let that = this;
+    this._items = items.map(function(item) {
+      // Transform the item into null if it's not acceptable
+      if (that._isAcceptableFunction(item)) {
+        count++;
+        return item;
+      } else {
+        return null;
+      }
+    });
     // Clean set of selected indices
     this._selectedIndices = {};
+    return count;
   }
 
   // Render a list of items as well as the selection states and the caption.
@@ -372,7 +402,7 @@ Screen.pickupScreen = new ItemListScreen({
     // Try to pick up all items, messaging the player if they couldn't all be
     // picked up.
     if (!this._player.pickupItems(Object.keys(selectedItems))) {
-      Game.sendMessage(
+      Messages.sendMessage(
         this._player,
         'Your inventory is full! Not all items were picked up.'
       );
@@ -389,6 +419,26 @@ Screen.dropScreen = new ItemListScreen({
   ok: function(selectedItems) {
     // Drop the selected item
     this._player.dropItem(Object.keys(selectedItems)[0]);
+    return true;
+  }
+});
+
+Screen.eatScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to eat',
+  canSelect: true,
+  canSelectMultipleItems: false,
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Edible');
+  },
+  ok: function(selectedItems) {
+    // Eat the item, removing it if there are no consumptions remaining.
+    const key = Object.keys(selectedItems)[0];
+    let item = selectedItems[key];
+    Messages.sendMessage(this._player, 'You eat %s.', [item.describeThe()]);
+    item.eat(this._player);
+    if (!item.hasRemainingConsumptions()) {
+      this._player.removeItem(key);
+    }
     return true;
   }
 });
