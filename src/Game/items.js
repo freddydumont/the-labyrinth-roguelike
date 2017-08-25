@@ -16,11 +16,10 @@ ItemRepository.define('apple', {
   foodValue: 50,
   mixins: [ItemMixins.Edible]
 });
-
 ItemRepository.define('melon', {
   name: 'melon',
   character: '%',
-  foreground: 'brightGreen',
+  foreground: 'lightgreen',
   foodValue: 35,
   consumptions: 4,
   mixins: [ItemMixins.Edible]
