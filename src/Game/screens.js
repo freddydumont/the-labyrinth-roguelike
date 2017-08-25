@@ -61,6 +61,13 @@ let Screen = {
       // render map and messages
       Maps.renderMap.call(this, display);
       Messages.renderMessages.call(this, display);
+      // Render hunger state
+      let hungerState = this._player.getHungerState();
+      display.drawText(
+        Game._screenWidth - hungerState.length,
+        Game._screenHeight,
+        hungerState
+      );
     },
 
     handleInput: function(inputType, inputData) {
