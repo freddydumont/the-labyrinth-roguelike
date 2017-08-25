@@ -49,11 +49,7 @@ const Mixins = {
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
         // Check if the player died, and if so call their act method to prompt the user.
-        if (this.hasMixin(Mixins.PlayerActor)) {
-          this.act();
-        } else {
-          this.getMap().removeEntity(this);
-        }
+        this.kill();
       }
     }
   },
@@ -97,13 +93,10 @@ const Mixins = {
     groupName: 'Actor',
     act: function() {
       // Detect if the game is over
-      if (this.getHp() < 1) {
+      if (!this.isAlive()) {
         Screen.playScreen.setGameEnded(true);
         // Send a last message to the player
-        Messages.sendMessage(
-          this,
-          'You have died... Press [Enter] to continue!'
-        );
+        Messages.sendMessage(this, 'Press [Enter] to continue!');
       }
       // Re-render the screen
       Game.refresh();

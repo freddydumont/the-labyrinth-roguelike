@@ -15,8 +15,27 @@ export default class Entity extends DynamicGlyph {
     this._y = props['y'] || 0;
     this._z = props['z'] || 0;
     this._map = null;
+    this._alive = true;
   }
+  kill(message) {
+    // Only kill once!
+    if (!this._alive) {
+      return;
+    }
+    this._alive = false;
+    if (message) {
+      Messages.sendMessage(this, message);
+    } else {
+      Messages.sendMessage(this, 'You have died!');
+    }
 
+    // Check if the player died, and if so call their act method to prompt the user.
+    if (this.hasMixin(Mixins.PlayerActor)) {
+      this.act();
+    } else {
+      this.getMap().removeEntity(this);
+    }
+  }
   setPosition(x, y, z) {
     // keep old position in memory
     const oldX = this._x;
@@ -119,5 +138,8 @@ export default class Entity extends DynamicGlyph {
   }
   getMap() {
     return this._map;
+  }
+  isAlive() {
+    return this._alive;
   }
 }
