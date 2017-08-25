@@ -1,27 +1,30 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import * as actions from '../actions';
+import Login from './Login';
 
 class GameControler extends Component {
   render() {
+    const { dispatch, auth } = this.props;
     return (
-      <div className="pa5">
-        <div className="flex flex-column">
-          <p>To add your score to leaderboard</p>
-          <Link
-            to="/login"
-            className="f6 link dim br3 ba bw1 ph3 pv2 mb2 near-black center"
-          >
-            Login with Github
-          </Link>
-          <span className="center"> or </span>
-          <div className="pa2 black-80">
-            <label className="f6 b db mb2">Submit your name</label>
-            <input className="input-reset ba b--black-20 pa2 mb2 db w-100" />
-          </div>
-        </div>
+      <div className="pa3">
+        {auth.authed
+          ? <a
+              className="link dim black absolute pointer mr3 back-button"
+              onClick={() => dispatch(actions.startLogout())}
+            >
+              Logout
+            </a>
+          : <Login />}
       </div>
     );
   }
 }
 
-export default GameControler;
+const mapStateToProps = state => {
+  return {
+    auth: state.auth
+  };
+};
+
+export default connect(mapStateToProps, null)(GameControler);
