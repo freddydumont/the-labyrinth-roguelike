@@ -1,65 +1,41 @@
-import Glyph from './glyph';
+import DynamicGlyph from './dynamicglyph';
 import Tile from './tile';
-import Mixins from './mixins';
+import EntityMixins from './entitymixins';
 import * as Messages from './messages';
 
 /**
  * A basic entity is composed of a glyph as well as a position and a name (used in messages).
  * An entity can be anything. Ex. Player, enemy, items, etc
  */
-export default class Entity extends Glyph {
+export default class Entity extends DynamicGlyph {
   constructor(props) {
     super(props);
     // Instantiate any properties from the passed object
-    this._name = props['name'] || '';
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
     this._z = props['z'] || 0;
     this._map = null;
-    // Create an object which will keep track what mixins we have
-    // attached to this entity based on the name property
-    this._attachedMixins = {};
-    // Create a similar object for groups
-    this._attachedMixinGroups = {};
-    // Setup the object's mixins
-    this.setupMixins(props);
+    this._alive = true;
   }
-
-  // Mixin functions
-  setupMixins(props) {
-    let mixins = props['mixins'] || [];
-    for (let i = 0; i < mixins.length; i++) {
-      // Copy over all properties from each mixin as long
-      // as it's not the name or the init property. We
-      // also make sure not to override a property that
-      // already exists on the entity.
-      for (let key in mixins[i]) {
-        if (key !== 'init' && key !== 'name' && !this.hasOwnProperty(key)) {
-          this[key] = mixins[i][key];
-        }
-      }
-      // Add the name of this mixin to our attached mixins
-      this._attachedMixins[mixins[i].name] = true;
-      // If a group name is present, add it
-      if (mixins[i].groupName) {
-        this._attachedMixinGroups[mixins[i].groupName] = true;
-      }
-      // Finally call the init function if there is one
-      if (mixins[i].init) {
-        mixins[i].init.call(this, props);
-      }
+  kill(message) {
+    // Only kill once!
+    if (!this._alive) {
+      return;
     }
-  }
-
-  hasMixin(obj) {
-    // Allow passing the mixin itself or the name as a string
-    if (typeof obj === 'object') {
-      return this._attachedMixins[obj.name];
+    this._alive = false;
+    if (message) {
+      Messages.sendMessage(this, message);
     } else {
-      return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
+      Messages.sendMessage(this, 'You have died!');
+    }
+
+    // Check if the player died, and if so call their act method to prompt the user.
+    if (this.hasMixin(EntityMixins.PlayerActor)) {
+      this.act();
+    } else {
+      this.getMap().removeEntity(this);
     }
   }
-
   setPosition(x, y, z) {
     // keep old position in memory
     const oldX = this._x;
@@ -101,8 +77,8 @@ export default class Entity extends Glyph {
       // either the entity or the target is the player.
       if (
         this.hasMixin('Attacker') &&
-        (this.hasMixin(Mixins.PlayerActor) ||
-          target.hasMixin(Mixins.PlayerActor))
+        (this.hasMixin(EntityMixins.PlayerActor) ||
+          target.hasMixin(EntityMixins.PlayerActor))
       ) {
         this.attack(target);
         return true;
@@ -126,7 +102,7 @@ export default class Entity extends Glyph {
       // Check if the tile is diggable
     } else if (tile.isDiggable()) {
       // Only dig if the the entity is the player
-      if (this.hasMixin(Mixins.PlayerActor)) {
+      if (this.hasMixin(EntityMixins.PlayerActor)) {
         map.dig(x, y, z);
         return true;
       }
@@ -137,9 +113,6 @@ export default class Entity extends Glyph {
   }
 
   // setters
-  setName(name) {
-    this._name = name;
-  }
   setX(x) {
     this._x = x;
   }
@@ -154,9 +127,6 @@ export default class Entity extends Glyph {
   }
 
   // getters
-  getName() {
-    return this._name;
-  }
   getX() {
     return this._x;
   }
@@ -168,5 +138,8 @@ export default class Entity extends Glyph {
   }
   getMap() {
     return this._map;
+  }
+  isAlive() {
+    return this._alive;
   }
 }

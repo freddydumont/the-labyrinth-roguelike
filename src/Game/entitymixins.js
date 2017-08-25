@@ -1,12 +1,77 @@
 import { Game } from './game';
 import * as Messages from './messages';
 import Screen from './screens';
+import { ItemRepository } from './items';
 
-const Mixins = {
+const EntityMixins = {
+  CorpseDropper: {
+    name: 'CorpseDropper',
+    init: function(template) {
+      // Chance of dropping a cropse (out of 100).
+      this._corpseDropRate = template['corpseDropRate'] || 100;
+    },
+    tryDropCorpse: function() {
+      if (Math.round(Math.random() * 100) < this._corpseDropRate) {
+        // Create a new corpse item and drop it.
+        this._map.addItem(
+          this.getX(),
+          this.getY(),
+          this.getZ(),
+          ItemRepository.create('corpse', {
+            name: this._name + ' corpse',
+            foreground: this._foreground
+          })
+        );
+      }
+    }
+  },
+  FoodConsumer: {
+    // Handles fullness meter of player.
+    name: 'FoodConsumer',
+    init: function(template) {
+      this._maxFullness = template['maxFullness'] || 1000;
+      // Start halfway to max fullness if no default value
+      this._fullness = template['fullness'] || this._maxFullness / 2;
+      // Number of points to decrease fullness by every turn.
+      this._fullnessDepletionRate = template['fullnessDepletionRate'] || 1;
+    },
+    addTurnHunger: function() {
+      // Remove the standard depletion points
+      this.modifyFullnessBy(-this._fullnessDepletionRate);
+    },
+    modifyFullnessBy: function(points) {
+      this._fullness = this._fullness + points;
+      if (this._fullness <= 0) {
+        this.kill('You have died of starvation!');
+      } else if (this._fullness > this._maxFullness) {
+        this.kill('You choke and die!');
+      }
+    },
+    getHungerState: function() {
+      // Fullness points per percent of max fullness
+      var perPercent = this._maxFullness / 100;
+      // 5% of max fullness or less = starving
+      if (this._fullness <= perPercent * 5) {
+        return 'Starving';
+        // 25% of max fullness or less = hungry
+      } else if (this._fullness <= perPercent * 25) {
+        return 'Hungry';
+        // 95% of max fullness or more = oversatiated
+      } else if (this._fullness >= perPercent * 95) {
+        return 'Oversatiated';
+        // 75% of max fullness or more = full
+      } else if (this._fullness >= perPercent * 75) {
+        return 'Full';
+        // Anything else = not hungry
+      } else {
+        return `Not Hungry`;
+      }
+    }
+  },
   /**
-   * Adds an internal array of messages and provide a method for receiving a message,
-   * as well methods for fetching and clearing the messages.
-   */
+     * Adds an internal array of messages and provide a method for receiving a message,
+     * as well methods for fetching and clearing the messages.
+     */
   MessageRecipient: {
     name: 'MessageRecipient',
     init: function(props) {
@@ -48,12 +113,12 @@ const Mixins = {
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        // Check if the player died, and if so call their act method to prompt the user.
-        if (this.hasMixin(Mixins.PlayerActor)) {
-          this.act();
-        } else {
-          this.getMap().removeEntity(this);
+        // If the entity is a corpse dropper, try to add a corpse
+        if (this.hasMixin(EntityMixins.CorpseDropper)) {
+          this.tryDropCorpse();
         }
+        // Check if the player died, and if so call their act method to prompt the user.
+        this.kill();
       }
     }
   },
@@ -96,15 +161,18 @@ const Mixins = {
     name: 'PlayerActor',
     groupName: 'Actor',
     act: function() {
+      if (this._acting) {
+        return;
+      }
+      this._acting = true;
+      this.addTurnHunger();
       // Detect if the game is over
-      if (this.getHp() < 1) {
+      if (!this.isAlive()) {
         Screen.playScreen.setGameEnded(true);
         // Send a last message to the player
-        Messages.sendMessage(
-          this,
-          'You have died... Press [Enter] to continue!'
-        );
+        Messages.sendMessage(this, 'Press [Enter] to continue!');
       }
+      this._acting = false;
       // Re-render the screen
       Game.refresh();
       // Lock the engine and wait asynchronously
@@ -116,8 +184,8 @@ const Mixins = {
   },
 
   /**
-   * Move by 1 unit in a random direction every time act is called
-   */
+     * Move by 1 unit in a random direction every time act is called
+     */
   WanderActor: {
     name: 'WanderActor',
     groupName: 'Actor',
@@ -134,8 +202,8 @@ const Mixins = {
   },
 
   /**
-   * This signifies our entity posseses a field of vision of a given radius.
-   */
+     * This signifies our entity posseses a field of vision of a given radius.
+     */
   Sight: {
     name: 'Sight',
     groupName: 'Sight',
@@ -200,9 +268,9 @@ const Mixins = {
     },
 
     /**
-     * Allows the user to pick up items from the map, where indices is
-     * the indices for the array returned by map.getItemsAt
-     */
+       * Allows the user to pick up items from the map, where indices is
+       * the indices for the array returned by map.getItemsAt
+       */
     pickupItems: function(indices) {
       let mapItems = this._map.getItemsAt(
         this.getX(),
@@ -246,4 +314,4 @@ const Mixins = {
   }
 };
 
-export default Mixins;
+export default EntityMixins;

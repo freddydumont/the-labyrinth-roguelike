@@ -1,4 +1,4 @@
-import Mixins from './mixins';
+import EntityMixins from './entitymixins';
 import Repository from './repository';
 import Entity from './entity';
 
@@ -10,13 +10,20 @@ export const Player = {
   attackValue: 10,
   sightRadius: 6,
   inventorySlots: 22,
+  // Max fullness
+  maxFullness: 1000,
+  // Starting fullness
+  fullness: 500,
+  // Lose 1 fullness per step
+  fullnessDepletionRate: 1,
   mixins: [
-    Mixins.PlayerActor,
-    Mixins.Attacker,
-    Mixins.Destructible,
-    Mixins.Sight,
-    Mixins.InventoryHolder,
-    Mixins.MessageRecipient
+    EntityMixins.PlayerActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.Sight,
+    EntityMixins.InventoryHolder,
+    EntityMixins.MessageRecipient,
+    EntityMixins.FoodConsumer
   ]
 };
 
@@ -29,7 +36,12 @@ EntityRepository.define('tough guy', {
   maxHp: 15,
   defenseValue: 5,
   attackValue: 3,
-  mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
+  mixins: [
+    EntityMixins.WanderActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
+  ]
 });
 
 EntityRepository.define('bat', {
@@ -38,7 +50,12 @@ EntityRepository.define('bat', {
   foreground: 'white',
   maxHp: 5,
   attackValue: 4,
-  mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
+  mixins: [
+    EntityMixins.WanderActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
+  ]
 });
 
 EntityRepository.define('newt', {
@@ -47,5 +64,10 @@ EntityRepository.define('newt', {
   foreground: 'yellow',
   maxHp: 3,
   attackValue: 2,
-  mixins: [Mixins.WanderActor, Mixins.Attacker, Mixins.Destructible]
+  mixins: [
+    EntityMixins.WanderActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
+  ]
 });
