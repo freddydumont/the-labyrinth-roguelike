@@ -130,7 +130,7 @@ let Screen = {
             }
             return;
           case ROT.VK_E:
-            // Show the drop screen
+            // Show the eat screen
             if (Screen.eatScreen.setup(this._player, this._player.getItems())) {
               this.setSubScreen(Screen.eatScreen);
             } else {
