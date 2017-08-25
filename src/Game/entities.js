@@ -9,11 +9,13 @@ export const Player = {
   maxHp: 40,
   attackValue: 10,
   sightRadius: 6,
+  inventorySlots: 22,
   mixins: [
     Mixins.PlayerActor,
     Mixins.Attacker,
     Mixins.Destructible,
     Mixins.Sight,
+    Mixins.InventoryHolder,
     Mixins.MessageRecipient
   ]
 };
