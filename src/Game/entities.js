@@ -16,7 +16,8 @@ export const Player = {
     Mixins.Destructible,
     Mixins.Sight,
     Mixins.InventoryHolder,
-    Mixins.MessageRecipient
+    Mixins.MessageRecipient,
+    Mixins.FoodConsumer
   ]
 };
 
