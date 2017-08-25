@@ -24,3 +24,16 @@ ItemRepository.define('melon', {
   consumptions: 4,
   mixins: [ItemMixins.Edible]
 });
+ItemRepository.define(
+  'corpse',
+  {
+    name: 'corpse',
+    character: '%',
+    foodValue: 75,
+    consumptions: 1,
+    mixins: [ItemMixins.Edible]
+  },
+  {
+    disableRandomCreation: true
+  }
+);

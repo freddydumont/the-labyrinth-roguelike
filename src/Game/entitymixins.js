@@ -1,8 +1,30 @@
 import { Game } from './game';
 import * as Messages from './messages';
 import Screen from './screens';
+import { ItemRepository } from './items';
 
 const EntityMixins = {
+  CorpseDropper: {
+    name: 'CorpseDropper',
+    init: function(template) {
+      // Chance of dropping a cropse (out of 100).
+      this._corpseDropRate = template['corpseDropRate'] || 100;
+    },
+    tryDropCorpse: function() {
+      if (Math.round(Math.random() * 100) < this._corpseDropRate) {
+        // Create a new corpse item and drop it.
+        this._map.addItem(
+          this.getX(),
+          this.getY(),
+          this.getZ(),
+          ItemRepository.create('corpse', {
+            name: this._name + ' corpse',
+            foreground: this._foreground
+          })
+        );
+      }
+    }
+  },
   FoodConsumer: {
     // Handles fullness meter of player.
     name: 'FoodConsumer',
@@ -47,9 +69,9 @@ const EntityMixins = {
     }
   },
   /**
-   * Adds an internal array of messages and provide a method for receiving a message,
-   * as well methods for fetching and clearing the messages.
-   */
+     * Adds an internal array of messages and provide a method for receiving a message,
+     * as well methods for fetching and clearing the messages.
+     */
   MessageRecipient: {
     name: 'MessageRecipient',
     init: function(props) {
@@ -91,6 +113,10 @@ const EntityMixins = {
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
+        // If the entity is a corpse dropper, try to add a corpse
+        if (this.hasMixin(EntityMixins.CorpseDropper)) {
+          this.tryDropCorpse();
+        }
         // Check if the player died, and if so call their act method to prompt the user.
         this.kill();
       }
@@ -158,8 +184,8 @@ const EntityMixins = {
   },
 
   /**
-   * Move by 1 unit in a random direction every time act is called
-   */
+     * Move by 1 unit in a random direction every time act is called
+     */
   WanderActor: {
     name: 'WanderActor',
     groupName: 'Actor',
@@ -176,8 +202,8 @@ const EntityMixins = {
   },
 
   /**
-   * This signifies our entity posseses a field of vision of a given radius.
-   */
+     * This signifies our entity posseses a field of vision of a given radius.
+     */
   Sight: {
     name: 'Sight',
     groupName: 'Sight',
@@ -242,9 +268,9 @@ const EntityMixins = {
     },
 
     /**
-     * Allows the user to pick up items from the map, where indices is
-     * the indices for the array returned by map.getItemsAt
-     */
+       * Allows the user to pick up items from the map, where indices is
+       * the indices for the array returned by map.getItemsAt
+       */
     pickupItems: function(indices) {
       let mapItems = this._map.getItemsAt(
         this.getX(),

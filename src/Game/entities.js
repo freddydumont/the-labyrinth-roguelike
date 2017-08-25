@@ -39,7 +39,8 @@ EntityRepository.define('tough guy', {
   mixins: [
     EntityMixins.WanderActor,
     EntityMixins.Attacker,
-    EntityMixins.Destructible
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
   ]
 });
 
@@ -52,7 +53,8 @@ EntityRepository.define('bat', {
   mixins: [
     EntityMixins.WanderActor,
     EntityMixins.Attacker,
-    EntityMixins.Destructible
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
   ]
 });
 
@@ -65,6 +67,7 @@ EntityRepository.define('newt', {
   mixins: [
     EntityMixins.WanderActor,
     EntityMixins.Attacker,
-    EntityMixins.Destructible
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
   ]
 });
