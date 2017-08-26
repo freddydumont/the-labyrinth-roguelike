@@ -87,8 +87,8 @@ let Screen = {
       }
 
       if (inputType === 'keydown') {
-        // Movement
         switch (inputData.keyCode) {
+          // MOVEMENT
           case ROT.VK_LEFT:
             this.move(-1, 0, 0);
             break;
@@ -101,41 +101,46 @@ let Screen = {
           case ROT.VK_DOWN:
             this.move(0, 1, 0);
             break;
+          // ITEMS
           case ROT.VK_I:
-            if (!this._player.getItems()) {
-              // If the player has no items, send a message and don't take a turn
-              Messages.sendMessage(
-                this._player,
-                'You are not carrying anything!'
-              );
-              Game.refresh();
-            } else {
-              // Show the inventory
-              Screen.inventoryScreen.setup(
-                this._player,
-                this._player.getItems()
-              );
-              this.setSubScreen(Screen.inventoryScreen);
-            }
+            // Show the inventory screen
+            this.showItemsSubScreen(
+              Screen.inventoryScreen,
+              this._player.getItems(),
+              'You are not carrying anything.'
+            );
             return;
           case ROT.VK_D:
-            if (!this._player.getItems()) {
-              // If the player has no items, send a message and don't take a turn
-              Messages.sendMessage(this._player, 'You have nothing to drop!');
-              Game.refresh();
-            } else {
-              // Show the drop screen
-              Screen.dropScreen.setup(this._player, this._player.getItems());
-              this.setSubScreen(Screen.dropScreen);
-            }
+            // Show the drop screen
+            this.showItemsSubScreen(
+              Screen.dropScreen,
+              this._player.getItems(),
+              'You have nothing to drop.'
+            );
             return;
           case ROT.VK_E:
             // Show the eat screen
-            if (Screen.eatScreen.setup(this._player, this._player.getItems())) {
-              this.setSubScreen(Screen.eatScreen);
+            this.showItemsSubScreen(
+              Screen.eatScreen,
+              this._player.getItems(),
+              'You have nothing to eat.'
+            );
+            return;
+          case ROT.VK_W:
+            if (inputData.shiftKey) {
+              // Show the wear screen
+              this.showItemsSubScreen(
+                Screen.wearScreen,
+                this._player.getItems(),
+                'You have nothing to wear.'
+              );
             } else {
-              Messages.sendMessage(this._player, 'You have nothing to eat!');
-              Game.refresh();
+              // Show the wield screen
+              this.showItemsSubScreen(
+                Screen.wieldScreen,
+                this._player.getItems(),
+                'You have nothing to wield.'
+              );
             }
             return;
           case ROT.VK_COMMA:
@@ -144,14 +149,8 @@ let Screen = {
               this._player.getY(),
               this._player.getZ()
             );
-            // If there are no items, show a message
-            if (!items) {
-              Messages.sendMessage(
-                this._player,
-                'There is nothing here to pick up.'
-              );
-            } else if (items.length === 1) {
-              // If only one item, try to pick it up
+            // If only one item, try to pick it up
+            if (items.length === 1) {
               const item = items[0];
               if (this._player.pickupItems([0])) {
                 Messages.sendMessage(this._player, 'You pick up %s.', [
@@ -165,9 +164,12 @@ let Screen = {
               }
             } else {
               // Show the pickup screen if there are many items
-              Screen.pickupScreen.setup(this._player, items);
-              this.setSubScreen(Screen.pickupScreen);
-              return;
+              // or show a message if there is nothing
+              this.showItemsSubScreen(
+                Screen.pickupScreen,
+                items,
+                'There is nothing here to pick up.'
+              );
             }
             break;
           default:
@@ -210,6 +212,15 @@ let Screen = {
       this._subScreen = subScreen;
       // Refresh screen on changing the subscreen
       Game.refresh();
+    },
+
+    showItemsSubScreen: function(subScreen, items, emptyMessage) {
+      if (items && subScreen.setup(this._player, items) > 0) {
+        this.setSubScreen(subScreen);
+      } else {
+        Messages.sendMessage(this._player, emptyMessage);
+        Game.refresh();
+      }
     }
   },
 
@@ -464,6 +475,64 @@ Screen.eatScreen = new ItemListScreen({
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
       this._player.removeItem(key);
+    }
+    return true;
+  }
+});
+
+Screen.wieldScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to wield',
+  canSelect: true,
+  canSelectMultipleItems: false,
+  hasNoItemOption: true,
+
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Equippable') && item.isWieldable();
+  },
+
+  ok: function(selectedItems) {
+    // Check if we selected 'no item'
+    const keys = Object.keys(selectedItems);
+    if (keys.length === 0) {
+      this._player.unwield();
+      Messages.sendMessage(this._player, 'You are not wielding anything.');
+    } else {
+      // Make sure to unequip the item first in case it is the armor.
+      const item = selectedItems[keys[0]];
+      this._player.unequip(item);
+      this._player.wield(item);
+      Messages.sendMessage(this._player, 'You are wielding %s.', [
+        item.describeA()
+      ]);
+    }
+    return true;
+  }
+});
+
+Screen.wearScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to wear',
+  canSelect: true,
+  canSelectMultipleItems: false,
+  hasNoItemOption: true,
+
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Equippable') && item.isWearable();
+  },
+
+  ok: function(selectedItems) {
+    // Check if we selected 'no item'
+    const keys = Object.keys(selectedItems);
+    if (keys.length === 0) {
+      this._player.unwield();
+      Messages.sendMessage(this._player, 'You are not wearing anthing.');
+    } else {
+      // Make sure to unequip the item first in case it is the weapon.
+      const item = selectedItems[keys[0]];
+      this._player.unequip(item);
+      this._player.wear(item);
+      Messages.sendMessage(this._player, 'You are wearing %s.', [
+        item.describeA()
+      ]);
     }
     return true;
   }
