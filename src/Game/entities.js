@@ -22,6 +22,7 @@ export const Player = {
     EntityMixins.Destructible,
     EntityMixins.Sight,
     EntityMixins.InventoryHolder,
+    EntityMixins.Equipper,
     EntityMixins.MessageRecipient,
     EntityMixins.FoodConsumer
   ]
