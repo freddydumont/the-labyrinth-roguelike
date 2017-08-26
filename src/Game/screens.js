@@ -270,6 +270,8 @@ class ItemListScreen {
     this._canSelectItem = template['canSelect'];
     // Whether the user can select multiple items.
     this._canSelectMultipleItems = template['canSelectMultipleItems'];
+    // Whether a 'no item' option should appear.
+    this._hasNoItemOption = template['hasNoItemOption'];
   }
 
   setup(player, items) {
@@ -300,6 +302,10 @@ class ItemListScreen {
     const letters = 'abcdefghijklmnopqrstuvwxyz';
     // Render the caption in the top row
     display.drawText(0, 0, this._caption);
+    // Render the no item row if enabled
+    if (this._hasNoItemOption) {
+      display.drawText(0, 1, '0 - no item');
+    }
     let row = 0;
     for (let i = 0; i < this._items.length; i++) {
       // If we have an item, we want to render it.
@@ -314,11 +320,23 @@ class ItemListScreen {
           this._selectedIndices[i]
             ? '+'
             : '-';
+        // Check if the item is worn or wielded
+        let suffix = '';
+        if (this._items[i] === this._player.getArmor()) {
+          suffix = ' (wearing)';
+        } else if (this._items[i] === this._player.getWeapon()) {
+          suffix = ' (wielding)';
+        }
         // Render at the correct row and add 2.
         display.drawText(
           0,
           2 + row,
-          letter + ' ' + selectionState + ' ' + this._items[i].describe()
+          letter +
+            ' ' +
+            selectionState +
+            ' ' +
+            this._items[i].describe() +
+            suffix
         );
         row++;
       }
@@ -357,6 +375,14 @@ class ItemListScreen {
         Screen.playScreen.setSubScreen(undefined);
         // Handle pressing return when items are selected
       } else if (inputData.keyCode === ROT.VK_RETURN) {
+        this.executeOkFunction();
+        // Handle pressing zero when 'no item' selection is enabled
+      } else if (
+        this._canSelectItem &&
+        this._hasNoItemOption &&
+        inputData.keyCode === ROT.VK_0
+      ) {
+        this._selectedIndices = {};
         this.executeOkFunction();
         // Handle pressing a letter if we can select
       } else if (
