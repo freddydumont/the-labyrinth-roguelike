@@ -291,10 +291,9 @@ class ItemListScreen {
     let count = 0;
     // Iterate over each item, keeping only the aceptable ones and counting
     // the number of acceptable items.
-    let that = this;
-    this._items = items.map(function(item) {
+    this._items = items.map(item => {
       // Transform the item into null if it's not acceptable
-      if (that._isAcceptableFunction(item)) {
+      if (this._isAcceptableFunction(item)) {
         count++;
         return item;
       } else {
