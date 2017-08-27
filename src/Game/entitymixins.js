@@ -242,9 +242,7 @@ const EntityMixins = {
     }
   },
 
-  /**
-     * Move by 1 unit in a random direction every time act is called
-     */
+  // Move by 1 unit in a random direction every time act is called
   WanderActor: {
     name: 'WanderActor',
     groupName: 'Actor',
@@ -260,17 +258,58 @@ const EntityMixins = {
     }
   },
 
-  /**
-     * This signifies our entity posseses a field of vision of a given radius.
-     */
+  // This signifies our entity posseses a field of vision of a given radius.
   Sight: {
     name: 'Sight',
     groupName: 'Sight',
+
     init: function(template) {
       this._sightRadius = template['sightRadius'] || 5;
     },
+
     getSightRadius: function() {
       return this._sightRadius;
+    },
+
+    // Allow an entity to check if it can see another entity
+    canSee: function(entity) {
+      // If not on the same map or on different floors, then exit early
+      if (
+        !entity ||
+        this._map !== entity.getMap() ||
+        this._z !== entity.getZ()
+      ) {
+        return false;
+      }
+
+      const otherX = entity.getX();
+      const otherY = entity.getY();
+
+      // If we're not in a square field of view, then we won't be in a real
+      // field of view either.
+      if (
+        (otherX - this._x) * (otherX - this._x) +
+          (otherY - this._y) * (otherY - this._y) >
+        this._sightRadius * this._sightRadius
+      ) {
+        return false;
+      }
+
+      // Compute the FOV and check if the coordinates are in there.
+      let found = false;
+      this.getMap()
+        .getFov(this.getZ())
+        .compute(this.getX(), this.getY(), this.getSightRadius(), function(
+          x,
+          y,
+          radius,
+          visibility
+        ) {
+          if (x === otherX && y === otherY) {
+            found = true;
+          }
+        });
+      return found;
     }
   },
 
@@ -331,9 +370,9 @@ const EntityMixins = {
     },
 
     /**
-       * Allows the user to pick up items from the map, where indices is
-       * the indices for the array returned by map.getItemsAt
-       */
+    * Allows the user to pick up items from the map, where indices is
+    * the indices for the array returned by map.getItemsAt
+    */
     pickupItems: function(indices) {
       let mapItems = this._map.getItemsAt(
         this.getX(),
