@@ -1,4 +1,4 @@
-import { Game } from './game';
+import { ROT, Game } from './game';
 import * as Messages from './messages';
 import Screen from './screens';
 import { ItemRepository } from './items';
@@ -242,11 +242,87 @@ const EntityMixins = {
     }
   },
 
-  // Move by 1 unit in a random direction every time act is called
-  WanderActor: {
-    name: 'WanderActor',
+  /**
+   * Task-based actor mixin.
+   * Defines a set of tasks in order of priority (eg. hunt, then wander).
+   * 
+   * The mixin goes through each task and finds the first task that can be done
+   * that turn (eg. hunt cannot be done if the player is not in sight).
+   * 
+   * Tasks are passed in the entity template as an array of strings,
+   * and by default all entities simply wander.
+   */
+  TaskActor: {
+    name: 'TaskActor',
     groupName: 'Actor',
+
+    init: function(template) {
+      // Load tasks, default is wander
+      this._tasks = template['tasks'] || ['wander'];
+    },
+
     act: function() {
+      // Iterate through all tasks
+      for (let i = 0; i < this._tasks.length; i++) {
+        if (this.canDoTask(this._tasks[i])) {
+          // If the task can be performed, execute the function for it.
+          this[this._tasks[i]]();
+          return;
+        }
+      }
+    },
+
+    canDoTask: function(task) {
+      if (task === 'hunt') {
+        return this.hasMixin('Sight') && this.canSee(this.getMap().getPlayer());
+      } else if (task === 'wander') {
+        return true;
+      } else {
+        throw new Error('Tried to perform undefined task ' + task);
+      }
+    },
+
+    hunt: function() {
+      const player = this.getMap().getPlayer();
+
+      // If adjacent to the player, then attack instead of hunting.
+      const offsets =
+        Math.abs(player.getX() - this.getX()) +
+        Math.abs(player.getY() - this.getY());
+      if (offsets === 1) {
+        if (this.hasMixin('Attacker')) {
+          this.attack(player);
+          return;
+        }
+      }
+
+      // Generate the path and move to the first tile.
+      const z = this.getZ();
+      const path = new ROT.Path.AStar(
+        player.getX(),
+        player.getY(),
+        (x, y) => {
+          // If an entity is present at the tile, can't move there.
+          const entity = this.getMap().getEntityAt(x, y, z);
+          if (entity && entity !== player && entity !== this) {
+            return false;
+          }
+          return this.getMap().getTile(x, y, z).isWalkable();
+        },
+        { topology: 4 }
+      );
+      // Once we've gotten the path, we want to move to the second cell that is
+      // passed in the callback (the first is the entity's strting point)
+      let count = 0;
+      path.compute(this.getX(), this.getY(), (x, y) => {
+        if (count === 1) {
+          this.tryMove(x, y, z);
+        }
+        count++;
+      });
+    },
+
+    wander: function() {
       // Flip coin to determine if moving by 1 in the positive or negative direction
       const moveOffset = Math.round(Math.random()) === 1 ? 1 : -1;
       // Flip coin to determine if moving in x direction or y direction

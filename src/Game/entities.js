@@ -30,21 +30,6 @@ export const Player = {
 
 export const EntityRepository = new Repository('entities', Entity);
 
-EntityRepository.define('tough guy', {
-  name: 'tough guy',
-  character: 'E',
-  foreground: 'red',
-  maxHp: 15,
-  defenseValue: 5,
-  attackValue: 3,
-  mixins: [
-    EntityMixins.WanderActor,
-    EntityMixins.Attacker,
-    EntityMixins.Destructible,
-    EntityMixins.CorpseDropper
-  ]
-});
-
 EntityRepository.define('bat', {
   name: 'bat',
   character: 'B',
@@ -53,7 +38,7 @@ EntityRepository.define('bat', {
   attackValue: 4,
   speed: 2000,
   mixins: [
-    EntityMixins.WanderActor,
+    EntityMixins.TaskActor,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper
@@ -67,7 +52,24 @@ EntityRepository.define('newt', {
   maxHp: 3,
   attackValue: 2,
   mixins: [
-    EntityMixins.WanderActor,
+    EntityMixins.TaskActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper
+  ]
+});
+
+EntityRepository.define('kobold', {
+  name: 'kobold',
+  character: 'k',
+  foreground: 'brown',
+  maxHp: 6,
+  attackValue: 4,
+  sightRadius: 5,
+  tasks: ['hunt', 'wander'],
+  mixins: [
+    EntityMixins.TaskActor,
+    EntityMixins.Sight,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper
