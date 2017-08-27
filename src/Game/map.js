@@ -1,4 +1,3 @@
-import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
 import Tile from './tile';
 import { EntityRepository } from './entities';
@@ -430,9 +429,4 @@ export const renderMap = function(display) {
       }
     }
   }
-
-  // Render player HP
-  let stats = '%c{white}%b{black}';
-  stats += vsprintf('HP: %d/%d ', [player.getHp(), player.getMaxHp()]);
-  display.drawText(0, screenHeight, stats);
 };

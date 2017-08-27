@@ -1,3 +1,4 @@
+import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
 import * as Maps from './map';
 import * as Messages from './messages';
@@ -61,11 +62,22 @@ let Screen = {
       // render map and messages
       Maps.renderMap.call(this, display);
       Messages.renderMessages.call(this, display);
+
+      // Render player stats
+      let stats = '%c{white}%b{black}';
+      stats += vsprintf('HP: %d/%d L: %d XP: %d', [
+        this._player.getHp(),
+        this._player.getMaxHp(),
+        this._player.getLevel(),
+        this._player.getExperience()
+      ]);
+      display.drawText(0, Game.getScreenHeight(), stats);
+
       // Render hunger state
-      let hungerState = this._player.getHungerState();
+      const hungerState = this._player.getHungerState();
       display.drawText(
-        Game._screenWidth - hungerState.length,
-        Game._screenHeight,
+        Game.getScreenWidth() - hungerState.length,
+        Game.getScreenHeight(),
         hungerState
       );
     },
