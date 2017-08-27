@@ -523,7 +523,7 @@ Screen.wearScreen = new ItemListScreen({
     // Check if we selected 'no item'
     const keys = Object.keys(selectedItems);
     if (keys.length === 0) {
-      this._player.unwield();
+      this._player.takeOff();
       Messages.sendMessage(this._player, 'You are not wearing anthing.');
     } else {
       // Make sure to unequip the item first in case it is the weapon.
