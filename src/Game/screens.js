@@ -65,9 +65,11 @@ let Screen = {
 
       // Render player stats
       let stats = '%c{white}%b{black}';
-      stats += vsprintf('HP: %d/%d L: %d XP: %d', [
+      stats += vsprintf('HP: %d/%d ATK: %d DEF: %d L: %d XP: %d', [
         this._player.getHp(),
         this._player.getMaxHp(),
+        this._player.getAttackValue(),
+        this._player.getDefenseValue(),
         this._player.getLevel(),
         this._player.getExperience()
       ]);
