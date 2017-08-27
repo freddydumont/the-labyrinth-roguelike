@@ -128,6 +128,7 @@ const EntityMixins = {
   // This mixin signifies an entity can take damage and be destroyed
   Destructible: {
     name: 'Destructible',
+
     init: function(props) {
       this._maxHp = props['maxHp'] || 10;
       // We allow taking in health from the props incase we want
@@ -136,6 +137,7 @@ const EntityMixins = {
       this._hp = props['hp'] || this._maxHp;
       this._defenseValue = props['defenseValue'] || 0;
     },
+
     getDefenseValue: function() {
       let modifier = 0;
       // If we can equip items, then have to take into
@@ -150,12 +152,32 @@ const EntityMixins = {
       }
       return this._defenseValue + modifier;
     },
+
+    increaseDefenseValue: function(value = 2) {
+      // Add to the defense value. Default increse is 2.
+      this._defenseValue += value;
+      Messages.sendMessage(this, 'You look tougher!');
+    },
+
     getHp: function() {
       return this._hp;
     },
+
     getMaxHp: function() {
       return this._maxHp;
     },
+
+    setHp: function(hp) {
+      this._hp = hp;
+    },
+
+    increaseMaxHp: function(value = 10) {
+      // Add to both max HP and HP. Default increase is 10.
+      this._maxHp += value;
+      this._hp += value;
+      Messages.sendMessage(this, 'You look healthier!');
+    },
+
     takeDamage: function(attacker, damage) {
       this._hp -= damage;
       // If have 0 or less HP, then remove ourseles from the map
@@ -175,9 +197,11 @@ const EntityMixins = {
   Attacker: {
     name: 'Attacker',
     groupName: 'Attacker',
+
     init: function(props) {
       this._attackValue = props['attackValue'] || 1;
     },
+
     getAttackValue: function() {
       let modifier = 0;
       // If we can equip items, then have to take into
@@ -192,6 +216,13 @@ const EntityMixins = {
       }
       return this._attackValue + modifier;
     },
+
+    increaseAttackValue: function(value = 2) {
+      // Add to the attack value. Default increase is 2.
+      this._attackValue += value;
+      Messages.sendMessage(this, 'You look stronger!');
+    },
+
     attack: function(target) {
       // If the target is destructible, calculate the damage
       // based on attack and defense value
@@ -345,6 +376,12 @@ const EntityMixins = {
 
     getSightRadius: function() {
       return this._sightRadius;
+    },
+
+    increaseSightRadius: function(value = 1) {
+      // Add to sight radius. Default increase is 1.
+      this._sightRadius += value;
+      Messages.sendMessage(this, 'You are more aware of your surroundings!');
     },
 
     // Allow an entity to check if it can see another entity
