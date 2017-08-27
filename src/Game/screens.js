@@ -144,32 +144,34 @@ let Screen = {
             }
             return;
           case ROT.VK_COMMA:
-            const items = this._map.getItemsAt(
-              this._player.getX(),
-              this._player.getY(),
-              this._player.getZ()
-            );
-            // If only one item, try to pick it up
-            if (items.length === 1) {
-              const item = items[0];
-              if (this._player.pickupItems([0])) {
-                Messages.sendMessage(this._player, 'You pick up %s.', [
-                  item.describeA()
-                ]);
+            if (!inputData.shiftKey) {
+              const items = this._map.getItemsAt(
+                this._player.getX(),
+                this._player.getY(),
+                this._player.getZ()
+              );
+              // If only one item, try to pick it up
+              if (items.length === 1) {
+                const item = items[0];
+                if (this._player.pickupItems([0])) {
+                  Messages.sendMessage(this._player, 'You pick up %s.', [
+                    item.describeA()
+                  ]);
+                } else {
+                  Messages.sendMessage(
+                    this._player,
+                    'Your inventory is full! Nothing was picked up.'
+                  );
+                }
               } else {
-                Messages.sendMessage(
-                  this._player,
-                  'Your inventory is full! Nothing was picked up.'
+                // Show the pickup screen if there are many items
+                // or show a message if there is nothing
+                this.showItemsSubScreen(
+                  Screen.pickupScreen,
+                  items,
+                  'There is nothing here to pick up.'
                 );
               }
-            } else {
-              // Show the pickup screen if there are many items
-              // or show a message if there is nothing
-              this.showItemsSubScreen(
-                Screen.pickupScreen,
-                items,
-                'There is nothing here to pick up.'
-              );
             }
             break;
           default:

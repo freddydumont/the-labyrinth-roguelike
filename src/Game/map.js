@@ -81,7 +81,7 @@ export class Map {
    ***********/
 
   getItemsAt(x, y, z) {
-    return this._items[x + ',' + y + ',' + z];
+    return this._items[x + ',' + y + ',' + z] || false;
   }
 
   setItemsAt(x, y, z, items) {
