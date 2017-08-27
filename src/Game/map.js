@@ -19,9 +19,10 @@ export class Map {
     // Create a table which will hold the items
     this._items = {};
     // create the engine and scheduler
-    this._scheduler = new ROT.Scheduler.Simple();
+    this._scheduler = new ROT.Scheduler.Speed();
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
+    this._player = player;
     this.addEntityAtRandomPosition(player, 0);
     // Add random enemies to each floor.
     for (let z = 0; z < this._depth; z++) {
@@ -74,6 +75,9 @@ export class Map {
   }
   getFov(depth) {
     return this._fov[depth];
+  }
+  getPlayer() {
+    return this._player;
   }
 
   /***********

@@ -51,6 +51,7 @@ EntityRepository.define('bat', {
   foreground: 'white',
   maxHp: 5,
   attackValue: 4,
+  speed: 2000,
   mixins: [
     EntityMixins.WanderActor,
     EntityMixins.Attacker,

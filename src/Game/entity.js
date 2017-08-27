@@ -13,6 +13,8 @@ export default class Entity extends DynamicGlyph {
     this._z = props['z'] || 0;
     this._map = null;
     this._alive = true;
+    // Acting speed
+    this._speed = props['speed'] || 1000;
   }
 
   kill(message) {
@@ -124,6 +126,9 @@ export default class Entity extends DynamicGlyph {
   setMap(map) {
     this._map = map;
   }
+  setSpeed(speed) {
+    this._speed = speed;
+  }
 
   // getters
   getX() {
@@ -137,6 +142,9 @@ export default class Entity extends DynamicGlyph {
   }
   getMap() {
     return this._map;
+  }
+  getSpeed() {
+    return this._speed;
   }
   isAlive() {
     return this._alive;
