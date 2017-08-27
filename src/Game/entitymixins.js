@@ -189,6 +189,23 @@ const EntityMixins = {
         }
         // Check if the player died, and if so call their act method to prompt the user.
         this.kill();
+
+        // Give the attacker experience points.
+        // Formula is MaxHP + DEF + ATK, modified by level difference
+        if (attacker.hasMixin('ExperienceGainer')) {
+          let exp = this.getMaxHp() + this.getDefenseValue();
+          if (this.hasMixin('Attacker')) {
+            exp += this.getAttackValue();
+          }
+          // Account for level differences
+          if (this.hasMixin('ExperienceGainer')) {
+            exp -= (attacker.getLevel() - this.getLevel()) * 3;
+          }
+          // Only give experience if more than 0.
+          if (exp > 0) {
+            attacker.giveExperience(exp);
+          }
+        }
       }
     }
   },
