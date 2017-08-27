@@ -145,6 +145,7 @@ let Screen = {
             return;
           case ROT.VK_COMMA:
             if (!inputData.shiftKey) {
+              // Pick up item
               const items = this._map.getItemsAt(
                 this._player.getX(),
                 this._player.getY(),
@@ -172,22 +173,17 @@ let Screen = {
                   'There is nothing here to pick up.'
                 );
               }
+            } else {
+              // Move up a level
+              this.move(0, 0, -1);
             }
             break;
-          default:
-            //not a valid key
-            return;
-        }
-        // Unlock the engine
-        this._map.getEngine().unlock();
-      } else if (inputType === 'keypress') {
-        const keyChar = String.fromCharCode(inputData.charCode);
-        switch (keyChar) {
-          case '>':
-            this.move(0, 0, 1);
-            break;
-          case '<':
-            this.move(0, 0, -1);
+          case ROT.VK_PERIOD:
+            // Skip a turn or:
+            if (inputData.shiftKey) {
+              // Move down a level
+              this.move(0, 0, 1);
+            }
             break;
           default:
             // Not a valid key
