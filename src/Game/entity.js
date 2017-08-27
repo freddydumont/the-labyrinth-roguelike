@@ -3,10 +3,7 @@ import Tile from './tile';
 import EntityMixins from './entitymixins';
 import * as Messages from './messages';
 
-/**
- * A basic entity is composed of a glyph as well as a position and a name (used in messages).
- * An entity can be anything. Ex. Player, enemy, items, etc
- */
+// A basic entity is composed of a glyph as well as a position and a name (used in messages).
 export default class Entity extends DynamicGlyph {
   constructor(props) {
     super(props);
@@ -17,6 +14,7 @@ export default class Entity extends DynamicGlyph {
     this._map = null;
     this._alive = true;
   }
+
   kill(message) {
     // Only kill once!
     if (!this._alive) {
@@ -36,6 +34,7 @@ export default class Entity extends DynamicGlyph {
       this.getMap().removeEntity(this);
     }
   }
+
   setPosition(x, y, z) {
     // keep old position in memory
     const oldX = this._x;
