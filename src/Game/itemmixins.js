@@ -24,7 +24,7 @@ const ItemMixins = {
     },
     describe: function() {
       if (this._maxConsumptions !== this._remainingConsumptions) {
-        return 'partly eaten ' + Item.describe.call(this);
+        return 'partly eaten ' + Item.prototype.describe.call(this);
       } else {
         return this._name;
       }
