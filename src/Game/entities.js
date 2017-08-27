@@ -24,7 +24,9 @@ export const Player = {
     EntityMixins.InventoryHolder,
     EntityMixins.Equipper,
     EntityMixins.MessageRecipient,
-    EntityMixins.FoodConsumer
+    EntityMixins.FoodConsumer,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.PlayerStatGainer
   ]
 };
 
@@ -41,7 +43,9 @@ EntityRepository.define('bat', {
     EntityMixins.TaskActor,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
-    EntityMixins.CorpseDropper
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
   ]
 });
 
@@ -55,7 +59,9 @@ EntityRepository.define('newt', {
     EntityMixins.TaskActor,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
-    EntityMixins.CorpseDropper
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
   ]
 });
 
@@ -72,6 +78,8 @@ EntityRepository.define('kobold', {
     EntityMixins.Sight,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
-    EntityMixins.CorpseDropper
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
   ]
 });
