@@ -28,7 +28,16 @@ export class Map {
       // 15 entities per floor
       for (let i = 0; i < 15; i++) {
         // Add a random entity
-        this.addEntityAtRandomPosition(EntityRepository.createRandom(), z);
+        const entity = EntityRepository.createRandom();
+        this.addEntityAtRandomPosition(entity, z);
+        // Level up the entity based on the floor
+        if (entity.hasMixin('ExperienceGainer')) {
+          for (let level = 0; level < z; level++) {
+            entity.giveExperience(
+              entity.getNextLevelExperience() - entity.getExperience()
+            );
+          }
+        }
       }
       // 10 items per floor
       for (let i = 0; i < 10; i++) {
