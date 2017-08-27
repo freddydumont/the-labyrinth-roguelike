@@ -611,8 +611,37 @@ const EntityMixins = {
         if (this.hasMixin('Destructible')) {
           this.setHp(this.getMaxHp());
         }
-        // TODO: Actually increase stats.
+        // Call onGainLevel function to increase stats
+        if (this.hasMixin('StatGainer')) {
+          this.onGainLevel();
+        }
       }
+    }
+  },
+
+  RandomStatGainer: {
+    name: 'RandomStatGainer',
+    groupName: 'StatGainer',
+
+    onGainLevel: function() {
+      const statOptions = this.getStatOptions();
+      // Randomly select a stat option and execute the callback for each stat point.
+      while (this.getStatPoints() > 0) {
+        // Call the stat increasing function with this as the context.
+        statOptions.random()[1].call(this);
+        this.setStatPoints(this.getStatPoints() - 1);
+      }
+    }
+  },
+
+  PlayerStatGainer: {
+    name: 'PlayerStatGainer',
+    groupName: 'StatGainer',
+
+    onGainLevel: function() {
+      // Setup the gain stat screen and show it.
+      Screen.gainStatScreen.setup(this);
+      Screen.playScreen.setSubScreen(Screen.gainStatScreen);
     }
   }
 };
