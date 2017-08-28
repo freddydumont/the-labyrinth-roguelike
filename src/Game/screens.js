@@ -157,6 +157,14 @@ let Screen = {
               );
             }
             return;
+          case ROT._X:
+            // Show the drop screen
+            this.showItemsSubScreen(
+              Screen.examineScreen,
+              this._player.getItems(),
+              'You have nothing to examine.'
+            );
+            return;
           case ROT.VK_COMMA:
             if (!inputData.shiftKey) {
               // Pick up item
