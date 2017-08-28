@@ -5,6 +5,7 @@ import * as Messages from './messages';
 import Entity from './entity';
 import { Player } from './entities';
 import Builder from './builder';
+import { Geometry } from './geometry';
 
 let Screen = {
   startScreen: {
@@ -86,7 +87,7 @@ let Screen = {
     },
     getScreenOffsets: function() {
       // Make sure we still have enough space to fit an entire game screen
-      var topLeftX = Math.max(
+      let topLeftX = Math.max(
         0,
         this._player.getX() - Game.getScreenWidth() / 2
       );
@@ -96,7 +97,7 @@ let Screen = {
         this._player.getMap().getWidth() - Game.getScreenWidth()
       );
       // Make sure the y-axis doesn't above the top bound
-      var topLeftY = Math.max(
+      let topLeftY = Math.max(
         0,
         this._player.getY() - Game.getScreenHeight() / 2
       );
@@ -117,7 +118,7 @@ let Screen = {
       const topLeftX = offsets.x;
       const topLeftY = offsets.y;
       // This object will keep track of all visible map cells
-      var visibleCells = {};
+      let visibleCells = {};
       // Store this._player.getMap() and player's z to prevent losing it in callbacks
       const map = this._player.getMap();
       const player = this._player;
@@ -759,5 +760,119 @@ Screen.examineScreen = new ItemListScreen({
     return true;
   }
 });
+
+class TargetBasedScreen {
+  constructor(template) {
+    template = template || {};
+    this._isAcceptableFunction =
+      template['okFunction'] ||
+      function(x, y) {
+        return false;
+      };
+    // The defaut caption function simply returns an empty string.
+    this._captionFunction =
+      template['captionFunction'] ||
+      function(x, y) {
+        return '';
+      };
+  }
+  setup(player, startX, startY, offsetX, offsetY) {
+    this._player = player;
+    // Store original position. Subtract the offset to make life easy so we don't
+    // always have to remove it.
+    this._startX = startX - offsetX;
+    this._startY = startY - offsetY;
+    // Store current cursor position
+    this._cursorX = this._startX;
+    this._cursorY = this._startY;
+    // Store map offsets
+    this._offsetX = offsetX;
+    this._offsetY = offsetY;
+    // Cache the FOV
+    let visibleCells = {};
+    this._player
+      .getMap()
+      .getFov(this._player.getZ())
+      .compute(
+        this._player.getX(),
+        this._player.getY(),
+        this._player.getSightRadius(),
+        function(x, y, radius, visibility) {
+          visibleCells[x + ',' + y] = true;
+        }
+      );
+    this._visibleCells = visibleCells;
+  }
+  render(display) {
+    Screen.playScreen.renderTiles.call(Game.Screen.playScreen, display);
+
+    // Draw a line from the start to the cursor.
+    let points = Geometry.getLine(
+      this._startX,
+      this._startY,
+      this._cursorX,
+      this._cursorY
+    );
+
+    // Render stars along the line.
+    for (let i = 0, l = points.length; i < l; i++) {
+      display.drawText(points[i].x, points[i].y, '%c{magenta}*');
+    }
+
+    // Render the caption at the bottom.
+    display.drawText(
+      0,
+      Game.getScreenHeight() - 1,
+      this._captionFunction(
+        this._cursorX + this._offsetX,
+        this._cursorY + this._offsetY
+      )
+    );
+  }
+  handleInput(inputType, inputData) {
+    // Move the cursor
+    if (inputType === 'keydown') {
+      if (inputData.keyCode === ROT.VK_LEFT) {
+        this.moveCursor(-1, 0);
+      } else if (inputData.keyCode === ROT.VK_RIGHT) {
+        this.moveCursor(1, 0);
+      } else if (inputData.keyCode === ROT.VK_UP) {
+        this.moveCursor(0, -1);
+      } else if (inputData.keyCode === ROT.VK_DOWN) {
+        this.moveCursor(0, 1);
+      } else if (inputData.keyCode === ROT.VK_ESCAPE) {
+        Game.Screen.playScreen.setSubScreen(undefined);
+      } else if (inputData.keyCode === ROT.VK_RETURN) {
+        this.executeOkFunction();
+      }
+    }
+    Game.refresh();
+  }
+  moveCursor(dx, dy) {
+    // Make sure we stay within bounds.
+    this._cursorX = Math.max(
+      0,
+      Math.min(this._cursorX + dx, Game.getScreenWidth())
+    );
+    // We have to save the last line for the caption.
+    this._cursorY = Math.max(
+      0,
+      Math.min(this._cursorY + dy, Game.getScreenHeight() - 1)
+    );
+  }
+  executeOkFunction() {
+    // Switch back to the play screen.
+    Game.Screen.playScreen.setSubScreen(undefined);
+    // Call the OK function and end the player's turn if it return true.
+    if (
+      this._okFunction(
+        this._cursorX + this._offsetX,
+        this._cursorY + this._offsetY
+      )
+    ) {
+      this._player.getMap().getEngine().unlock();
+    }
+  }
+}
 
 export default Screen;

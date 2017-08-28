@@ -13,7 +13,7 @@ export const Geometry = {
 
     while (true) {
       points.push({ x: startX, y: startY });
-      if (startX == endX && startY == endY) {
+      if (startX === endX && startY === endY) {
         break;
       }
       e2 = err * 2;
