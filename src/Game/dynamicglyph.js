@@ -34,23 +34,28 @@ export default class DynamicGlyph extends Glyph {
       }
     }
   }
-  hasMixin = function(obj) {
+
+  hasMixin(obj) {
     // Allow passing the mixin itself or the name / group name as a string
     if (typeof obj === 'object') {
       return this._attachedMixins[obj.name];
     } else {
       return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
     }
-  };
+  }
+
   setName(name) {
     this._name = name;
   }
+
   getName() {
     return this._name;
   }
+
   describe() {
     return this._name;
   }
+
   describeA(capitalize) {
     // Optional parameter to capitalize the a/an.
     const prefixes = capitalize ? ['A', 'An'] : ['a', 'an'];
