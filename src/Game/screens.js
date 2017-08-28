@@ -1,3 +1,4 @@
+import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
 import * as Maps from './map';
 import * as Messages from './messages';
@@ -61,11 +62,24 @@ let Screen = {
       // render map and messages
       Maps.renderMap.call(this, display);
       Messages.renderMessages.call(this, display);
+
+      // Render player stats
+      let stats = '%c{white}%b{black}';
+      stats += vsprintf('HP: %d/%d ATK: %d DEF: %d L: %d XP: %d', [
+        this._player.getHp(),
+        this._player.getMaxHp(),
+        this._player.getAttackValue(),
+        this._player.getDefenseValue(),
+        this._player.getLevel(),
+        this._player.getExperience()
+      ]);
+      display.drawText(0, Game.getScreenHeight(), stats);
+
       // Render hunger state
-      let hungerState = this._player.getHungerState();
+      const hungerState = this._player.getHungerState();
       display.drawText(
-        Game._screenWidth - hungerState.length,
-        Game._screenHeight,
+        Game.getScreenWidth() - hungerState.length,
+        Game.getScreenHeight(),
         hungerState
       );
     },
@@ -87,8 +101,8 @@ let Screen = {
       }
 
       if (inputType === 'keydown') {
-        // Movement
         switch (inputData.keyCode) {
+          // MOVEMENT
           case ROT.VK_LEFT:
             this.move(-1, 0, 0);
             break;
@@ -101,89 +115,89 @@ let Screen = {
           case ROT.VK_DOWN:
             this.move(0, 1, 0);
             break;
+          // ITEMS
           case ROT.VK_I:
-            if (!this._player.getItems()) {
-              // If the player has no items, send a message and don't take a turn
-              Messages.sendMessage(
-                this._player,
-                'You are not carrying anything!'
-              );
-              Game.refresh();
-            } else {
-              // Show the inventory
-              Screen.inventoryScreen.setup(
-                this._player,
-                this._player.getItems()
-              );
-              this.setSubScreen(Screen.inventoryScreen);
-            }
+            // Show the inventory screen
+            this.showItemsSubScreen(
+              Screen.inventoryScreen,
+              this._player.getItems(),
+              'You are not carrying anything.'
+            );
             return;
           case ROT.VK_D:
-            if (!this._player.getItems()) {
-              // If the player has no items, send a message and don't take a turn
-              Messages.sendMessage(this._player, 'You have nothing to drop!');
-              Game.refresh();
-            } else {
-              // Show the drop screen
-              Screen.dropScreen.setup(this._player, this._player.getItems());
-              this.setSubScreen(Screen.dropScreen);
-            }
+            // Show the drop screen
+            this.showItemsSubScreen(
+              Screen.dropScreen,
+              this._player.getItems(),
+              'You have nothing to drop.'
+            );
             return;
           case ROT.VK_E:
             // Show the eat screen
-            if (Screen.eatScreen.setup(this._player, this._player.getItems())) {
-              this.setSubScreen(Screen.eatScreen);
+            this.showItemsSubScreen(
+              Screen.eatScreen,
+              this._player.getItems(),
+              'You have nothing to eat.'
+            );
+            return;
+          case ROT.VK_W:
+            if (inputData.shiftKey) {
+              // Show the wear screen
+              this.showItemsSubScreen(
+                Screen.wearScreen,
+                this._player.getItems(),
+                'You have nothing to wear.'
+              );
             } else {
-              Messages.sendMessage(this._player, 'You have nothing to eat!');
-              Game.refresh();
+              // Show the wield screen
+              this.showItemsSubScreen(
+                Screen.wieldScreen,
+                this._player.getItems(),
+                'You have nothing to wield.'
+              );
             }
             return;
           case ROT.VK_COMMA:
-            const items = this._map.getItemsAt(
-              this._player.getX(),
-              this._player.getY(),
-              this._player.getZ()
-            );
-            // If there are no items, show a message
-            if (!items) {
-              Messages.sendMessage(
-                this._player,
-                'There is nothing here to pick up.'
+            if (!inputData.shiftKey) {
+              // Pick up item
+              const items = this._map.getItemsAt(
+                this._player.getX(),
+                this._player.getY(),
+                this._player.getZ()
               );
-            } else if (items.length === 1) {
               // If only one item, try to pick it up
-              const item = items[0];
-              if (this._player.pickupItems([0])) {
-                Messages.sendMessage(this._player, 'You pick up %s.', [
-                  item.describeA()
-                ]);
+              if (items.length === 1) {
+                const item = items[0];
+                if (this._player.pickupItems([0])) {
+                  Messages.sendMessage(this._player, 'You pick up %s.', [
+                    item.describeA()
+                  ]);
+                } else {
+                  Messages.sendMessage(
+                    this._player,
+                    'Your inventory is full! Nothing was picked up.'
+                  );
+                }
               } else {
-                Messages.sendMessage(
-                  this._player,
-                  'Your inventory is full! Nothing was picked up.'
+                // Show the pickup screen if there are many items
+                // or show a message if there is nothing
+                this.showItemsSubScreen(
+                  Screen.pickupScreen,
+                  items,
+                  'There is nothing here to pick up.'
                 );
               }
             } else {
-              // Show the pickup screen if there are many items
-              Screen.pickupScreen.setup(this._player, items);
-              this.setSubScreen(Screen.pickupScreen);
-              return;
+              // Move up a level
+              this.move(0, 0, -1);
             }
             break;
-          default:
-            //not a valid key
-            return;
-        }
-        // Unlock the engine
-        this._map.getEngine().unlock();
-      } else if (inputType === 'keypress') {
-        const keyChar = String.fromCharCode(inputData.charCode);
-        switch (keyChar) {
-          case '>':
-            this.move(0, 0, 1);
-            break;
-          case '<':
-            this.move(0, 0, -1);
+          case ROT.VK_PERIOD:
+            // Skip a turn or:
+            if (inputData.shiftKey) {
+              // Move down a level
+              this.move(0, 0, 1);
+            }
             break;
           default:
             // Not a valid key
@@ -210,6 +224,15 @@ let Screen = {
       this._subScreen = subScreen;
       // Refresh screen on changing the subscreen
       Game.refresh();
+    },
+
+    showItemsSubScreen: function(subScreen, items, emptyMessage) {
+      if (items && subScreen.setup(this._player, items) > 0) {
+        this.setSubScreen(subScreen);
+      } else {
+        Messages.sendMessage(this._player, emptyMessage);
+        Game.refresh();
+      }
     }
   },
 
@@ -233,6 +256,58 @@ let Screen = {
     },
     handleInput: function(inputType, inputData) {
       // nothing to do here
+    }
+  },
+
+  gainStatScreen: {
+    setup: function(entity) {
+      // Must be called before rendering.
+      this._entity = entity;
+      this._options = entity.getStatOptions();
+    },
+
+    render: function(display) {
+      const letters = 'abcdefghijklmnopqrstuvwxyz';
+      display.drawText(0, 0, 'Choose a stat to increase: ');
+
+      // Iterate through each of our options
+      for (let i = 0; i < this._options.length; i++) {
+        display.drawText(
+          0,
+          2 + i,
+          letters.substring(i, i + 1) + ' - ' + this._options[i][0]
+        );
+      }
+
+      // Render remaining stat points
+      display.drawText(
+        0,
+        4 + this._options.length,
+        'Remaining points: ' + this._entity.getStatPoints()
+      );
+    },
+
+    handleInput: function(inputType, inputData) {
+      if (inputType === 'keydown') {
+        // If a letter was pressed, check if it matches to a valid option.
+        if (inputData.keyCode >= ROT.VK_A && inputData.keyCode <= ROT.VK_Z) {
+          // Check if it maps to a valid item by subtracting 'a' from the character
+          // to know what letter of the alphabet we used.
+          const index = inputData.keyCode - ROT.VK_A;
+          if (this._options[index]) {
+            // Call the stat increasing function
+            this._options[index][1].call(this._entity);
+            // Decrease stat points
+            this._entity.setStatPoints(this._entity.getStatPoints() - 1);
+            // If we have no stat points left, exit the screen, else refresh
+            if (this._entity.getStatPoints() === 0) {
+              Screen.playScreen.setSubScreen(undefined);
+            } else {
+              Game.refresh();
+            }
+          }
+        }
+      }
     }
   },
 
@@ -270,6 +345,8 @@ class ItemListScreen {
     this._canSelectItem = template['canSelect'];
     // Whether the user can select multiple items.
     this._canSelectMultipleItems = template['canSelectMultipleItems'];
+    // Whether a 'no item' option should appear.
+    this._hasNoItemOption = template['hasNoItemOption'];
   }
 
   setup(player, items) {
@@ -280,10 +357,9 @@ class ItemListScreen {
     let count = 0;
     // Iterate over each item, keeping only the aceptable ones and counting
     // the number of acceptable items.
-    let that = this;
-    this._items = items.map(function(item) {
+    this._items = items.map(item => {
       // Transform the item into null if it's not acceptable
-      if (that._isAcceptableFunction(item)) {
+      if (this._isAcceptableFunction(item)) {
         count++;
         return item;
       } else {
@@ -300,6 +376,10 @@ class ItemListScreen {
     const letters = 'abcdefghijklmnopqrstuvwxyz';
     // Render the caption in the top row
     display.drawText(0, 0, this._caption);
+    // Render the no item row if enabled
+    if (this._hasNoItemOption) {
+      display.drawText(0, 1, '0 - no item');
+    }
     let row = 0;
     for (let i = 0; i < this._items.length; i++) {
       // If we have an item, we want to render it.
@@ -314,11 +394,23 @@ class ItemListScreen {
           this._selectedIndices[i]
             ? '+'
             : '-';
+        // Check if the item is worn or wielded
+        let suffix = '';
+        if (this._items[i] === this._player.getArmor()) {
+          suffix = ' (wearing)';
+        } else if (this._items[i] === this._player.getWeapon()) {
+          suffix = ' (wielding)';
+        }
         // Render at the correct row and add 2.
         display.drawText(
           0,
           2 + row,
-          letter + ' ' + selectionState + ' ' + this._items[i].describe()
+          letter +
+            ' ' +
+            selectionState +
+            ' ' +
+            this._items[i].describe() +
+            suffix
         );
         row++;
       }
@@ -357,6 +449,14 @@ class ItemListScreen {
         Screen.playScreen.setSubScreen(undefined);
         // Handle pressing return when items are selected
       } else if (inputData.keyCode === ROT.VK_RETURN) {
+        this.executeOkFunction();
+        // Handle pressing zero when 'no item' selection is enabled
+      } else if (
+        this._canSelectItem &&
+        this._hasNoItemOption &&
+        inputData.keyCode === ROT.VK_0
+      ) {
+        this._selectedIndices = {};
         this.executeOkFunction();
         // Handle pressing a letter if we can select
       } else if (
@@ -438,6 +538,64 @@ Screen.eatScreen = new ItemListScreen({
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
       this._player.removeItem(key);
+    }
+    return true;
+  }
+});
+
+Screen.wieldScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to wield',
+  canSelect: true,
+  canSelectMultipleItems: false,
+  hasNoItemOption: true,
+
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Equippable') && item.isWieldable();
+  },
+
+  ok: function(selectedItems) {
+    // Check if we selected 'no item'
+    const keys = Object.keys(selectedItems);
+    if (keys.length === 0) {
+      this._player.unwield();
+      Messages.sendMessage(this._player, 'You are not wielding anything.');
+    } else {
+      // Make sure to unequip the item first in case it is the armor.
+      const item = selectedItems[keys[0]];
+      this._player.unequip(item);
+      this._player.wield(item);
+      Messages.sendMessage(this._player, 'You are wielding %s.', [
+        item.describeA()
+      ]);
+    }
+    return true;
+  }
+});
+
+Screen.wearScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to wear',
+  canSelect: true,
+  canSelectMultipleItems: false,
+  hasNoItemOption: true,
+
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Equippable') && item.isWearable();
+  },
+
+  ok: function(selectedItems) {
+    // Check if we selected 'no item'
+    const keys = Object.keys(selectedItems);
+    if (keys.length === 0) {
+      this._player.takeOff();
+      Messages.sendMessage(this._player, 'You are not wearing anthing.');
+    } else {
+      // Make sure to unequip the item first in case it is the weapon.
+      const item = selectedItems[keys[0]];
+      this._player.unequip(item);
+      this._player.wear(item);
+      Messages.sendMessage(this._player, 'You are wearing %s.', [
+        item.describeA()
+      ]);
     }
     return true;
   }

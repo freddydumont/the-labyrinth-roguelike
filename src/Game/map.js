@@ -1,4 +1,3 @@
-import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
 import Tile from './tile';
 import { EntityRepository } from './entities';
@@ -19,22 +18,47 @@ export class Map {
     // Create a table which will hold the items
     this._items = {};
     // create the engine and scheduler
-    this._scheduler = new ROT.Scheduler.Simple();
+    this._scheduler = new ROT.Scheduler.Speed();
     this._engine = new ROT.Engine(this._scheduler);
     // add the player
+    this._player = player;
     this.addEntityAtRandomPosition(player, 0);
     // Add random enemies to each floor.
     for (let z = 0; z < this._depth; z++) {
       // 15 entities per floor
       for (let i = 0; i < 15; i++) {
         // Add a random entity
-        this.addEntityAtRandomPosition(EntityRepository.createRandom(), z);
+        const entity = EntityRepository.createRandom();
+        this.addEntityAtRandomPosition(entity, z);
+        // Level up the entity based on the floor
+        if (entity.hasMixin('ExperienceGainer')) {
+          for (let level = 0; level < z; level++) {
+            entity.giveExperience(
+              entity.getNextLevelExperience() - entity.getExperience()
+            );
+          }
+        }
       }
       // 10 items per floor
       for (let i = 0; i < 10; i++) {
         // Add a random entity
         this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
       }
+    }
+    // Add weapons and armor to the map in random positions
+    const templates = [
+      'dagger',
+      'sword',
+      'staff',
+      'tunic',
+      'chainmail',
+      'platemail'
+    ];
+    for (let i = 0; i < templates.length; i++) {
+      this.addItemAtRandomPosition(
+        ItemRepository.create(templates[i]),
+        Math.floor(this._depth * Math.random())
+      );
     }
     // setup the explored array
     this._explored = new Array(this._depth);
@@ -60,13 +84,16 @@ export class Map {
   getFov(depth) {
     return this._fov[depth];
   }
+  getPlayer() {
+    return this._player;
+  }
 
   /***********
    * ITEMS
    ***********/
 
   getItemsAt(x, y, z) {
-    return this._items[x + ',' + y + ',' + z];
+    return this._items[x + ',' + y + ',' + z] || false;
   }
 
   setItemsAt(x, y, z, items) {
@@ -140,7 +167,7 @@ export class Map {
 
   updateEntityPosition(entity, oldX, oldY, oldZ) {
     // Delete the old key if it is the same entity and we have old positions.
-    if (oldX) {
+    if (typeof oldX === 'number') {
       const oldKey = oldX + ',' + oldY + ',' + oldZ;
       if (this._entities[oldKey] === entity) {
         delete this._entities[oldKey];
@@ -411,9 +438,4 @@ export const renderMap = function(display) {
       }
     }
   }
-
-  // Render player HP
-  let stats = '%c{white}%b{black}';
-  stats += vsprintf('HP: %d/%d ', [player.getHp(), player.getMaxHp()]);
-  display.drawText(0, screenHeight, stats);
 };
