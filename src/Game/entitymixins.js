@@ -4,6 +4,17 @@ import Screen from './screens';
 import { ItemRepository } from './items';
 
 const EntityMixins = {
+  BossActor: {
+    name: 'BossActor',
+    groupName: 'Actor',
+    listeners: {
+      onDeath: function(attacker) {
+        // Switch to win screen when killed!
+        Game.switchScreen(Screen.winScreen);
+      }
+    }
+  },
+
   Equipper: {
     name: 'Equipper',
     init: function(template) {

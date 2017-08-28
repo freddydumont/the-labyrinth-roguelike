@@ -96,6 +96,7 @@ EntityRepository.define(
     sightRadius: 8,
     tasks: ['hunt', 'wander'],
     mixins: [
+      EntityMixins.BossActor,
       EntityMixins.TaskActor,
       EntityMixins.Sight,
       EntityMixins.Attacker,
