@@ -83,3 +83,30 @@ EntityRepository.define('kobold', {
     EntityMixins.RandomStatGainer
   ]
 });
+
+EntityRepository.define(
+  'minotaur',
+  {
+    name: 'minotaur',
+    character: 'M',
+    foreground: 'red',
+    maxHp: 80,
+    attackValue: 15,
+    defenseValue: 10,
+    sightRadius: 8,
+    tasks: ['hunt', 'wander'],
+    mixins: [
+      EntityMixins.BossActor,
+      EntityMixins.TaskActor,
+      EntityMixins.Sight,
+      EntityMixins.Attacker,
+      EntityMixins.Destructible,
+      EntityMixins.CorpseDropper,
+      EntityMixins.ExperienceGainer,
+      EntityMixins.RandomStatGainer
+    ]
+  },
+  {
+    disableRandomCreation: true
+  }
+);

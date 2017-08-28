@@ -23,29 +23,35 @@ export class Map {
     // add the player
     this._player = player;
     this.addEntityAtRandomPosition(player, 0);
-    // Add random enemies to each floor.
+
+    // Add random enemies and items to each floor.
+    // Except last one where we only add a minotaur.
     for (let z = 0; z < this._depth; z++) {
-      // 15 entities per floor
-      for (let i = 0; i < 15; i++) {
-        // Add a random entity
-        const entity = EntityRepository.createRandom();
-        this.addEntityAtRandomPosition(entity, z);
-        // Level up the entity based on the floor
-        if (entity.hasMixin('ExperienceGainer')) {
-          for (let level = 0; level < z; level++) {
-            entity.giveExperience(
-              entity.getNextLevelExperience() - entity.getExperience()
-            );
+      if (z === this._depth - 1) {
+        this.addEntityAtRandomPosition(EntityRepository.create('minotaur'), z);
+      } else {
+        // 15 entities per floor
+        for (let i = 0; i < 15; i++) {
+          // Add a random entity
+          const entity = EntityRepository.createRandom();
+          this.addEntityAtRandomPosition(entity, z);
+          // Level up the entity based on the floor
+          if (entity.hasMixin('ExperienceGainer')) {
+            for (let level = 0; level < z; level++) {
+              entity.giveExperience(
+                entity.getNextLevelExperience() - entity.getExperience()
+              );
+            }
           }
         }
-      }
-      // 10 items per floor
-      for (let i = 0; i < 10; i++) {
-        // Add a random entity
-        this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
+        // 10 items per floor
+        for (let i = 0; i < 10; i++) {
+          // Add a random item
+          this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
+        }
       }
     }
-    // Add weapons and armor to the map in random positions
+    // Add weapons and armor to the map in random positions, except last floor.
     const templates = [
       'dagger',
       'sword',
@@ -57,7 +63,7 @@ export class Map {
     for (let i = 0; i < templates.length; i++) {
       this.addItemAtRandomPosition(
         ItemRepository.create(templates[i]),
-        Math.floor(this._depth * Math.random())
+        Math.floor((this._depth - 1) * Math.random())
       );
     }
     // setup the explored array
