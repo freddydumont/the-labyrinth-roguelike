@@ -10,24 +10,45 @@ export default class DynamicGlyph extends Glyph {
     this._attachedMixins = {};
     // Create a similar object for groups
     this._attachedMixinGroups = {};
+    // Set up an object for listeners
+    this._listeners = {};
+
     // Setup the object's mixins
-    var mixins = props['mixins'] || [];
+    const mixins = props['mixins'] || [];
     for (let i = 0; i < mixins.length; i++) {
-      // Copy over all properties from each mixin as long
-      // as it's not the name or the init property. We
-      // also make sure not to override a property that
-      // already exists on the entity.
+      // Copy over all properties from each mixin as long as it's not the name,
+      // init, or listeners property. We also make sure not to override
+      // a property that already exists on the entity.
       for (let key in mixins[i]) {
-        if (key !== 'init' && key !== 'name' && !this.hasOwnProperty(key)) {
+        if (
+          key !== 'init' &&
+          key !== 'name' &&
+          key !== 'listeners' &&
+          !this.hasOwnProperty(key)
+        ) {
           this[key] = mixins[i][key];
         }
       }
+
       // Add the name of this mixin to our attached mixins
       this._attachedMixins[mixins[i].name] = true;
       // If a group name is present, add it
       if (mixins[i].groupName) {
         this._attachedMixinGroups[mixins[i].groupName] = true;
       }
+
+      // Add all of our listeners
+      if (mixins[i].listeners) {
+        for (let key in mixins[i].listeners) {
+          // If there's no key for this event in our listeners array, add it.
+          if (!this._listeners[key]) {
+            this._listeners[key] = [];
+          }
+          // Add the listener.
+          this._listeners[key].push(mixins[i].listeners[key]);
+        }
+      }
+
       // Finally call the init function if there is one
       if (mixins[i].init) {
         mixins[i].init.call(this, props);
@@ -41,6 +62,17 @@ export default class DynamicGlyph extends Glyph {
       return this._attachedMixins[obj.name];
     } else {
       return this._attachedMixins[obj] || this._attachedMixinGroups[obj];
+    }
+  }
+
+  raiseEvent(event, ...args) {
+    // Make sure we have at least one listener, or else exit
+    if (!this._listeners[event]) {
+      return;
+    }
+    // Invoke each listener, with this entity as the context and the arguments
+    for (let i = 0; i < this._listeners[event].length; i++) {
+      this._listeners[event][i].apply(this, args);
     }
   }
 
