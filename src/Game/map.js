@@ -23,8 +23,8 @@ export class Map {
     // add the player
     this._player = player;
     this.addEntityAtRandomPosition(player, 0);
-    // Add random enemies to each floor.
-    for (let z = 0; z < this._depth; z++) {
+    // Add random enemies and items to each floor. Except last one.
+    for (let z = 0; z < this._depth - 1; z++) {
       // 15 entities per floor
       for (let i = 0; i < 15; i++) {
         // Add a random entity
@@ -41,11 +41,11 @@ export class Map {
       }
       // 10 items per floor
       for (let i = 0; i < 10; i++) {
-        // Add a random entity
+        // Add a random item
         this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
       }
     }
-    // Add weapons and armor to the map in random positions
+    // Add weapons and armor to the map in random positions, except last floor.
     const templates = [
       'dagger',
       'sword',
@@ -57,7 +57,7 @@ export class Map {
     for (let i = 0; i < templates.length; i++) {
       this.addItemAtRandomPosition(
         ItemRepository.create(templates[i]),
-        Math.floor(this._depth * Math.random())
+        Math.floor((this._depth - 1) * Math.random())
       );
     }
     // setup the explored array
