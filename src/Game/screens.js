@@ -39,7 +39,7 @@ let Screen = {
       // size parameters
       const width = 100,
         height = 48,
-        depth = 6;
+        depth = 7;
       // declare tiles and player
       let tiles = new Builder(width, height, depth).getTiles();
       this._player = new Entity(Player);

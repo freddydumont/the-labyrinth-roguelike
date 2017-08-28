@@ -28,7 +28,12 @@ export default class Builder {
     // Instantiate the arrays to be multi-dimension
     for (let z = 0; z < depth; z++) {
       // Create a new dungeon at each level
-      this._tiles[z] = this._generateLevel();
+      if (z === depth - 1) {
+        // if last level, generate a maze
+        this._tiles[z] = this._generateLevel(ROT.Map.EllerMaze);
+      } else {
+        this._tiles[z] = this._generateLevel();
+      }
       // Setup the regions array for each depth
       this._regions[z] = new Array(width);
       for (let x = 0; x < width; x++) {
@@ -66,7 +71,7 @@ export default class Builder {
    * See https://ondras.github.io/rot.js/manual/#map/dungeon
    * for more info on dungeon generators, including rooms and corridors.
    */
-  _generateLevel() {
+  _generateLevel(MapAlgorithm = ROT.Map.Digger) {
     let map = [];
     for (let x = 0; x < this._width; x++) {
       // Create the nested array for the y values
@@ -78,7 +83,7 @@ export default class Builder {
     }
 
     // generate map type
-    let generator = new ROT.Map.Digger(this._width, this._height);
+    let generator = new MapAlgorithm(this._width, this._height);
 
     // create map
     generator.create((x, y, wall) => {
