@@ -50,20 +50,24 @@ Tile.nullTile = new Tile({});
 // floor and wall tiles
 Tile.floorTile = new Tile({
   character: '.',
-  walkable: true
+  walkable: true,
+  description: 'A cave floor'
 });
 Tile.wallTile = new Tile({
   character: '#',
   foreground: 'lightsteelblue',
-  blocksLight: true
+  blocksLight: true,
+  description: 'A cave wall'
 });
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',
-  walkable: true
+  walkable: true,
+  description: 'A rock staircase leading upwards'
 });
 Tile.stairsDownTile = new Tile({
   character: '>',
   foreground: 'white',
-  walkable: true
+  walkable: true,
+  description: 'A rock staircase leading downwards'
 });
