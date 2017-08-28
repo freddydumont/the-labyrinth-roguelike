@@ -1,5 +1,8 @@
 export const Geometry = {
   getLine: function(startX, startY, endX, endY) {
+    // Bresenham's Line Algorithm
+    // Accepts a starting point and end point and
+    // return an array of all the points along the line.
     var points = [];
     var dx = Math.abs(endX - startX);
     var dy = Math.abs(endY - startY);
