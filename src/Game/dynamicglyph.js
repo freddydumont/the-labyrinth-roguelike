@@ -66,8 +66,9 @@ export default class DynamicGlyph extends Glyph {
 
     return prefixes[prefix] + ' ' + string;
   }
-  describeThe = function(capitalize) {
+
+  describeThe(capitalize) {
     const prefix = capitalize ? 'The' : 'the';
     return prefix + ' ' + this.describe();
-  };
+  }
 }
