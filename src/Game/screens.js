@@ -608,7 +608,7 @@ Screen.wearScreen = new ItemListScreen({
     return true;
   }
 });
-Screen.examineScreen = new Game.Screen.ItemListScreen({
+Screen.examineScreen = new ItemListScreen({
   caption: 'Choose the item you wish to examine',
   canSelect: true,
   canSelectMultipleItems: false,
