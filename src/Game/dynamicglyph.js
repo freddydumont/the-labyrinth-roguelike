@@ -65,13 +65,11 @@ export default class DynamicGlyph extends Glyph {
     }
   }
 
-  raiseEvent(event) {
+  raiseEvent(event, ...args) {
     // Make sure we have at least one listener, or else exit
     if (!this._listeners[event]) {
       return;
     }
-    // Extract any arguments passed, removing the event name
-    const args = Array.prototype.slice.call(arguments, 1);
     // Invoke each listener, with this entity as the context and the arguments
     for (let i = 0; i < this._listeners[event].length; i++) {
       this._listeners[event][i].apply(this, args);
