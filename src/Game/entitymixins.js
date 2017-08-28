@@ -41,22 +41,27 @@ const EntityMixins = {
 
   CorpseDropper: {
     name: 'CorpseDropper',
+
     init: function(template) {
       // Chance of dropping a cropse (out of 100).
       this._corpseDropRate = template['corpseDropRate'] || 100;
     },
-    tryDropCorpse: function() {
-      if (Math.round(Math.random() * 100) < this._corpseDropRate) {
-        // Create a new corpse item and drop it.
-        this._map.addItem(
-          this.getX(),
-          this.getY(),
-          this.getZ(),
-          ItemRepository.create('corpse', {
-            name: this._name + ' corpse',
-            foreground: this._foreground
-          })
-        );
+
+    listeners: {
+      onDeath: function(attacker) {
+        // Check if we should drop a corpse.
+        if (Math.round(Math.random() * 100) <= this._corpseDropRate) {
+          // Create a new corpse item and drop it.
+          this._map.addItem(
+            this.getX(),
+            this.getY(),
+            this.getZ(),
+            ItemRepository.create('corpse', {
+              name: this._name + ' corpse',
+              foreground: this._foreground
+            })
+          );
+        }
       }
     }
   },
@@ -129,6 +134,13 @@ const EntityMixins = {
   Destructible: {
     name: 'Destructible',
 
+    listeners: {
+      onGainLevel: function() {
+        // Heal the entity.
+        this.setHp(this.getMaxHp());
+      }
+    },
+
     init: function(props) {
       this._maxHp = props['maxHp'] || 10;
       // We allow taking in health from the props incase we want
@@ -183,29 +195,10 @@ const EntityMixins = {
       // If have 0 or less HP, then remove ourseles from the map
       if (this._hp <= 0) {
         Messages.sendMessage(attacker, 'You kill the %s!', [this.getName()]);
-        // If the entity is a corpse dropper, try to add a corpse
-        if (this.hasMixin(EntityMixins.CorpseDropper)) {
-          this.tryDropCorpse();
-        }
-        // Check if the player died, and if so call their act method to prompt the user.
+        // Raise events
+        this.raiseEvent('onDeath', attacker);
+        attacker.raiseEvent('onKill', this);
         this.kill();
-
-        // Give the attacker experience points.
-        // Formula is MaxHP + DEF + ATK, modified by level difference
-        if (attacker.hasMixin('ExperienceGainer')) {
-          let exp = this.getMaxHp() + this.getDefenseValue();
-          if (this.hasMixin('Attacker')) {
-            exp += this.getAttackValue();
-          }
-          // Account for level differences
-          if (this.hasMixin('ExperienceGainer')) {
-            exp -= (attacker.getLevel() - this.getLevel()) * 3;
-          }
-          // Only give experience if more than 0.
-          if (exp > 0) {
-            attacker.giveExperience(exp);
-          }
-        }
       }
     }
   },
@@ -548,6 +541,23 @@ const EntityMixins = {
   ExperienceGainer: {
     name: 'ExperienceGainer',
 
+    listeners: {
+      onKill: function(victim) {
+        let exp = victim.getMaxHp() + victim.getDefenseValue();
+        if (victim.hasMixin('Attacker')) {
+          exp += victim.getAttackValue();
+        }
+        // Account for level differences
+        if (victim.hasMixin('ExperienceGainer')) {
+          exp -= (this.getLevel() - victim.getLevel()) * 3;
+        }
+        // Only give experience if more than 0.
+        if (exp > 0) {
+          this.giveExperience(exp);
+        }
+      }
+    },
+
     init: function(template) {
       this._level = template['level'] || 1;
       this._experience = template['experience'] || 0;
@@ -626,14 +636,7 @@ const EntityMixins = {
       // Check if we gained at least one level.
       if (levelsGained > 0) {
         Messages.sendMessage(this, 'You advance to level %d.', [this._level]);
-        // Heal the entity if possible.
-        if (this.hasMixin('Destructible')) {
-          this.setHp(this.getMaxHp());
-        }
-        // Call onGainLevel function to increase stats
-        if (this.hasMixin('StatGainer')) {
-          this.onGainLevel();
-        }
+        this.raiseEvent('onGainLevel');
       }
     }
   },
@@ -642,13 +645,15 @@ const EntityMixins = {
     name: 'RandomStatGainer',
     groupName: 'StatGainer',
 
-    onGainLevel: function() {
-      const statOptions = this.getStatOptions();
-      // Randomly select a stat option and execute the callback for each stat point.
-      while (this.getStatPoints() > 0) {
-        // Call the stat increasing function with this as the context.
-        statOptions.random()[1].call(this);
-        this.setStatPoints(this.getStatPoints() - 1);
+    listeners: {
+      onGainLevel: function() {
+        const statOptions = this.getStatOptions();
+        // Randomly select a stat option and execute the callback for each stat point.
+        while (this.getStatPoints() > 0) {
+          // Call the stat increasing function with this as the context.
+          statOptions.random()[1].call(this);
+          this.setStatPoints(this.getStatPoints() - 1);
+        }
       }
     }
   },
@@ -657,10 +662,12 @@ const EntityMixins = {
     name: 'PlayerStatGainer',
     groupName: 'StatGainer',
 
-    onGainLevel: function() {
-      // Setup the gain stat screen and show it.
-      Screen.gainStatScreen.setup(this);
-      Screen.playScreen.setSubScreen(Screen.gainStatScreen);
+    listeners: {
+      onGainLevel: function() {
+        // Setup the gain stat screen and show it.
+        Screen.gainStatScreen.setup(this);
+        Screen.playScreen.setSubScreen(Screen.gainStatScreen);
+      }
     }
   }
 };
