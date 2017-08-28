@@ -138,6 +138,12 @@ const EntityMixins = {
       onGainLevel: function() {
         // Heal the entity.
         this.setHp(this.getMaxHp());
+      },
+      details: function() {
+        return [
+          { key: 'defense', value: this.getDefenseValue() },
+          { key: 'hp', value: this.getHp() }
+        ];
       }
     },
 
@@ -210,6 +216,11 @@ const EntityMixins = {
 
     init: function(props) {
       this._attackValue = props['attackValue'] || 1;
+    },
+    listeners: {
+      details: function() {
+        return [{ key: 'attack', value: this.getAttackValue() }];
+      }
     },
 
     getAttackValue: function() {
@@ -555,6 +566,9 @@ const EntityMixins = {
         if (exp > 0) {
           this.giveExperience(exp);
         }
+      },
+      details: function() {
+        return [{ key: 'level', value: this.getLevel() }];
       }
     },
 
