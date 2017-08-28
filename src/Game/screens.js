@@ -6,6 +6,7 @@ import Entity from './entity';
 import { Player } from './entities';
 import Builder from './builder';
 import { Geometry } from './geometry';
+import Tile from './tile.js';
 
 let Screen = {
   startScreen: {
@@ -468,6 +469,44 @@ let Screen = {
     handleInput: function(inputType, inputData) {
       // nothing to do here
     }
+  },
+  helpScreen: {
+    render: function(display) {
+      let text = 'jsrogue help';
+      const border = '-------------';
+      let y = 0;
+      display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
+      display.drawText(
+        Game.getScreenWidth() / 2 - text.length / 2,
+        y++,
+        border
+      );
+      display.drawText(
+        0,
+        y++,
+        'The villagers have been complaining of a terrible stench coming from the cave.'
+      );
+      display.drawText(
+        0,
+        y++,
+        'Find the source of this smell and get rid of it!'
+      );
+      y += 3;
+      display.drawText(0, y++, '[,] to pick up items');
+      display.drawText(0, y++, '[d] to drop items');
+      display.drawText(0, y++, '[e] to eat items');
+      display.drawText(0, y++, '[w] to wield items');
+      display.drawText(0, y++, '[W] to wield items');
+      display.drawText(0, y++, '[x] to examine items');
+      display.drawText(0, y++, '[;] to look around you');
+      display.drawText(0, y++, '[?] to show this help screen');
+      y += 3;
+      text = '--- press any key to continue ---';
+      display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
+    },
+    handleInput: function(inputType, inputData) {
+      Screen.playScreen.setSubScreen(null);
+    }
   }
 };
 
@@ -804,7 +843,7 @@ class TargetBasedScreen {
     this._visibleCells = visibleCells;
   }
   render(display) {
-    Screen.playScreen.renderTiles.call(Game.Screen.playScreen, display);
+    Screen.playScreen.renderTiles.call(Screen.playScreen, display);
 
     // Draw a line from the start to the cursor.
     let points = Geometry.getLine(
@@ -841,7 +880,7 @@ class TargetBasedScreen {
       } else if (inputData.keyCode === ROT.VK_DOWN) {
         this.moveCursor(0, 1);
       } else if (inputData.keyCode === ROT.VK_ESCAPE) {
-        Game.Screen.playScreen.setSubScreen(undefined);
+        Screen.playScreen.setSubScreen(undefined);
       } else if (inputData.keyCode === ROT.VK_RETURN) {
         this.executeOkFunction();
       }
@@ -862,7 +901,7 @@ class TargetBasedScreen {
   }
   executeOkFunction() {
     // Switch back to the play screen.
-    Game.Screen.playScreen.setSubScreen(undefined);
+    Screen.playScreen.setSubScreen(undefined);
     // Call the OK function and end the player's turn if it return true.
     if (
       this._okFunction(
@@ -874,5 +913,53 @@ class TargetBasedScreen {
     }
   }
 }
+
+Screen.lookScreen = new TargetBasedScreen({
+  captionFunction: function(x, y) {
+    const z = this._player.getZ();
+    const map = this._player.getMap();
+    // If the tile is explored, we can give a better capton
+    if (map.isExplored(x, y, z)) {
+      // If the tile isn't explored, we have to check if we can actually
+      // see it before testing if there's an entity or item.
+      if (this._visibleCells[x + ',' + y]) {
+        const items = map.getItemsAt(x, y, z);
+        // If we have items, we want to render the top most item
+        if (items) {
+          const item = items[items.length - 1];
+          return String.format(
+            '%s - %s (%s)',
+            item.getRepresentation(),
+            item.describeA(true),
+            item.details()
+          );
+          // Else check if there's an entity
+        } else if (map.getEntityAt(x, y, z)) {
+          var entity = map.getEntityAt(x, y, z);
+          return String.format(
+            '%s - %s (%s)',
+            entity.getRepresentation(),
+            entity.describeA(true),
+            entity.details()
+          );
+        }
+      }
+      // If there was no entity/item or the tile wasn't visible, then use
+      // the tile information.
+      return String.format(
+        '%s - %s',
+        map.getTile(x, y, z).getRepresentation(),
+        map.getTile(x, y, z).getDescription()
+      );
+    } else {
+      // If the tile is not explored, show the null tile description.
+      return String.format(
+        '%s - %s',
+        Tile.nullTile.getRepresentation(),
+        Tile.nullTile.getDescription()
+      );
+    }
+  }
+});
 
 export default Screen;
