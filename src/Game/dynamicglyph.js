@@ -71,9 +71,29 @@ export default class DynamicGlyph extends Glyph {
       return;
     }
     // Invoke each listener, with this entity as the context and the arguments
+    let results = [];
     for (let i = 0; i < this._listeners[event].length; i++) {
-      this._listeners[event][i].apply(this, args);
+      results.push(this._listeners[event][i].apply(this, args));
     }
+    return results;
+  }
+
+  details() {
+    let details = [];
+    const detailGroups = this.raiseEvent('details');
+    // Iterate through each return value, grabbing the detaisl from the arrays.
+    if (detailGroups) {
+      for (let i = 0, l = detailGroups.length; i < l; i++) {
+        if (detailGroups[i]) {
+          for (let j = 0; j < detailGroups[i].length; j++) {
+            details.push(
+              detailGroups[i][j].key + ': ' + detailGroups[i][j].value
+            );
+          }
+        }
+      }
+    }
+    return details.join(', ');
   }
 
   setName(name) {
