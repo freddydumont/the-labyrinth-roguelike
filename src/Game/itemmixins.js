@@ -1,5 +1,3 @@
-import Item from './item';
-
 const ItemMixins = {
   // Edible mixins
   Edible: {
@@ -24,7 +22,7 @@ const ItemMixins = {
     },
     describe: function() {
       if (this._maxConsumptions !== this._remainingConsumptions) {
-        return 'partly eaten ' + Item.prototype.describe.call(this);
+        return 'partly eaten ' + this._name;
       } else {
         return this._name;
       }

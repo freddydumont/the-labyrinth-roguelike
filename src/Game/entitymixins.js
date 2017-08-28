@@ -600,7 +600,8 @@ const EntityMixins = {
     },
 
     giveExperience: function(points) {
-      let statPointsGained = 0;
+      // currently unused
+      //let statPointsGained = 0;
       let levelsGained = 0;
       // Loop until we've allocated all points.
       while (points > 0) {
@@ -614,7 +615,8 @@ const EntityMixins = {
           this._level++;
           levelsGained++;
           this._statPoints += this._statPointsPerLevel;
-          statPointsGained += this._statPointsPerLevel;
+          // currently unused
+          //statPointsGained += this._statPointsPerLevel;
         } else {
           // Simple case - just give the experience.
           this._experience += points;
