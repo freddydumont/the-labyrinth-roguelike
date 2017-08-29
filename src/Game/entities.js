@@ -39,7 +39,7 @@ EntityRepository.define('bat', {
   maxHp: 5,
   attackValue: 4,
   speed: 2000,
-  levelRange: [1, 2, 3, 4, 5, 6],
+  levelRange: [0, 1, 2, 3, 4, 5],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Attacker,
@@ -56,7 +56,7 @@ EntityRepository.define('newt', {
   foreground: 'yellow',
   maxHp: 3,
   attackValue: 2,
-  levelRange: [1, 2],
+  levelRange: [0, 1],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Attacker,
@@ -75,7 +75,7 @@ EntityRepository.define('kobold', {
   attackValue: 4,
   sightRadius: 5,
   tasks: ['hunt', 'wander'],
-  levelRange: [2, 3],
+  levelRange: [0, 1, 2],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Sight,
@@ -95,7 +95,7 @@ EntityRepository.define('goblin', {
   attackValue: 7,
   sightRadius: 6,
   tasks: ['hunt', 'wander'],
-  levelRange: [3, 4, 5],
+  levelRange: [2, 3, 4],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Sight,
@@ -118,7 +118,7 @@ EntityRepository.define(
     defenseValue: 10,
     sightRadius: 8,
     tasks: ['hunt', 'wander'],
-    levelRange: [7],
+    levelRange: [6],
     mixins: [
       EntityMixins.BossActor,
       EntityMixins.TaskActor,
