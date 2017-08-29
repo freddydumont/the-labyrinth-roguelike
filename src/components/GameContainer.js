@@ -23,6 +23,9 @@ export default class GameContainer extends Component {
       <div className="flex flex-column justify-center items-center">
         <h1 className="mv5 f1 tracked gold">THE LABYRINTH</h1>
         <div className="game-container" />
+        <p className="tracked f5" style={{ color: '#BEBEBE' }}>
+          Press ? for help.
+        </p>
       </div>
     );
   }
