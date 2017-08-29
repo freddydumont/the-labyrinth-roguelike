@@ -5,6 +5,8 @@ export default class DynamicGlyph extends Glyph {
     // Instantiate any properties from the passed object
     super(props);
     this._name = props['name'] || '';
+    // Level range
+    this._levelRange = props['levelRange'] || 0;
     // Create an object which will keep track what mixins we have
     // attached to this entity based on the name property
     this._attachedMixins = {};
@@ -100,8 +102,16 @@ export default class DynamicGlyph extends Glyph {
     this._name = name;
   }
 
+  setLevelRange(range) {
+    this._levelRange = range;
+  }
+
   getName() {
     return this._name;
+  }
+
+  getLevelRange() {
+    return this._levelRange;
   }
 
   describe() {

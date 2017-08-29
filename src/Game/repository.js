@@ -44,4 +44,30 @@ export default class Repository {
     // Pick a random key and create an object based off of it.
     return this.create(Object.keys(this._randomTemplates).random());
   }
+
+  // Create all objects in this._templates
+  createAll() {
+    let objects = [];
+    const templates = Object.keys(this._templates);
+    for (let i = 0; i < templates.length; i++) {
+      objects.push(this.create(templates[i]));
+    }
+    return objects;
+  }
+
+  // Create an object based on a random template,
+  // checking if object can be spawned on that level
+  createRandomOnLevel(level) {
+    // Return the result of calling random() on the
+    // filtered array of objects returned by createAll
+    return this.createAll()
+      .filter(object => {
+        // try to find level in the object levelRange
+        let found = object
+          .getLevelRange()
+          .find(objectLevel => objectLevel === level);
+        return typeof found !== 'undefined';
+      })
+      .random();
+  }
 }
