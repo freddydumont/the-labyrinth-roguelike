@@ -94,7 +94,13 @@ const EntityMixins = {
     modifyFullnessBy: function(points) {
       this._fullness = this._fullness + points;
       if (this._fullness <= 0) {
-        this.kill('You have died of starvation!');
+        const currentHP = this.getHp();
+        if (currentHP <= 0) {
+          this.kill('You have died of starvation!');
+        } else {
+          Messages.sendMessage(this, "You're losing health to starvation!");
+          this.setHp(currentHP - 1);
+        }
       } else if (this._fullness > this._maxFullness) {
         this.kill('You choke and die!');
       }
