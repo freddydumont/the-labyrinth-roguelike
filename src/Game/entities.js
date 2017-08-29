@@ -6,7 +6,7 @@ export const Player = {
   name: 'player',
   character: '@',
   foreground: 'yellow',
-  maxHp: 40,
+  maxHp: 50,
   attackValue: 10,
   sightRadius: 6,
   inventorySlots: 22,
@@ -36,10 +36,11 @@ EntityRepository.define('bat', {
   name: 'bat',
   character: 'B',
   foreground: 'white',
+  maxHp: 10,
   foodValue: 50,
-  maxHp: 5,
   attackValue: 4,
   speed: 2000,
+  levelRange: [0, 1, 2],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Attacker,
@@ -54,11 +55,31 @@ EntityRepository.define('newt', {
   name: 'newt',
   character: ':',
   foreground: 'yellow',
+  maxHp: 12,
+  attackValue: 5,
   foodValue: 50,
-  maxHp: 3,
-  attackValue: 2,
+  levelRange: [0, 1],
   mixins: [
     EntityMixins.TaskActor,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
+  ]
+});
+
+EntityRepository.define('rat', {
+  name: 'rat',
+  character: 'r',
+  foreground: 'saddlebrown',
+  maxHp: 15,
+  attackValue: 5,
+  tasks: ['hunt', 'wander'],
+  levelRange: [0, 1, 2],
+  mixins: [
+    EntityMixins.TaskActor,
+    EntityMixins.Sight,
     EntityMixins.Attacker,
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
@@ -72,10 +93,74 @@ EntityRepository.define('kobold', {
   character: 'k',
   foreground: 'brown',
   foodValue: 100,
-  maxHp: 6,
-  attackValue: 4,
   sightRadius: 5,
+  maxHp: 20,
+  attackValue: 7,
   tasks: ['hunt', 'wander'],
+  levelRange: [1, 2, 3],
+  mixins: [
+    EntityMixins.TaskActor,
+    EntityMixins.Sight,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
+  ]
+});
+
+EntityRepository.define('goblin', {
+  name: 'goblin',
+  character: 'g',
+  foreground: 'lawngreen',
+  maxHp: 25,
+  attackValue: 9,
+  defenseValue: 2,
+  sightRadius: 6,
+  tasks: ['hunt', 'wander'],
+  levelRange: [2, 3, 4],
+  mixins: [
+    EntityMixins.TaskActor,
+    EntityMixins.Sight,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
+  ]
+});
+
+EntityRepository.define('orc', {
+  name: 'orc',
+  character: 'O',
+  foreground: 'darkgreen',
+  maxHp: 40,
+  attackValue: 12,
+  defenseValue: 5,
+  sightRadius: 7,
+  tasks: ['hunt', 'wander'],
+  levelRange: [4, 5],
+  mixins: [
+    EntityMixins.TaskActor,
+    EntityMixins.Sight,
+    EntityMixins.Attacker,
+    EntityMixins.Destructible,
+    EntityMixins.CorpseDropper,
+    EntityMixins.ExperienceGainer,
+    EntityMixins.RandomStatGainer
+  ]
+});
+
+EntityRepository.define('cyclop', {
+  name: 'cyclop',
+  character: 'C',
+  foreground: 'darkkhaki',
+  maxHp: 50,
+  attackValue: 15,
+  defenseValue: 6,
+  sightRadius: 4,
+  tasks: ['hunt', 'wander'],
+  levelRange: [5],
   mixins: [
     EntityMixins.TaskActor,
     EntityMixins.Sight,
@@ -93,12 +178,13 @@ EntityRepository.define(
     name: 'minotaur',
     character: 'M',
     foreground: 'red',
+    maxHp: 100,
     foodValue: 500,
-    maxHp: 80,
-    attackValue: 15,
+    attackValue: 25,
     defenseValue: 10,
-    sightRadius: 8,
+    sightRadius: 10,
     tasks: ['hunt', 'wander'],
+    levelRange: [6],
     mixins: [
       EntityMixins.BossActor,
       EntityMixins.TaskActor,

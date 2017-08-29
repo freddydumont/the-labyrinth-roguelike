@@ -33,7 +33,7 @@ export default class Map {
         // 15 entities per floor
         for (let i = 0; i < 15; i++) {
           // Add a random entity
-          const entity = EntityRepository.createRandom();
+          const entity = EntityRepository.createRandomOnLevel(z);
           this.addEntityAtRandomPosition(entity, z);
           // Level up the entity based on the floor
           if (entity.hasMixin('ExperienceGainer')) {
