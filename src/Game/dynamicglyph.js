@@ -81,7 +81,7 @@ export default class DynamicGlyph extends Glyph {
   details() {
     let details = [];
     const detailGroups = this.raiseEvent('details');
-    // Iterate through each return value, grabbing the detaisl from the arrays.
+    // Iterate through each return value, grabbing the details from the arrays.
     if (detailGroups) {
       for (let i = 0, l = detailGroups.length; i < l; i++) {
         if (detailGroups[i]) {

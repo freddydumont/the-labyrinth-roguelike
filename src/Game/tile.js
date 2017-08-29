@@ -55,13 +55,13 @@ Tile.nullTile = new Tile({});
 Tile.floorTile = new Tile({
   character: '.',
   walkable: true,
-  description: 'A cave floor'
+  description: 'A dungeon floor'
 });
 Tile.wallTile = new Tile({
   character: '#',
   foreground: 'lightsteelblue',
   blocksLight: true,
-  description: 'A cave wall'
+  description: 'A dungeon wall'
 });
 Tile.stairsUpTile = new Tile({
   character: '<',

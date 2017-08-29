@@ -1,6 +1,6 @@
 import { vsprintf } from 'sprintf-js';
 import { ROT, Game } from './game';
-import * as Maps from './map';
+import Map from './map';
 import * as Messages from './messages';
 import Entity from './entity';
 import { Player } from './entities';
@@ -46,7 +46,7 @@ let Screen = {
       let tiles = new Builder(width, height, depth).getTiles();
       this._player = new Entity(Player);
       // build map with tiles and player
-      this._map = new Maps.Map(tiles, this._player);
+      this._map = new Map(tiles, this._player);
       // Start the map's engine
       this._map.getEngine().start();
     },
@@ -86,6 +86,7 @@ let Screen = {
         hungerState
       );
     },
+
     getScreenOffsets: function() {
       // Make sure we still have enough space to fit an entire game screen
       let topLeftX = Math.max(
@@ -112,6 +113,7 @@ let Screen = {
         y: topLeftY
       };
     },
+
     renderTiles: function(display) {
       const screenWidth = Game.getScreenWidth();
       const screenHeight = Game.getScreenHeight();
@@ -218,6 +220,7 @@ let Screen = {
         }
       }
     },
+
     handleInput: function(inputType, inputData) {
       // If the game is over, enter will bring the user to the losing screen.
       if (this._gameEnded) {
@@ -292,7 +295,7 @@ let Screen = {
             }
             return;
           case ROT.VK_X:
-            // Show the drop screen
+            // Show the examine screen
             this.showItemsSubScreen(
               Screen.examineScreen,
               this._player.getItems(),
@@ -341,7 +344,7 @@ let Screen = {
               this.move(0, 0, 1);
             }
             break;
-          // keycode for ?
+          // keycode for ;
           case 186:
             // Setup the look screen.
             const offsets = this.getScreenOffsets();
@@ -487,33 +490,32 @@ let Screen = {
       // nothing to do here
     }
   },
+
   helpScreen: {
     render: function(display) {
-      let text = 'jsrogue help';
+      let text = 'Help';
       const border = '-------------';
       let y = 0;
       display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
       display.drawText(
-        Game.getScreenWidth() / 2 - text.length / 2,
+        Game.getScreenWidth() / 2 - border.length / 2,
         y++,
         border
       );
+      y++;
       display.drawText(
         0,
         y++,
-        'The villagers have been complaining of a terrible stench coming from the cave.'
+        'You have been tasked to enter the Labyrinth and slay the Minotaur.'
       );
-      display.drawText(
-        0,
-        y++,
-        'Find the source of this smell and get rid of it!'
-      );
+      display.drawText(0, y++, 'Find him and end his tyranny!');
       y += 3;
+      display.drawText(0, y++, '[.] to wait');
       display.drawText(0, y++, '[,] to pick up items');
       display.drawText(0, y++, '[d] to drop items');
       display.drawText(0, y++, '[e] to eat items');
       display.drawText(0, y++, '[w] to wield items');
-      display.drawText(0, y++, '[W] to wield items');
+      display.drawText(0, y++, '[W] to wear items');
       display.drawText(0, y++, '[x] to examine items');
       display.drawText(0, y++, '[;] to look around you');
       display.drawText(0, y++, '[?] to show this help screen');
@@ -521,6 +523,7 @@ let Screen = {
       text = '--- press any key to continue ---';
       display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
     },
+
     handleInput: function(inputType, inputData) {
       Screen.playScreen.setSubScreen(null);
     }

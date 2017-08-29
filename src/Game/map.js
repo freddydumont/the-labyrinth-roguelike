@@ -3,7 +3,7 @@ import Tile from './tile';
 import { EntityRepository } from './entities';
 import { ItemRepository } from './items';
 
-export class Map {
+export default class Map {
   constructor(tiles, player) {
     this._tiles = tiles;
     // cache dimensions
