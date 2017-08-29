@@ -69,7 +69,7 @@ const EntityMixins = {
             this.getZ(),
             ItemRepository.create('corpse', {
               name: this._name + ' corpse',
-              foodValue: this._foodValue || 25,
+              foodValue: this._foodValue,
               foreground: this._foreground
             })
           );
@@ -110,8 +110,7 @@ const EntityMixins = {
     getHungerState: function() {
       // Fullness points per percent of max fullness
       const perPercent = this._maxFullness / 100;
-      const hungerMeter = `${Math.floor(this._fullness / 10)}/${this
-        ._maxFullness / 10}`;
+      const hungerMeter = `${this._fullness / 10}/${this._maxFullness / 10}`;
       let hungerMsg, hungerColor;
       // 10% of max fullness or less = starving
       if (this._fullness <= perPercent * 10) {
