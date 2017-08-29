@@ -110,7 +110,6 @@ const EntityMixins = {
     getHungerState: function() {
       // Fullness points per percent of max fullness
       const perPercent = this._maxFullness / 100;
-      const hungerMeter = `${this._fullness / 10}/${this._maxFullness / 10}`;
       let hungerMsg, hungerColor;
       // 10% of max fullness or less = starving
       if (this._fullness <= perPercent * 10) {
@@ -133,7 +132,7 @@ const EntityMixins = {
         hungerColor = '%c{yellow}';
         hungerMsg = 'Not Hungry';
       }
-      return [hungerColor, `${hungerMsg} ${hungerMeter}`];
+      return [hungerColor, `${hungerMsg}`];
     }
   },
 

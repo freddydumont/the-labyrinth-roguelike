@@ -9,7 +9,7 @@ ItemRepository.define('apple', {
   name: 'apple',
   character: '%',
   foreground: 'red',
-  foodValue: 50,
+  foodValue: 100,
   mixins: [ItemMixins.Edible]
 });
 
@@ -17,7 +17,7 @@ ItemRepository.define('melon', {
   name: 'melon',
   character: '%',
   foreground: 'lightgreen',
-  foodValue: 35,
+  foodValue: 50,
   consumptions: 4,
   mixins: [ItemMixins.Edible]
 });
