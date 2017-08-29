@@ -11,6 +11,12 @@ const ItemMixins = {
       this._remainingConsumptions = this._maxConsumptions;
     },
 
+    listeners: {
+      details: function() {
+        return [{ key: 'food', value: this._foodValue }];
+      }
+    },
+
     eat: function(entity) {
       if (entity.hasMixin('FoodConsumer')) {
         if (this.hasRemainingConsumptions()) {
@@ -40,6 +46,19 @@ const ItemMixins = {
       this._defenseValue = template['defenseValue'] || 0;
       this._wieldable = template['wieldable'] || false;
       this._wearable = template['wearable'] || false;
+    },
+
+    listeners: {
+      details: function() {
+        let results = [];
+        if (this._wieldable) {
+          results.push({ key: 'attack', value: this.getAttackValue() });
+        }
+        if (this._wearable) {
+          results.push({ key: 'defense', value: this.getDefenseValue() });
+        }
+        return results;
+      }
     },
 
     getAttackValue: function() {

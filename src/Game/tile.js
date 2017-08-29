@@ -12,6 +12,7 @@ export default class Tile extends Glyph {
     this._walkable = props['walkable'] || false;
     this._diggable = props['diggable'] || false;
     this._blocksLight = props['blocksLight'] || false;
+    this._description = props['description'] || '';
   }
 
   // Standard getters
@@ -24,6 +25,9 @@ export default class Tile extends Glyph {
   isBlockingLight() {
     return this._blocksLight;
   }
+  getDescription = function() {
+    return this._description;
+  };
 }
 
 /**
@@ -50,20 +54,24 @@ Tile.nullTile = new Tile({});
 // floor and wall tiles
 Tile.floorTile = new Tile({
   character: '.',
-  walkable: true
+  walkable: true,
+  description: 'A dungeon floor'
 });
 Tile.wallTile = new Tile({
   character: '#',
   foreground: 'lightsteelblue',
-  blocksLight: true
+  blocksLight: true,
+  description: 'A dungeon wall'
 });
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',
-  walkable: true
+  walkable: true,
+  description: 'A rock staircase leading upwards'
 });
 Tile.stairsDownTile = new Tile({
   character: '>',
   foreground: 'white',
-  walkable: true
+  walkable: true,
+  description: 'A rock staircase leading downwards'
 });
