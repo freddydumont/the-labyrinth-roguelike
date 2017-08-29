@@ -2,6 +2,7 @@ import { startScreen } from './startScreen';
 import { winScreen } from './winScreen';
 import { loseScreen } from './loseScreen';
 import { helpScreen } from './helpScreen';
+import { gainStatScreen } from './gainStatScreen';
 import * as itemListScreens from './itemListScreens';
 import { lookScreen } from './targetBasedScreens';
 
@@ -10,6 +11,7 @@ let Screen = {
   winScreen,
   loseScreen,
   helpScreen,
+  gainStatScreen,
   lookScreen,
   ...itemListScreens
 };
