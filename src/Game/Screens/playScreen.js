@@ -57,9 +57,9 @@ export const playScreen = {
     // Render hunger state
     const hungerState = this._player.getHungerState();
     display.drawText(
-      Game.getScreenWidth() - hungerState.length,
+      Game.getScreenWidth() - hungerState[1].length,
       Game.getScreenHeight(),
-      hungerState
+      hungerState.join('')
     );
   },
 
