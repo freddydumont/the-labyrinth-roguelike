@@ -1,4 +1,4 @@
-export const Geometry = {
+const Geometry = {
   getLine: function(startX, startY, endX, endY) {
     // Bresenham's Line Algorithm
     // Accepts a starting point and end point and
@@ -30,3 +30,5 @@ export const Geometry = {
     return points;
   }
 };
+
+export default Geometry;
