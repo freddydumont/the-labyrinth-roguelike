@@ -120,13 +120,13 @@ const EntityMixins = {
       } else if (this._fullness <= perPercent * 30) {
         hungerColor = '%c{orange}';
         hungerMsg = 'Hungry';
-        // 90% of max fullness or more = oversatiated
-      } else if (this._fullness >= perPercent * 90) {
-        hungerColor = '%c{lime}';
+        // 95% of max fullness or more = oversatiated
+      } else if (this._fullness >= perPercent * 95) {
+        hungerColor = '%c{red}';
         hungerMsg = 'Oversatiated';
         // 70% of max fullness or more = full
       } else if (this._fullness >= perPercent * 70) {
-        hungerColor = '%c{lightgreen}';
+        hungerColor = '%c{lime}';
         hungerMsg = 'Full';
         // Anything else = not hungry`
       } else {

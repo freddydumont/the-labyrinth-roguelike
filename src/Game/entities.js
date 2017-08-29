@@ -13,7 +13,7 @@ export const Player = {
   // Max fullness
   maxFullness: 1000,
   // Starting fullness
-  fullness: 500,
+  fullness: 1000,
   // Lose 1 fullness per step
   fullnessDepletionRate: 1,
   mixins: [
