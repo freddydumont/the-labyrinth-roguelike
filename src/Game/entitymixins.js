@@ -69,6 +69,7 @@ const EntityMixins = {
             this.getZ(),
             ItemRepository.create('corpse', {
               name: this._name + ' corpse',
+              foodValue: this._foodValue || 25,
               foreground: this._foreground
             })
           );

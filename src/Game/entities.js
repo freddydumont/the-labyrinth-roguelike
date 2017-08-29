@@ -13,7 +13,7 @@ export const Player = {
   // Max fullness
   maxFullness: 1000,
   // Starting fullness
-  fullness: 1,
+  fullness: 500,
   // Lose 1 fullness per step
   fullnessDepletionRate: 1,
   mixins: [
@@ -36,6 +36,7 @@ EntityRepository.define('bat', {
   name: 'bat',
   character: 'B',
   foreground: 'white',
+  foodValue: 20,
   maxHp: 5,
   attackValue: 4,
   speed: 2000,
@@ -53,6 +54,7 @@ EntityRepository.define('newt', {
   name: 'newt',
   character: ':',
   foreground: 'yellow',
+  foodValue: 20,
   maxHp: 3,
   attackValue: 2,
   mixins: [
@@ -69,6 +71,7 @@ EntityRepository.define('kobold', {
   name: 'kobold',
   character: 'k',
   foreground: 'brown',
+  foodValue: 50,
   maxHp: 6,
   attackValue: 4,
   sightRadius: 5,
@@ -90,6 +93,7 @@ EntityRepository.define(
     name: 'minotaur',
     character: 'M',
     foreground: 'red',
+    foodValue: 500,
     maxHp: 80,
     attackValue: 15,
     defenseValue: 10,
