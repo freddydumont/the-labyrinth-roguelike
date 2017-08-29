@@ -63,6 +63,11 @@ Tile.wallTile = new Tile({
   blocksLight: true,
   description: 'A dungeon wall'
 });
+Tile.mazeWallTile = new Tile({
+  character: '#',
+  foreground: 'rgb(255, 183, 0)',
+  blocksLight: true
+});
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',

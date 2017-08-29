@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ROT, Game } from '../Game/game';
 import Screen from '../Game/screens';
-import GameControler from './GameControler';
 
 export default class GameContainer extends Component {
   componentDidMount() {
@@ -22,8 +21,11 @@ export default class GameContainer extends Component {
   render() {
     return (
       <div className="flex flex-column justify-center items-center">
-        <GameControler />
+        <h1 className="mv5 f1 tracked gold">THE LABYRINTH</h1>
         <div className="game-container" />
+        <p className="tracked f5" style={{ color: '#BEBEBE' }}>
+          Press ? for help.
+        </p>
       </div>
     );
   }
