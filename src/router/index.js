@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import firebase from '../firebase';
 import GameContainer from '../components/GameContainer';
-import Login from '../components/Login';
-import Home from '../components/Home';
-import { Route, BrowserRouter, Redirect, Switch } from 'react-router-dom';
+import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-import PublicRoute from '../components/PublicRoute';
-import PrivateRoute from '../components/PrivateRoute';
+// import PublicRoute from '../components/PublicRoute';
+// import PrivateRoute from '../components/PrivateRoute';
 
 class Root extends Component {
   componentDidMount() {
-    const { dispatch, auth } = this.props;
+    const { dispatch } = this.props;
     this.removeListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         dispatch(actions.login(user.uid));
@@ -30,11 +28,9 @@ class Root extends Component {
     return auth.loading
       ? <h1>Loading</h1>
       : <BrowserRouter>
-          <div>
+          <div className="w-100 bg-light-gray min-vh-100">
             <Switch>
-              <Route path="/" exact component={Home} />
-              <PublicRoute path="/login" component={Login} />
-              <PrivateRoute path="/game" component={GameContainer} />
+              <Route path="/" exact component={GameContainer} />
               <Route render={() => <h3>No Match</h3>} />
             </Switch>
           </div>

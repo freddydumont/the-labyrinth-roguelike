@@ -1,5 +1,5 @@
 import { Game } from './game';
-import * as Screen from './screens';
+import Screen from './screens';
 
 export const _init = function() {
   // Loads our tileSet into our page to use

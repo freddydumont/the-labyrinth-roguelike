@@ -1,6 +1,6 @@
 import { vsprintf } from 'sprintf-js';
 // see https://github.com/alexei/sprintf.js for formatting options
-import Mixins from './mixins';
+import EntityMixins from './entitymixins';
 
 /**
  * Take at least a recipient entity and a message as arguments,
@@ -9,7 +9,7 @@ import Mixins from './mixins';
  */
 export const sendMessage = function(recipient, message, args) {
   // Make sure the recipient can receive the message before doing any work.
-  if (recipient.hasMixin(Mixins.MessageRecipient)) {
+  if (recipient.hasMixin(EntityMixins.MessageRecipient)) {
     // If args were passed, then we format the message, else no formatting is necessary
     if (args) {
       message = vsprintf(message, args);
@@ -26,6 +26,7 @@ export const sendMessageNearby = function(
   map,
   centerX,
   centerY,
+  centerZ,
   message,
   args
 ) {
@@ -34,10 +35,10 @@ export const sendMessageNearby = function(
     message = vsprintf(message, args);
   }
   // Get the nearby entities
-  let entities = map.getEntitiesWithinRadius(centerX, centerY, 5);
+  let entities = map.getEntitiesWithinRadius(centerX, centerY, centerZ, 5);
   // Iterate through nearby entities, sending the message if they can receive it.
   for (let i = 0; i < entities.length; i++) {
-    if (entities[i].hasMixin(Mixins.MessageRecipient)) {
+    if (entities[i].hasMixin(EntityMixins.MessageRecipient)) {
       entities[i].receiveMessage(message);
     }
   }

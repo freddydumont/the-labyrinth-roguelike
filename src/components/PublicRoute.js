@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 
 const PublicRoute = ({ component: Component, auth, ...rest }) => {
   const { authed } = auth;
-  console.log(authed);
 
   return (
     <Route
