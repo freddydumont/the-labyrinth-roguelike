@@ -12,6 +12,7 @@ export default class Tile extends Glyph {
     this._walkable = props['walkable'] || false;
     this._diggable = props['diggable'] || false;
     this._blocksLight = props['blocksLight'] || false;
+    this._description = props['description'] || '';
   }
 
   // Standard getters
@@ -24,6 +25,9 @@ export default class Tile extends Glyph {
   isBlockingLight() {
     return this._blocksLight;
   }
+  getDescription = function() {
+    return this._description;
+  };
 }
 
 /**

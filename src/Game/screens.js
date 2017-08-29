@@ -291,7 +291,7 @@ let Screen = {
               );
             }
             return;
-          case ROT._X:
+          case ROT.VK_X:
             // Show the drop screen
             this.showItemsSubScreen(
               Screen.examineScreen,
@@ -341,12 +341,29 @@ let Screen = {
               this.move(0, 0, 1);
             }
             break;
+          // keycode for ?
+          case 186:
+            // Setup the look screen.
+            const offsets = this.getScreenOffsets();
+            Screen.lookScreen.setup(
+              this._player,
+              this._player.getX(),
+              this._player.getY(),
+              offsets.x,
+              offsets.y
+            );
+            this.setSubScreen(Screen.lookScreen);
+            return;
           default:
             // Not a valid key
             return;
         }
         // Unlock the engine
         this._map.getEngine().unlock();
+      } else if (inputType === 'keypress') {
+        if (inputData.keyCode === ROT.VK_QUESTION_MARK) {
+          this.setSubScreen(Screen.helpScreen);
+        }
       }
     },
 
