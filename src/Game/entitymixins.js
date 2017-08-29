@@ -147,8 +147,8 @@ const EntityMixins = {
 
     listeners: {
       onGainLevel: function() {
-        // Heal the entity.
-        this.setHp(this.getMaxHp());
+        // Heal the entity by 5 * their level
+        this.heal(5 * this.getLevel());
       },
       details: function() {
         return [
@@ -198,6 +198,11 @@ const EntityMixins = {
 
     setHp: function(hp) {
       this._hp = hp;
+    },
+
+    heal: function(amount) {
+      let hp = this._hp + amount;
+      this.setHp(hp > this._maxHp ? this._maxHp : hp);
     },
 
     increaseMaxHp: function(value = 10) {
@@ -622,7 +627,7 @@ const EntityMixins = {
       return this._experience;
     },
     getNextLevelExperience: function() {
-      return this._level * this._level * 10;
+      return this._level * this._level * 15;
     },
     getStatPoints: function() {
       return this._statPoints;
