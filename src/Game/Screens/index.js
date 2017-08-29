@@ -1,9 +1,11 @@
 import { startScreen } from './startScreen';
 import { winScreen } from './winScreen';
+import { loseScreen } from './loseScreen';
 
 let Screen = {
   startScreen,
-  winScreen
+  winScreen,
+  loseScreen
 };
 
 export default Screen;
