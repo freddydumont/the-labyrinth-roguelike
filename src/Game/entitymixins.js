@@ -101,23 +101,27 @@ const EntityMixins = {
     },
     getHungerState: function() {
       // Fullness points per percent of max fullness
-      var perPercent = this._maxFullness / 100;
-      // 5% of max fullness or less = starving
-      if (this._fullness <= perPercent * 5) {
-        return 'Starving';
-        // 25% of max fullness or less = hungry
-      } else if (this._fullness <= perPercent * 25) {
-        return 'Hungry';
-        // 95% of max fullness or more = oversatiated
-      } else if (this._fullness >= perPercent * 95) {
-        return 'Oversatiated';
+      const perPercent = this._maxFullness / 100;
+      const hungerMeter = `${Math.floor(this._fullness / 10)}/${this
+        ._maxFullness / 10}`;
+      let hungerMsg;
+      // 10% of max fullness or less = starving
+      if (this._fullness <= perPercent * 10) {
+        hungerMsg = '%c{red}Starving';
+        // 40% of max fullness or less = hungry
+      } else if (this._fullness <= perPercent * 40) {
+        hungerMsg = '%c{orange}Hungry';
+        // 90% of max fullness or more = oversatiated
+      } else if (this._fullness >= perPercent * 90) {
+        hungerMsg = '%c{lime}Oversatiated';
         // 75% of max fullness or more = full
       } else if (this._fullness >= perPercent * 75) {
-        return 'Full';
-        // Anything else = not hungry
+        hungerMsg = '%c{green}Full';
+        // Anything else = not hungry`
       } else {
-        return `Not Hungry`;
+        hungerMsg = '%c{yellow}Not Hungry';
       }
+      return `${hungerMsg} ${hungerMeter}`;
     }
   },
 
