@@ -92,7 +92,6 @@ const EntityMixins = {
       this.modifyFullnessBy(-this._fullnessDepletionRate);
     },
     modifyFullnessBy: function(points) {
-      this._fullness = this._fullness + points;
       if (this._fullness <= 0) {
         const currentHP = this.getHp();
         if (currentHP <= 0) {
@@ -103,6 +102,8 @@ const EntityMixins = {
         }
       } else if (this._fullness > this._maxFullness) {
         this.kill('You choke and die!');
+      } else {
+        this._fullness = this._fullness + points;
       }
     },
     getHungerState: function() {
