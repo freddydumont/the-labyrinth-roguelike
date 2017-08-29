@@ -43,6 +43,21 @@ ItemRepository.define(
     name: 'dagger',
     character: ')',
     foreground: 'gray',
+    attackValue: 2,
+    wieldable: true,
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+ItemRepository.define(
+  'short sword',
+  {
+    name: 'short sword',
+    character: ')',
+    foreground: 'lightgray',
     attackValue: 5,
     wieldable: true,
     mixins: [ItemMixins.Equippable]
@@ -53,12 +68,27 @@ ItemRepository.define(
 );
 
 ItemRepository.define(
-  'sword',
+  'war hammer',
   {
-    name: 'sword',
-    character: ')',
+    name: 'war hammer',
+    character: 'T',
+    foreground: 'slategray',
+    attackValue: 8,
+    wieldable: true,
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+ItemRepository.define(
+  'long sword',
+  {
+    name: 'long sword',
+    character: '|',
     foreground: 'white',
-    attackValue: 10,
+    attackValue: 12,
     wieldable: true,
     mixins: [ItemMixins.Equippable]
   },
@@ -71,9 +101,9 @@ ItemRepository.define(
   'staff',
   {
     name: 'staff',
-    character: ')',
-    foreground: 'yellow',
-    attackValue: 5,
+    character: '/',
+    foreground: 'darkgoldenrod',
+    attackValue: 7,
     defenseValue: 3,
     wieldable: true,
     mixins: [ItemMixins.Equippable]
