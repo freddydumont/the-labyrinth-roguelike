@@ -627,7 +627,7 @@ const EntityMixins = {
       return this._experience;
     },
     getNextLevelExperience: function() {
-      return this._level * this._level * 15;
+      return this._level * this._level * 20;
     },
     getStatPoints: function() {
       return this._statPoints;
