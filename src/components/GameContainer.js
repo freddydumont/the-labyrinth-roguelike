@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { ROT, Game } from '../Game/game';
-import Screen from '../Game/screens';
+import Screen from '../Game/Screens/index';
 
 export default class GameContainer extends Component {
   componentDidMount() {
