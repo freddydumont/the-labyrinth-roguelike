@@ -57,6 +57,11 @@ Tile.wallTile = new Tile({
   foreground: 'lightsteelblue',
   blocksLight: true
 });
+Tile.mazeWallTile = new Tile({
+  character: '#',
+  foreground: 'rgb(255, 183, 0)',
+  blocksLight: true
+});
 Tile.stairsUpTile = new Tile({
   character: '<',
   foreground: 'white',

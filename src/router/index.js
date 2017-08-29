@@ -28,7 +28,7 @@ class Root extends Component {
     return auth.loading
       ? <h1>Loading</h1>
       : <BrowserRouter>
-          <div className="w-100 bg-light-gray min-vh-100">
+          <div className="w-100 bg-black-90 min-vh-100">
             <Switch>
               <Route path="/" exact component={GameContainer} />
               <Route render={() => <h3>No Match</h3>} />
