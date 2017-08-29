@@ -1,5 +1,5 @@
 import { ROT, Game } from '../game';
-import Screen from '../screens';
+import Screen from './index';
 
 export const startScreen = {
   enter: function() {

@@ -1,4 +1,5 @@
 import { ROT, Game } from '../game';
+import Screen from './index';
 
 export const gainStatScreen = {
   setup: function(entity) {
