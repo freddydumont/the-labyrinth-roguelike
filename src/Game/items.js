@@ -38,12 +38,27 @@ ItemRepository.define(
 
 // Weapons
 ItemRepository.define(
+  'knife',
+  {
+    name: 'knife',
+    character: ')',
+    foreground: 'darkgray',
+    attackValue: 2,
+    wieldable: true,
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+ItemRepository.define(
   'dagger',
   {
     name: 'dagger',
     character: ')',
     foreground: 'gray',
-    attackValue: 2,
+    attackValue: 3,
     wieldable: true,
     mixins: [ItemMixins.Equippable]
   },

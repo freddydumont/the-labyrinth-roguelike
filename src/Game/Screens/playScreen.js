@@ -23,9 +23,9 @@ export const playScreen = {
     let tiles = new Builder(width, height, depth).getTiles();
     this._player = new Entity(Player);
     // make player start with a dagger
-    const dagger = ItemRepository.create('dagger');
-    this._player.addItem(dagger);
-    this._player.wield(dagger);
+    const knife = ItemRepository.create('knife');
+    this._player.addItem(knife);
+    this._player.wield(knife);
     // build map with tiles and player
     this._map = new Map(tiles, this._player);
     // Start the map's engine
