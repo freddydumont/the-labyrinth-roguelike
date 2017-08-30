@@ -3,6 +3,7 @@ import Item from './item';
 import ItemMixins from './itemmixins';
 
 export const ItemRepository = new Repository('items', Item);
+export const GearRepository = new Repository('gear', Item);
 
 // Edibles
 ItemRepository.define('apple', {
@@ -36,8 +37,15 @@ ItemRepository.define(
   }
 );
 
+// Other
+ItemRepository.define('rock', {
+  name: 'rock',
+  character: '*',
+  foreground: 'white'
+});
+
 // Weapons
-ItemRepository.define(
+GearRepository.define(
   'knife',
   {
     name: 'knife',
@@ -52,7 +60,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'dagger',
   {
     name: 'dagger',
@@ -68,7 +76,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'short sword',
   {
     name: 'short sword',
@@ -84,7 +92,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'war hammer',
   {
     name: 'war hammer',
@@ -100,7 +108,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'long sword',
   {
     name: 'long sword',
@@ -116,7 +124,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'staff',
   {
     name: 'staff',
@@ -134,7 +142,7 @@ ItemRepository.define(
 );
 
 // Wearables
-ItemRepository.define(
+GearRepository.define(
   'tunic',
   {
     name: 'tunic',
@@ -150,7 +158,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'leather armor',
   {
     name: 'leather armor',
@@ -166,7 +174,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'chainmail',
   {
     name: 'chainmail',
@@ -182,7 +190,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'reinforced mail',
   {
     name: 'reinforced mail',
@@ -198,7 +206,7 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'breastplate',
   {
     name: 'breastplate',
@@ -213,10 +221,3 @@ ItemRepository.define(
     disableRandomCreation: true
   }
 );
-
-// Other
-ItemRepository.define('rock', {
-  name: 'rock',
-  character: '*',
-  foreground: 'white'
-});
