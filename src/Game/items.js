@@ -60,6 +60,7 @@ ItemRepository.define(
     foreground: 'gray',
     attackValue: 3,
     wieldable: true,
+    weightedValues: [50, 40, 30, 20, 10, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -75,6 +76,7 @@ ItemRepository.define(
     foreground: 'lightgray',
     attackValue: 5,
     wieldable: true,
+    weightedValues: [0, 20, 40, 20, 10, 5, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -90,6 +92,7 @@ ItemRepository.define(
     foreground: 'slategray',
     attackValue: 8,
     wieldable: true,
+    weightedValues: [0, 0, 5, 20, 30, 40, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -105,6 +108,7 @@ ItemRepository.define(
     foreground: 'white',
     attackValue: 12,
     wieldable: true,
+    weightedValues: [0, 0, 0, 10, 20, 30, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -121,6 +125,7 @@ ItemRepository.define(
     attackValue: 7,
     defenseValue: 3,
     wieldable: true,
+    weightedValues: [0, 0, 5, 10, 20, 40, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -137,6 +142,7 @@ ItemRepository.define(
     foreground: 'green',
     defenseValue: 2,
     wearable: true,
+    weightedValues: [50, 40, 30, 20, 10, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -152,6 +158,7 @@ ItemRepository.define(
     foreground: 'saddlebrown',
     defenseValue: 3,
     wearable: true,
+    weightedValues: [0, 40, 30, 20, 10, 5, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -167,6 +174,7 @@ ItemRepository.define(
     foreground: 'white',
     defenseValue: 4,
     wearable: true,
+    weightedValues: [0, 5, 10, 20, 30, 10, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -182,6 +190,7 @@ ItemRepository.define(
     foreground: 'lightgoldenrodyellow',
     defenseValue: 5,
     wearable: true,
+    weightedValues: [0, 0, 5, 10, 20, 10, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -197,6 +206,7 @@ ItemRepository.define(
     foreground: 'aliceblue',
     defenseValue: 6,
     wearable: true,
+    weightedValues: [0, 0, 0, 5, 10, 20, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
