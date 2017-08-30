@@ -53,6 +53,7 @@ GearRepository.define(
     foreground: 'darkgray',
     attackValue: 2,
     wieldable: true,
+    weightedValues: [0, 0, 0, 0, 0, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -68,7 +69,7 @@ GearRepository.define(
     foreground: 'gray',
     attackValue: 3,
     wieldable: true,
-    weightedValues: [50, 40, 30, 20, 10, 0, 0],
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -84,7 +85,7 @@ GearRepository.define(
     foreground: 'lightgray',
     attackValue: 5,
     wieldable: true,
-    weightedValues: [0, 20, 40, 20, 10, 5, 0],
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -100,23 +101,7 @@ GearRepository.define(
     foreground: 'slategray',
     attackValue: 8,
     wieldable: true,
-    weightedValues: [0, 0, 5, 20, 30, 40, 0],
-    mixins: [ItemMixins.Equippable]
-  },
-  {
-    disableRandomCreation: true
-  }
-);
-
-GearRepository.define(
-  'long sword',
-  {
-    name: 'long sword',
-    character: '|',
-    foreground: 'white',
-    attackValue: 12,
-    wieldable: true,
-    weightedValues: [0, 0, 0, 10, 20, 30, 0],
+    weightedValues: [0, 0, 5, 10, 20, 15, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -133,7 +118,23 @@ GearRepository.define(
     attackValue: 7,
     defenseValue: 3,
     wieldable: true,
-    weightedValues: [0, 0, 5, 10, 20, 40, 0],
+    weightedValues: [0, 0, 5, 10, 10, 15, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
+  'long sword',
+  {
+    name: 'long sword',
+    character: '|',
+    foreground: 'white',
+    attackValue: 12,
+    wieldable: true,
+    weightedValues: [0, 0, 0, 5, 10, 20, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -150,7 +151,7 @@ GearRepository.define(
     foreground: 'green',
     defenseValue: 2,
     wearable: true,
-    weightedValues: [50, 40, 30, 20, 10, 0, 0],
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -166,7 +167,7 @@ GearRepository.define(
     foreground: 'saddlebrown',
     defenseValue: 3,
     wearable: true,
-    weightedValues: [0, 40, 30, 20, 10, 5, 0],
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -182,7 +183,7 @@ GearRepository.define(
     foreground: 'white',
     defenseValue: 4,
     wearable: true,
-    weightedValues: [0, 5, 10, 20, 30, 10, 0],
+    weightedValues: [0, 0, 5, 10, 20, 15, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -198,7 +199,7 @@ GearRepository.define(
     foreground: 'lightgoldenrodyellow',
     defenseValue: 5,
     wearable: true,
-    weightedValues: [0, 0, 5, 10, 20, 10, 0],
+    weightedValues: [0, 0, 5, 10, 10, 15, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
