@@ -15,4 +15,9 @@ export default class Item extends DynamicGlyph {
   getWeightedValues() {
     return this._weightedValues;
   }
+
+  // levels start at 0
+  getWeightedValueForLevel(level) {
+    return this._weightedValues[level];
+  }
 }

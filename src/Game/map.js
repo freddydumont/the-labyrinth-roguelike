@@ -1,7 +1,7 @@
 import { ROT } from './game';
 import Tile from './tile';
 import { EntityRepository } from './entities';
-import { ItemRepository } from './items';
+import { ItemRepository, GearRepository } from './items';
 
 export default class Map {
   constructor(tiles, player) {
@@ -44,28 +44,23 @@ export default class Map {
             }
           }
         }
+
         // 10 items per floor
         for (let i = 0; i < 10; i++) {
           // Add a random item
           this.addItemAtRandomPosition(ItemRepository.createRandom(), z);
         }
+
+        // 2 weapons/armors per floor
+        for (let i = 0; i < 2; i++) {
+          this.addItemAtRandomPosition(
+            GearRepository.createFromWeightedValues(z),
+            z
+          );
+        }
       }
     }
-    // Add weapons and armor to the map in random positions, except last floor.
-    const templates = [
-      'dagger',
-      'sword',
-      'staff',
-      'tunic',
-      'chainmail',
-      'platemail'
-    ];
-    for (let i = 0; i < templates.length; i++) {
-      this.addItemAtRandomPosition(
-        ItemRepository.create(templates[i]),
-        Math.floor((this._depth - 1) * Math.random())
-      );
-    }
+
     // setup the explored array
     this._explored = new Array(this._depth);
     this._setupExploredArray();
