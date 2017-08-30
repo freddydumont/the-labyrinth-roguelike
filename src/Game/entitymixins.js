@@ -112,25 +112,33 @@ const EntityMixins = {
       // Fullness points per percent of max fullness
       const perPercent = this._maxFullness / 100;
       let hungerMsg, hungerColor;
-      // 10% of max fullness or less = starving
-      if (this._fullness <= perPercent * 10) {
+      // 5% of max fullness or less = starving
+      if (this._fullness <= perPercent * 5) {
         hungerColor = '%c{red}';
         hungerMsg = 'Starving';
-        // 30% of max fullness or less = hungry
-      } else if (this._fullness <= perPercent * 30) {
+        // 20% of max fullness or less = famished
+      } else if (this._fullness <= perPercent * 20) {
         hungerColor = '%c{orange}';
+        hungerMsg = 'Famished';
+        // 40% of max fullness or less = hungry
+      } else if (this._fullness <= perPercent * 40) {
+        hungerColor = '%c{yellow}';
         hungerMsg = 'Hungry';
         // 95% of max fullness or more = oversatiated
       } else if (this._fullness >= perPercent * 95) {
         hungerColor = '%c{red}';
         hungerMsg = 'Oversatiated';
-        // 70% of max fullness or more = full
-      } else if (this._fullness >= perPercent * 70) {
-        hungerColor = '%c{lime}';
+        // 80% of max fullness or more = satiated
+      } else if (this._fullness >= perPercent * 80) {
+        hungerColor = '%c{orange}';
+        hungerMsg = 'Satiated';
+        // 60% of max fullness or more = full
+      } else if (this._fullness >= perPercent * 60) {
+        hungerColor = '%c{yellow}';
         hungerMsg = 'Full';
         // Anything else = not hungry`
       } else {
-        hungerColor = '%c{yellow}';
+        hungerColor = '%c{lime}';
         hungerMsg = 'Not Hungry';
       }
       return [hungerColor, `${hungerMsg}`];
