@@ -16,6 +16,8 @@ export default class Entity extends DynamicGlyph {
     this._alive = true;
     // Acting speed
     this._speed = props['speed'] || 1000;
+    // Level range
+    this._levelRange = props['levelRange'] || 0;
   }
 
   kill(message) {
@@ -130,6 +132,9 @@ export default class Entity extends DynamicGlyph {
   setSpeed(speed) {
     this._speed = speed;
   }
+  setLevelRange(range) {
+    this._levelRange = range;
+  }
 
   // getters
   getX() {
@@ -146,6 +151,9 @@ export default class Entity extends DynamicGlyph {
   }
   getSpeed() {
     return this._speed;
+  }
+  getLevelRange() {
+    return this._levelRange;
   }
   isAlive() {
     return this._alive;
