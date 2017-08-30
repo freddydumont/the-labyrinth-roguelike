@@ -69,6 +69,7 @@ const EntityMixins = {
             this.getZ(),
             ItemRepository.create('corpse', {
               name: this._name + ' corpse',
+              foodValue: this._foodValue,
               foreground: this._foreground
             })
           );
@@ -92,32 +93,47 @@ const EntityMixins = {
       this.modifyFullnessBy(-this._fullnessDepletionRate);
     },
     modifyFullnessBy: function(points) {
-      this._fullness = this._fullness + points;
       if (this._fullness <= 0) {
-        this.kill('You have died of starvation!');
+        const currentHP = this.getHp();
+        if (currentHP <= 1) {
+          this.setHp(0);
+          this.kill('You have died of starvation!');
+        } else {
+          Messages.sendMessage(this, "You're losing health to starvation!");
+          this.setHp(currentHP - 1);
+        }
       } else if (this._fullness > this._maxFullness) {
         this.kill('You choke and die!');
+      } else {
+        this._fullness = this._fullness + points;
       }
     },
     getHungerState: function() {
       // Fullness points per percent of max fullness
-      var perPercent = this._maxFullness / 100;
-      // 5% of max fullness or less = starving
-      if (this._fullness <= perPercent * 5) {
-        return 'Starving';
-        // 25% of max fullness or less = hungry
-      } else if (this._fullness <= perPercent * 25) {
-        return 'Hungry';
+      const perPercent = this._maxFullness / 100;
+      let hungerMsg, hungerColor;
+      // 10% of max fullness or less = starving
+      if (this._fullness <= perPercent * 10) {
+        hungerColor = '%c{red}';
+        hungerMsg = 'Starving';
+        // 30% of max fullness or less = hungry
+      } else if (this._fullness <= perPercent * 30) {
+        hungerColor = '%c{orange}';
+        hungerMsg = 'Hungry';
         // 95% of max fullness or more = oversatiated
       } else if (this._fullness >= perPercent * 95) {
-        return 'Oversatiated';
-        // 75% of max fullness or more = full
-      } else if (this._fullness >= perPercent * 75) {
-        return 'Full';
-        // Anything else = not hungry
+        hungerColor = '%c{red}';
+        hungerMsg = 'Oversatiated';
+        // 70% of max fullness or more = full
+      } else if (this._fullness >= perPercent * 70) {
+        hungerColor = '%c{lime}';
+        hungerMsg = 'Full';
+        // Anything else = not hungry`
       } else {
-        return `Not Hungry`;
+        hungerColor = '%c{yellow}';
+        hungerMsg = 'Not Hungry';
       }
+      return [hungerColor, `${hungerMsg}`];
     }
   },
 

@@ -11,6 +11,7 @@ export default class Entity extends DynamicGlyph {
     this._x = props['x'] || 0;
     this._y = props['y'] || 0;
     this._z = props['z'] || 0;
+    this._foodValue = props['foodValue'] || 25;
     this._map = null;
     this._alive = true;
     // Acting speed
@@ -148,5 +149,8 @@ export default class Entity extends DynamicGlyph {
   }
   isAlive() {
     return this._alive;
+  }
+  getCorpseValue() {
+    return this._foodValue;
   }
 }
