@@ -6,6 +6,7 @@ import Entity from '../entity';
 import { Player } from '../entities';
 import Builder from '../builder';
 import Screen from './index';
+import { GearRepository } from '../items';
 
 export const playScreen = {
   _map: null,
@@ -21,6 +22,10 @@ export const playScreen = {
     // declare tiles and player
     let tiles = new Builder(width, height, depth).getTiles();
     this._player = new Entity(Player);
+    // make player start with a dagger
+    const knife = GearRepository.create('knife');
+    this._player.addItem(knife);
+    this._player.wield(knife);
     // build map with tiles and player
     this._map = new Map(tiles, this._player);
     // Start the map's engine

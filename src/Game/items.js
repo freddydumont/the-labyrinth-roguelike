@@ -3,6 +3,7 @@ import Item from './item';
 import ItemMixins from './itemmixins';
 
 export const ItemRepository = new Repository('items', Item);
+export const GearRepository = new Repository('gear', Item);
 
 // Edibles
 ItemRepository.define('apple', {
@@ -36,15 +37,55 @@ ItemRepository.define(
   }
 );
 
+// Other
+ItemRepository.define('rock', {
+  name: 'rock',
+  character: '*',
+  foreground: 'white'
+});
+
 // Weapons
-ItemRepository.define(
+GearRepository.define(
+  'knife',
+  {
+    name: 'knife',
+    character: ')',
+    foreground: 'darkgray',
+    attackValue: 2,
+    wieldable: true,
+    weightedValues: [0, 0, 0, 0, 0, 0, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
   'dagger',
   {
     name: 'dagger',
     character: ')',
     foreground: 'gray',
+    attackValue: 3,
+    wieldable: true,
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
+  'short sword',
+  {
+    name: 'short sword',
+    character: ')',
+    foreground: 'lightgray',
     attackValue: 5,
     wieldable: true,
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -52,14 +93,15 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
-  'sword',
+GearRepository.define(
+  'war hammer',
   {
-    name: 'sword',
-    character: ')',
-    foreground: 'white',
-    attackValue: 10,
+    name: 'war hammer',
+    character: 'T',
+    foreground: 'slategray',
+    attackValue: 8,
     wieldable: true,
+    weightedValues: [0, 0, 5, 10, 20, 15, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -67,15 +109,32 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
   'staff',
   {
     name: 'staff',
-    character: ')',
-    foreground: 'yellow',
-    attackValue: 5,
+    character: '/',
+    foreground: 'darkgoldenrod',
+    attackValue: 7,
     defenseValue: 3,
     wieldable: true,
+    weightedValues: [0, 0, 5, 10, 10, 15, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
+  'long sword',
+  {
+    name: 'long sword',
+    character: '|',
+    foreground: 'white',
+    attackValue: 12,
+    wieldable: true,
+    weightedValues: [0, 0, 0, 5, 10, 20, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -84,7 +143,7 @@ ItemRepository.define(
 );
 
 // Wearables
-ItemRepository.define(
+GearRepository.define(
   'tunic',
   {
     name: 'tunic',
@@ -92,6 +151,7 @@ ItemRepository.define(
     foreground: 'green',
     defenseValue: 2,
     wearable: true,
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -99,7 +159,23 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
+GearRepository.define(
+  'leather armor',
+  {
+    name: 'leather armor',
+    character: '[',
+    foreground: 'saddlebrown',
+    defenseValue: 3,
+    wearable: true,
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
   'chainmail',
   {
     name: 'chainmail',
@@ -107,6 +183,7 @@ ItemRepository.define(
     foreground: 'white',
     defenseValue: 4,
     wearable: true,
+    weightedValues: [0, 0, 5, 10, 20, 15, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
@@ -114,24 +191,34 @@ ItemRepository.define(
   }
 );
 
-ItemRepository.define(
-  'platemail',
+GearRepository.define(
+  'reinforced mail',
   {
-    name: 'platemail',
+    name: 'reinforced mail',
+    character: '[',
+    foreground: 'lightgoldenrodyellow',
+    defenseValue: 5,
+    wearable: true,
+    weightedValues: [0, 0, 5, 10, 10, 15, 0],
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+GearRepository.define(
+  'breastplate',
+  {
+    name: 'breastplate',
     character: '[',
     foreground: 'aliceblue',
     defenseValue: 6,
     wearable: true,
+    weightedValues: [0, 0, 0, 5, 10, 20, 0],
     mixins: [ItemMixins.Equippable]
   },
   {
     disableRandomCreation: true
   }
 );
-
-// Other
-ItemRepository.define('rock', {
-  name: 'rock',
-  character: '*',
-  foreground: 'white'
-});

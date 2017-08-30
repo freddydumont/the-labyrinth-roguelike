@@ -7,7 +7,7 @@ export const Player = {
   character: '@',
   foreground: 'yellow',
   maxHp: 50,
-  attackValue: 10,
+  attackValue: 8,
   sightRadius: 6,
   inventorySlots: 22,
   // Max fullness
