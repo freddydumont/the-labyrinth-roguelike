@@ -130,6 +130,21 @@ ItemRepository.define(
 );
 
 ItemRepository.define(
+  'leather armor',
+  {
+    name: 'leather armor',
+    character: '[',
+    foreground: 'saddlebrown',
+    defenseValue: 3,
+    wearable: true,
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+ItemRepository.define(
   'chainmail',
   {
     name: 'chainmail',
@@ -145,9 +160,24 @@ ItemRepository.define(
 );
 
 ItemRepository.define(
-  'platemail',
+  'reinforced mail',
   {
-    name: 'platemail',
+    name: 'reinforced mail',
+    character: '[',
+    foreground: 'lightgoldenrodyellow',
+    defenseValue: 5,
+    wearable: true,
+    mixins: [ItemMixins.Equippable]
+  },
+  {
+    disableRandomCreation: true
+  }
+);
+
+ItemRepository.define(
+  'breastplate',
+  {
+    name: 'breastplate',
     character: '[',
     foreground: 'aliceblue',
     defenseValue: 6,
