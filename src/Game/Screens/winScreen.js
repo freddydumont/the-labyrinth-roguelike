@@ -2,11 +2,11 @@ import { ROT } from '../game';
 
 export const winScreen = {
   enter: function() {
-    console.log('Entered win screen.');
+    // console.log('Entered win screen.');
   },
 
   exit: function() {
-    console.log('Exited win screen.');
+    // console.log('Exited win screen.');
   },
 
   render: function(display) {

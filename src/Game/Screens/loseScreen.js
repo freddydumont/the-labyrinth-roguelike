@@ -1,10 +1,10 @@
 export const loseScreen = {
   enter: function() {
-    console.log('Entered lose screen.');
+    // console.log('Entered lose screen.');
   },
 
   exit: function() {
-    console.log('Exited lose screen.');
+    // console.log('Exited lose screen.');
   },
 
   render: function(display) {

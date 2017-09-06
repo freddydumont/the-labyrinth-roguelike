@@ -3,11 +3,11 @@ import Screen from './index';
 
 export const startScreen = {
   enter: function() {
-    console.log('Entered start screen.');
+    // console.log('Entered start screen.');
   },
 
   exit: function() {
-    console.log('Exited start screen.');
+    // console.log('Exited start screen.');
   },
 
   render: function(display) {

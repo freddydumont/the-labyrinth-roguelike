@@ -33,7 +33,7 @@ export const playScreen = {
   },
 
   exit: function() {
-    console.log('Exited play screen.');
+    // console.log('Exited play screen.');
   },
 
   render: function(display) {
