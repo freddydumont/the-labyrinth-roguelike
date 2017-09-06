@@ -20,6 +20,8 @@ export const helpScreen = {
     );
     display.drawText(0, y++, 'Find him and end his tyranny!');
     y += 3;
+    display.drawText(0, y++, '[>] to go up a level');
+    display.drawText(0, y++, '[<] to go down a level');
     display.drawText(0, y++, '[.] to wait');
     display.drawText(0, y++, '[,] to pick up items');
     display.drawText(0, y++, '[d] to drop items');
