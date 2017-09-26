@@ -518,6 +518,10 @@ const EntityMixins = {
       for (let i = 0; i < this._items.length; i++) {
         if (!this._items[i]) {
           this._items[i] = item;
+          // set the ground status of the edible to false
+          if (this._items[i].hasMixin('Edible')) {
+            this._items[i].setGroundStatus(false);
+          }
           return true;
         }
       }
@@ -583,6 +587,10 @@ const EntityMixins = {
             this.getZ(),
             this._items[i]
           );
+          // set the ground status of the edible to true
+          if (this._items[i].hasMixin('Edible')) {
+            this._items[i].setGroundStatus(true);
+          }
         }
         this.removeItem(i);
       }

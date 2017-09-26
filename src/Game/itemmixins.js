@@ -9,6 +9,15 @@ const ItemMixins = {
       // Number of times the item can be consumed
       this._maxConsumptions = template['consumptions'] || 1;
       this._remainingConsumptions = this._maxConsumptions;
+      this._isOnGround = template['onGround'] || false;
+    },
+
+    getGroundStatus: function() {
+      return this._isOnGround;
+    },
+
+    setGroundStatus: function(status) {
+      this._isOnGround = status;
     },
 
     listeners: {
