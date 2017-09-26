@@ -32,9 +32,7 @@ export const playScreen = {
     this._map.getEngine().start();
   },
 
-  exit: function() {
-    // console.log('Exited play screen.');
-  },
+  exit: function() {},
 
   render: function(display) {
     // Render subscreen if there is one

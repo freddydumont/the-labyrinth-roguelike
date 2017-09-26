@@ -1,13 +1,9 @@
 import { ROT } from '../game';
 
 export const winScreen = {
-  enter: function() {
-    // console.log('Entered win screen.');
-  },
+  enter: function() {},
 
-  exit: function() {
-    // console.log('Exited win screen.');
-  },
+  exit: function() {},
 
   render: function(display) {
     // Render our prompt to the screen
@@ -21,7 +17,5 @@ export const winScreen = {
     }
   },
 
-  handleInput: function(inputType, inputData) {
-    // nothing to do here
-  }
+  handleInput: function(inputType, inputData) {}
 };

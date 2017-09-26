@@ -1,13 +1,10 @@
 export const loseScreen = {
-  enter: function() {
-    // console.log('Entered lose screen.');
-  },
+  enter: function() {},
 
-  exit: function() {
-    // console.log('Exited lose screen.');
-  },
+  exit: function() {},
 
   render: function(display) {
+    // TODO: write how player lost and 'press something to continue'
     // Render our prompt to the screen
     for (let i = 0; i < 22; i++) {
       display.drawText(2, i + 1, '%b{red}You lose! :(');
@@ -15,6 +12,6 @@ export const loseScreen = {
   },
 
   handleInput: function(inputType, inputData) {
-    // nothing to do here
+    // TODO: handle game restart
   }
 };

@@ -2,13 +2,9 @@ import { ROT, Game } from '../game';
 import Screen from './index';
 
 export const startScreen = {
-  enter: function() {
-    // console.log('Entered start screen.');
-  },
+  enter: function() {},
 
-  exit: function() {
-    // console.log('Exited start screen.');
-  },
+  exit: function() {},
 
   render: function(display) {
     // Render our prompt to the screen
