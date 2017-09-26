@@ -246,10 +246,24 @@ export const playScreen = {
           );
           return;
         case ROT.VK_E:
+          // get items in the inventory
+          let items = this._player.getItems().slice();
+          // if there are items on the floor, add them
+          const itemsOnFloor = this.getItemsAtPlayer();
+          if (itemsOnFloor) {
+            for (let i = 0; i < itemsOnFloor.length; i++) {
+              // for each item on floor, find first available index in items
+              let index = items.findIndex(item => {
+                return item === undefined || item === null;
+              });
+              // assign item on floor to it
+              items[index] = itemsOnFloor[i];
+            }
+          }
           // Show the eat screen
           this.showItemsSubScreen(
             Screen.eatScreen,
-            this._player.getItems(),
+            items,
             'You have nothing to eat.'
           );
           return;
