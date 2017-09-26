@@ -213,6 +213,17 @@ export const eatScreen = new ItemListScreen({
     Messages.sendMessage(this._player, 'You eat %s.', [item.describeThe()]);
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
+      if (item.getGroundStatus()) {
+        // remove from ground
+        this._player
+          .getMap()
+          .removeItemAt(
+            this._player.getX(),
+            this._player.getY(),
+            this._player.getZ(),
+            item
+          );
+      }
       this._player.removeItem(key);
     }
     return true;

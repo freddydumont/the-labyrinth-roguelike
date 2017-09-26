@@ -110,6 +110,25 @@ export default class Map {
     }
   }
 
+  removeItemAt(x, y, z, item) {
+    const key = x + ',' + y + ',' + z;
+    // if there is an item on the ground
+    if (this._items[key]) {
+      // if there is only one item, delete the key from the table
+      if (this._items[key].length === 1) {
+        delete this._items[key];
+        // if there is more than one item, remove the corresponding item from the array
+      } else {
+        // find the index of the corresponding item
+        const index = this._items[key].findIndex(element => {
+          return element === item;
+        });
+        // remove it from the array
+        this._items[key].splice(index, 1);
+      }
+    }
+  }
+
   addItem(x, y, z, item) {
     // If we already have items at that position, simply append the item to the
     // list of items.
