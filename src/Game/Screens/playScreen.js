@@ -281,11 +281,7 @@ export const playScreen = {
         case ROT.VK_COMMA:
           if (!inputData.shiftKey) {
             // Pick up item
-            const items = this._map.getItemsAt(
-              this._player.getX(),
-              this._player.getY(),
-              this._player.getZ()
-            );
+            const items = this.getItemsAtPlayer();
             // If only one item, try to pick it up
             if (items.length === 1) {
               const item = items[0];
@@ -371,5 +367,13 @@ export const playScreen = {
       Messages.sendMessage(this._player, emptyMessage);
       Game.refresh();
     }
+  },
+
+  getItemsAtPlayer: function() {
+    return this._map.getItemsAt(
+      this._player.getX(),
+      this._player.getY(),
+      this._player.getZ()
+    );
   }
 };
