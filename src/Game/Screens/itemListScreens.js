@@ -72,7 +72,10 @@ class ItemListScreen {
           suffix = ' (wearing)';
         } else if (this._items[i] === this._player.getWeapon()) {
           suffix = ' (wielding)';
-        } else if (this._items[i].getGroundStatus()) {
+        } else if (
+          this._items[i].hasMixin('Edible') &&
+          this._items[i].getGroundStatus()
+        ) {
           suffix = ' (on the ground)';
         }
         // Render at the correct row and add 2.
