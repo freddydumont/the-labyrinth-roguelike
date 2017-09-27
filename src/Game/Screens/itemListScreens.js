@@ -66,12 +66,17 @@ class ItemListScreen {
           this._selectedIndices[i]
             ? '+'
             : '-';
-        // Check if the item is worn or wielded
+        // Check if the item is worn or wielded or is and edible on the ground
         let suffix = '';
         if (this._items[i] === this._player.getArmor()) {
           suffix = ' (wearing)';
         } else if (this._items[i] === this._player.getWeapon()) {
           suffix = ' (wielding)';
+        } else if (
+          this._items[i].hasMixin('Edible') &&
+          this._items[i].getGroundStatus()
+        ) {
+          suffix = ' (on the ground)';
         }
         // Render at the correct row and add 2.
         display.drawText(
@@ -211,6 +216,17 @@ export const eatScreen = new ItemListScreen({
     Messages.sendMessage(this._player, 'You eat %s.', [item.describeThe()]);
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
+      if (item.getGroundStatus()) {
+        // remove from ground
+        this._player
+          .getMap()
+          .removeItemAt(
+            this._player.getX(),
+            this._player.getY(),
+            this._player.getZ(),
+            item
+          );
+      }
       this._player.removeItem(key);
     }
     return true;
