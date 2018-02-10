@@ -13,7 +13,7 @@ export default class GameContainer extends Component {
       // Add the container to our HTML page
       document
         .getElementsByClassName('game-container')[0]
-        .appendChild(Game._display.getContainer());
+        .appendChild(Game.getDisplay().getContainer());
       // Load the start screen
       Game.switchScreen(Screen.startScreen);
     }
