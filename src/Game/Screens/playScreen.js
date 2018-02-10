@@ -53,7 +53,7 @@ export const playScreen = {
       this._player.getAttackValue(),
       this._player.getDefenseValue(),
       this._player.getLevel(),
-      this._player.getExperience()
+      this._player.getExperience(),
     ]);
     display.drawText(0, Game.getScreenHeight(), stats);
 
@@ -86,7 +86,7 @@ export const playScreen = {
     );
     return {
       x: topLeftX,
-      y: topLeftY
+      y: topLeftY,
     };
   },
 
@@ -301,7 +301,7 @@ export const playScreen = {
               const item = items[0];
               if (this._player.pickupItems([0])) {
                 Messages.sendMessage(this._player, 'You pick up %s.', [
-                  item.describeA()
+                  item.describeA(),
                 ]);
               } else {
                 Messages.sendMessage(
@@ -330,8 +330,9 @@ export const playScreen = {
             this.move(0, 0, 1);
           }
           break;
-        // keycode for ;
+        // keycode for ; in chrome is 186
         case 186:
+        case ROT.VK_SEMICOLON:
           // Setup the look screen.
           const offsets = this.getScreenOffsets();
           Screen.lookScreen.setup(
@@ -350,7 +351,11 @@ export const playScreen = {
       // Unlock the engine
       this._map.getEngine().unlock();
     } else if (inputType === 'keypress') {
-      if (inputData.keyCode === ROT.VK_QUESTION_MARK) {
+      if (
+        // Show the help screen
+        inputData.keyCode === ROT.VK_QUESTION_MARK ||
+        inputData.charCode === ROT.VK_QUESTION_MARK
+      ) {
         this.setSubScreen(Screen.helpScreen);
       }
     }
@@ -389,5 +394,5 @@ export const playScreen = {
       this._player.getY(),
       this._player.getZ()
     );
-  }
+  },
 };
