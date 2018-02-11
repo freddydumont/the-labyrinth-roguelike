@@ -11,8 +11,8 @@ const EntityMixins = {
       onDeath: function(attacker) {
         // Switch to win screen when killed!
         Game.switchScreen(Screen.winScreen);
-      }
-    }
+      },
+    },
   },
 
   Equipper: {
@@ -47,7 +47,7 @@ const EntityMixins = {
       if (this._armor === item) {
         this.takeOff();
       }
-    }
+    },
   },
 
   CorpseDropper: {
@@ -70,17 +70,18 @@ const EntityMixins = {
             ItemRepository.create('corpse', {
               name: this._name + ' corpse',
               foodValue: this._foodValue,
-              foreground: this._foreground
+              foreground: this._foreground,
             })
           );
         }
-      }
-    }
+      },
+    },
   },
 
   FoodConsumer: {
     // Handles fullness meter of player.
     name: 'FoodConsumer',
+
     init: function(template) {
       this._maxFullness = template['maxFullness'] || 1000;
       // Start halfway to max fullness if no default value
@@ -88,10 +89,12 @@ const EntityMixins = {
       // Number of points to decrease fullness by every turn.
       this._fullnessDepletionRate = template['fullnessDepletionRate'] || 1;
     },
+
     addTurnHunger: function() {
       // Remove the standard depletion points
       this.modifyFullnessBy(-this._fullnessDepletionRate);
     },
+
     modifyFullnessBy: function(points) {
       if (this._fullness <= 0) {
         const currentHP = this.getHp();
@@ -108,6 +111,7 @@ const EntityMixins = {
         this._fullness = this._fullness + points;
       }
     },
+
     getHungerState: function() {
       // Fullness points per percent of max fullness
       const perPercent = this._maxFullness / 100;
@@ -142,7 +146,7 @@ const EntityMixins = {
         hungerMsg = 'Not Hungry';
       }
       return [hungerColor, `${hungerMsg}`];
-    }
+    },
   },
 
   /**
@@ -162,7 +166,7 @@ const EntityMixins = {
     },
     clearMessages: function() {
       this._messages = [];
-    }
+    },
   },
 
   // This mixin signifies an entity can take damage and be destroyed
@@ -177,9 +181,9 @@ const EntityMixins = {
       details: function() {
         return [
           { key: 'defense', value: this.getDefenseValue() },
-          { key: 'hp', value: this.getHp() }
+          { key: 'hp', value: this.getHp() },
         ];
-      }
+      },
     },
 
     init: function(props) {
@@ -246,7 +250,7 @@ const EntityMixins = {
         attacker.raiseEvent('onKill', this);
         this.kill();
       }
-    }
+    },
   },
 
   // This signifies our entity can attack basic destructible enities
@@ -260,7 +264,7 @@ const EntityMixins = {
     listeners: {
       details: function() {
         return [{ key: 'attack', value: this.getAttackValue() }];
-      }
+      },
     },
 
     getAttackValue: function() {
@@ -295,16 +299,16 @@ const EntityMixins = {
 
         Messages.sendMessage(this, 'You strike the %s for %d damage!', [
           target.getName(),
-          damage
+          damage,
         ]);
         Messages.sendMessage(target, 'The %s strikes you for %d damage!', [
           this.getName(),
-          damage
+          damage,
         ]);
 
         target.takeDamage(this, damage);
       }
-    }
+    },
   },
 
   // Player Specific Mixins
@@ -331,7 +335,7 @@ const EntityMixins = {
       this.getMap().getEngine().lock();
       // Clear the message queue
       this.clearMessages();
-    }
+    },
   },
 
   /**
@@ -423,7 +427,7 @@ const EntityMixins = {
       } else {
         this.tryMove(this.getX(), this.getY() + moveOffset, this.getZ());
       }
-    }
+    },
   },
 
   // This signifies our entity posseses a field of vision of a given radius.
@@ -484,7 +488,7 @@ const EntityMixins = {
           }
         });
       return found;
-    }
+    },
   },
 
   InventoryHolder: {
@@ -594,7 +598,7 @@ const EntityMixins = {
         }
         this.removeItem(i);
       }
-    }
+    },
   },
 
   ExperienceGainer: {
@@ -617,7 +621,7 @@ const EntityMixins = {
       },
       details: function() {
         return [{ key: 'level', value: this.getLevel() }];
-      }
+      },
     },
 
     init: function(template) {
@@ -632,14 +636,14 @@ const EntityMixins = {
       if (this.hasMixin('Attacker')) {
         this._statOptions.push([
           'Increase attack value',
-          this.increaseAttackValue
+          this.increaseAttackValue,
         ]);
       }
 
       if (this.hasMixin('Destructible')) {
         this._statOptions.push([
           'Increase defense value',
-          this.increaseDefenseValue
+          this.increaseDefenseValue,
         ]);
         this._statOptions.push(['Increase max health', this.increaseMaxHp]);
       }
@@ -647,7 +651,7 @@ const EntityMixins = {
       if (this.hasMixin('Sight')) {
         this._statOptions.push([
           'Increase sight range',
-          this.increaseSightRadius
+          this.increaseSightRadius,
         ]);
       }
     },
@@ -700,7 +704,7 @@ const EntityMixins = {
         Messages.sendMessage(this, 'You advance to level %d.', [this._level]);
         this.raiseEvent('onGainLevel');
       }
-    }
+    },
   },
 
   RandomStatGainer: {
@@ -716,8 +720,8 @@ const EntityMixins = {
           statOptions.random()[1].call(this);
           this.setStatPoints(this.getStatPoints() - 1);
         }
-      }
-    }
+      },
+    },
   },
 
   PlayerStatGainer: {
@@ -729,9 +733,9 @@ const EntityMixins = {
         // Setup the gain stat screen and show it.
         Screen.gainStatScreen.setup(this);
         Screen.playScreen.setSubScreen(Screen.gainStatScreen);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 export default EntityMixins;
