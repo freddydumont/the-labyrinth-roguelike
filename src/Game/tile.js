@@ -9,6 +9,7 @@ export default class Tile extends Glyph {
     // call Glyph constructor, see glyph.js for expected props
     super(props);
     // Set up the properties with their defaults.
+    this._name = props['name'] || false;
     this._walkable = props['walkable'] || false;
     this._diggable = props['diggable'] || false;
     this._blocksLight = props['blocksLight'] || false;
@@ -27,6 +28,9 @@ export default class Tile extends Glyph {
   }
   getDescription() {
     return this._description;
+  }
+  describe() {
+    return this._name;
   }
 }
 
@@ -47,36 +51,3 @@ export const getNeighborPositions = function(x, y) {
   }
   return tiles.randomize();
 };
-
-// // TODO: Move tiles to TileRepository instead of on Tile class
-// // nullTile will be returned whenever we try to access an out of bounds tiles
-// Tile.nullTile = new Tile({});
-// // floor and wall tiles
-// Tile.floorTile = new Tile({
-//   character: '.',
-//   walkable: true,
-//   description: 'A dungeon floor',
-// });
-// Tile.wallTile = new Tile({
-//   character: '#',
-//   foreground: 'lightsteelblue',
-//   blocksLight: true,
-//   description: 'A dungeon wall',
-// });
-// Tile.mazeWallTile = new Tile({
-//   character: '#',
-//   foreground: 'rgb(255, 183, 0)',
-//   blocksLight: true,
-// });
-// Tile.stairsUpTile = new Tile({
-//   character: '<',
-//   foreground: 'white',
-//   walkable: true,
-//   description: 'A rock staircase leading upwards',
-// });
-// Tile.stairsDownTile = new Tile({
-//   character: '>',
-//   foreground: 'white',
-//   walkable: true,
-//   description: 'A rock staircase leading downwards',
-// });

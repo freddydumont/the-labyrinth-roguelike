@@ -208,8 +208,8 @@ export default class Builder {
     for (let x = 0; x < this._width; x++) {
       for (let y = 0; y < this._height; y++) {
         if (
-          this._tiles[z][x][y] === TileRepository.create('floor') &&
-          this._tiles[z + 1][x][y] === TileRepository.create('floor') &&
+          this._tiles[z][x][y].describe() === 'floor' &&
+          this._tiles[z + 1][x][y].describe() === 'floor' &&
           this._regions[z][x][y] === r1 &&
           this._regions[z + 1][x][y] === r2
         ) {
@@ -253,8 +253,8 @@ export default class Builder {
         for (let y = 0; y < this._height; y++) {
           key = this._regions[z][x][y] + ',' + this._regions[z + 1][x][y];
           if (
-            this._tiles[z][x][y] === TileRepository.create('floor') &&
-            this._tiles[z + 1][x][y] === TileRepository.create('floor') &&
+            this._tiles[z][x][y].describe() === 'floor' &&
+            this._tiles[z + 1][x][y] === 'floor' &&
             !connected[key]
           ) {
             // Since both tiles are floors and we haven't

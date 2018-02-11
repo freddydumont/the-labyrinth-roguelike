@@ -258,13 +258,9 @@ export default class Map {
   }
 
   isEmptyFloor(x, y, z) {
-    console.log(this.getTile(x, y, z));
-    console.log(TileRepository.create('floor'));
-    console.log(!this.getEntityAt(x, y, z));
     // Check if the tile is floor and also has no entity
     return (
-      this.getTile(x, y, z) === TileRepository.create('floor') &&
-      !this.getEntityAt(x, y, z)
+      this.getTile(x, y, z).describe() === 'floor' && !this.getEntityAt(x, y, z)
     );
   }
 
@@ -333,14 +329,14 @@ export default class Map {
 
   setExplored(x, y, z, state) {
     // Only update if the tile is within bounds
-    if (this.getTile(x, y, z) !== TileRepository.create('null')) {
+    if (this.getTile(x, y, z).describe() !== 'null') {
       this._explored[z][x][y] = state;
     }
   }
 
   isExplored(x, y, z) {
     // Only return the value if within bounds
-    if (this.getTile(x, y, z) !== TileRepository.create('null')) {
+    if (this.getTile(x, y, z).describe() !== 'null') {
       return this._explored[z][x][y];
     } else {
       return false;

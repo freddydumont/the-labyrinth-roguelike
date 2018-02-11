@@ -1,7 +1,7 @@
 import Screen from './index';
 import { ROT, Game } from '../game';
 import Geometry from '../geometry';
-import Tile from '../tile';
+import TileRepository from '../tileRepository';
 
 class TargetBasedScreen {
   constructor(template = {}) {
@@ -163,9 +163,9 @@ export const lookScreen = new TargetBasedScreen({
       // If the tile is not explored, show the null tile description.
       return String.format(
         '%s - %s',
-        Tile.nullTile.getRepresentation(),
-        Tile.nullTile.getDescription()
+        TileRepository.create('null').getRepresentation(),
+        TileRepository.create('null').getDescription()
       );
     }
-  }
+  },
 });
