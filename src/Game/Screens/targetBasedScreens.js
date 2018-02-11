@@ -5,7 +5,8 @@ import TileRepository from '../tileRepository';
 
 class TargetBasedScreen {
   constructor(template = {}) {
-    this._isAcceptableFunction =
+    // By default, our ok return does nothing and does not consume a turn.
+    this._okFunction =
       template['okFunction'] ||
       function(x, y) {
         return false;
