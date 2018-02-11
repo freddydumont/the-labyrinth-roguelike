@@ -12,6 +12,10 @@ const ItemMixins = {
       this._isOnGround = template['onGround'] || false;
     },
 
+    getFoodValue: function() {
+      return this._foodValue;
+    },
+
     getGroundStatus: function() {
       return this._isOnGround;
     },
@@ -23,7 +27,7 @@ const ItemMixins = {
     listeners: {
       details: function() {
         return [{ key: 'food', value: this._foodValue }];
-      }
+      },
     },
 
     eat: function(entity) {
@@ -45,7 +49,7 @@ const ItemMixins = {
       } else {
         return this.getName();
       }
-    }
+    },
   },
 
   Equippable: {
@@ -67,7 +71,7 @@ const ItemMixins = {
           results.push({ key: 'defense', value: this.getDefenseValue() });
         }
         return results;
-      }
+      },
     },
 
     getAttackValue: function() {
@@ -84,8 +88,8 @@ const ItemMixins = {
 
     isWearable: function() {
       return this._wearable;
-    }
-  }
+    },
+  },
 };
 
 export default ItemMixins;

@@ -90,6 +90,11 @@ const EntityMixins = {
       this._fullnessDepletionRate = template['fullnessDepletionRate'] || 1;
     },
 
+    // getters
+    getSatiation: function() {
+      return this._maxFullness - this._fullness;
+    },
+
     addTurnHunger: function() {
       // Remove the standard depletion points
       this.modifyFullnessBy(-this._fullnessDepletionRate);
