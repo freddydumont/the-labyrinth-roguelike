@@ -25,9 +25,9 @@ export default class Tile extends Glyph {
   isBlockingLight() {
     return this._blocksLight;
   }
-  getDescription = function() {
+  getDescription() {
     return this._description;
-  };
+  }
 }
 
 /**
@@ -48,35 +48,35 @@ export const getNeighborPositions = function(x, y) {
   return tiles.randomize();
 };
 
-// TODO: Move tiles to TileRepository instead of on Tile class
-// nullTile will be returned whenever we try to access an out of bounds tiles
-Tile.nullTile = new Tile({});
-// floor and wall tiles
-Tile.floorTile = new Tile({
-  character: '.',
-  walkable: true,
-  description: 'A dungeon floor'
-});
-Tile.wallTile = new Tile({
-  character: '#',
-  foreground: 'lightsteelblue',
-  blocksLight: true,
-  description: 'A dungeon wall'
-});
-Tile.mazeWallTile = new Tile({
-  character: '#',
-  foreground: 'rgb(255, 183, 0)',
-  blocksLight: true
-});
-Tile.stairsUpTile = new Tile({
-  character: '<',
-  foreground: 'white',
-  walkable: true,
-  description: 'A rock staircase leading upwards'
-});
-Tile.stairsDownTile = new Tile({
-  character: '>',
-  foreground: 'white',
-  walkable: true,
-  description: 'A rock staircase leading downwards'
-});
+// // TODO: Move tiles to TileRepository instead of on Tile class
+// // nullTile will be returned whenever we try to access an out of bounds tiles
+// Tile.nullTile = new Tile({});
+// // floor and wall tiles
+// Tile.floorTile = new Tile({
+//   character: '.',
+//   walkable: true,
+//   description: 'A dungeon floor',
+// });
+// Tile.wallTile = new Tile({
+//   character: '#',
+//   foreground: 'lightsteelblue',
+//   blocksLight: true,
+//   description: 'A dungeon wall',
+// });
+// Tile.mazeWallTile = new Tile({
+//   character: '#',
+//   foreground: 'rgb(255, 183, 0)',
+//   blocksLight: true,
+// });
+// Tile.stairsUpTile = new Tile({
+//   character: '<',
+//   foreground: 'white',
+//   walkable: true,
+//   description: 'A rock staircase leading upwards',
+// });
+// Tile.stairsDownTile = new Tile({
+//   character: '>',
+//   foreground: 'white',
+//   walkable: true,
+//   description: 'A rock staircase leading downwards',
+// });

@@ -1,5 +1,5 @@
 import { ROT } from './game';
-import Tile from './tile';
+import TileRepository from './tileRepository';
 import { EntityRepository } from './entities';
 import { ItemRepository, GearRepository } from './items';
 
@@ -251,16 +251,20 @@ export default class Map {
       z < 0 ||
       z >= this._depth
     ) {
-      return Tile.nullTile;
+      return TileRepository.create('null');
     } else {
-      return this._tiles[z][x][y] || Tile.nullTile;
+      return this._tiles[z][x][y] || TileRepository.create('null');
     }
   }
 
   isEmptyFloor(x, y, z) {
+    console.log(this.getTile(x, y, z));
+    console.log(TileRepository.create('floor'));
+    console.log(!this.getEntityAt(x, y, z));
     // Check if the tile is floor and also has no entity
     return (
-      this.getTile(x, y, z) === Tile.floorTile && !this.getEntityAt(x, y, z)
+      this.getTile(x, y, z) === TileRepository.create('floor') &&
+      !this.getEntityAt(x, y, z)
     );
   }
 
@@ -278,7 +282,7 @@ export default class Map {
   dig(x, y, z) {
     // If the tile is diggable, update it to a floor
     if (this.getTile(x, y, z).isDiggable()) {
-      this._tiles[z][x][y] = Tile.floorTile;
+      this._tiles[z][x][y] = TileRepository.create('floor');
     }
   }
 
@@ -329,14 +333,14 @@ export default class Map {
 
   setExplored(x, y, z, state) {
     // Only update if the tile is within bounds
-    if (this.getTile(x, y, z) !== Tile.nullTile) {
+    if (this.getTile(x, y, z) !== TileRepository.create('null')) {
       this._explored[z][x][y] = state;
     }
   }
 
   isExplored(x, y, z) {
     // Only return the value if within bounds
-    if (this.getTile(x, y, z) !== Tile.nullTile) {
+    if (this.getTile(x, y, z) !== TileRepository.create('null')) {
       return this._explored[z][x][y];
     } else {
       return false;

@@ -1,5 +1,5 @@
 import DynamicGlyph from './dynamicglyph';
-import Tile from './tile';
+import TileRepository from './tileRepository';
 import EntityMixins from './entitymixins';
 import * as Messages from './messages';
 
@@ -62,14 +62,14 @@ export default class Entity extends DynamicGlyph {
     let target = map.getEntityAt(x, y, this.getZ());
     // If our z level changed, check if we are on stair
     if (z < this.getZ()) {
-      if (tile !== Tile.stairsUpTile) {
+      if (tile !== TileRepository.create('stairsUp')) {
         Messages.sendMessage(this, "You can't go up here!");
       } else {
         Messages.sendMessage(this, 'You ascend to level %d!', [z + 1]);
         this.setPosition(x, y, z);
       }
     } else if (z > this.getZ()) {
-      if (tile !== Tile.stairsDownTile) {
+      if (tile !== TileRepository.create('stairsDown')) {
         Messages.sendMessage(this, "You can't go down here!");
       } else {
         this.setPosition(x, y, z);

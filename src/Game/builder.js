@@ -1,5 +1,6 @@
 import { ROT } from './game';
-import Tile, { getNeighborPositions } from './tile';
+import { getNeighborPositions } from './tile';
+import TileRepository from './tileRepository';
 /**
  * Builder is responsible for all map generation, thus all the tiles for a world.
  * We can then use these tiles to create a Map object.
@@ -32,7 +33,7 @@ export default class Builder {
         // if last level, generate a maze
         this._tiles[z] = this._generateLevel(
           ROT.Map.EllerMaze,
-          Tile.mazeWallTile
+          TileRepository.create('mazeWall')
         );
       } else {
         this._tiles[z] = this._generateLevel();
@@ -74,14 +75,17 @@ export default class Builder {
    * See https://ondras.github.io/rot.js/manual/#map/dungeon
    * for more info on dungeon generators, including rooms and corridors.
    */
-  _generateLevel(MapAlgorithm = ROT.Map.Digger, wallTile = Tile.wallTile) {
+  _generateLevel(
+    MapAlgorithm = ROT.Map.Digger,
+    wallTile = TileRepository.create('wall')
+  ) {
     let map = [];
     for (let x = 0; x < this._width; x++) {
       // Create the nested array for the y values
       map.push([]);
       // Add all the tiles
       for (let y = 0; y < this._height; y++) {
-        map[x].push(Tile.nullTile);
+        map[x].push(TileRepository.create('null'));
       }
     }
 
@@ -91,7 +95,7 @@ export default class Builder {
     // create map
     generator.create((x, y, wall) => {
       if (!wall) {
-        map[x][y] = Tile.floorTile;
+        map[x][y] = TileRepository.create('floor');
       } else {
         map[x][y] = wallTile;
       }
@@ -161,7 +165,7 @@ export default class Builder {
         if (this._regions[z][x][y] === region) {
           // Clear the region and set the tile to a wall tile
           this._regions[z][x][y] = 0;
-          this._tiles[z][x][y] = Tile.wallTile;
+          this._tiles[z][x][y] = TileRepository.create('wall');
         }
       }
     }
@@ -204,8 +208,8 @@ export default class Builder {
     for (let x = 0; x < this._width; x++) {
       for (let y = 0; y < this._height; y++) {
         if (
-          this._tiles[z][x][y] === Tile.floorTile &&
-          this._tiles[z + 1][x][y] === Tile.floorTile &&
+          this._tiles[z][x][y] === TileRepository.create('floor') &&
+          this._tiles[z + 1][x][y] === TileRepository.create('floor') &&
           this._regions[z][x][y] === r1 &&
           this._regions[z + 1][x][y] === r2
         ) {
@@ -229,8 +233,8 @@ export default class Builder {
     }
     // Select the first tile from the overlap and change it to stairs
     const point = overlap[0];
-    this._tiles[z][point.x][point.y] = Tile.stairsDownTile;
-    this._tiles[z + 1][point.x][point.y] = Tile.stairsUpTile;
+    this._tiles[z][point.x][point.y] = TileRepository.create('stairsDown');
+    this._tiles[z + 1][point.x][point.y] = TileRepository.create('stairsUp');
     return true;
   }
 
@@ -249,8 +253,8 @@ export default class Builder {
         for (let y = 0; y < this._height; y++) {
           key = this._regions[z][x][y] + ',' + this._regions[z + 1][x][y];
           if (
-            this._tiles[z][x][y] === Tile.floorTile &&
-            this._tiles[z + 1][x][y] === Tile.floorTile &&
+            this._tiles[z][x][y] === TileRepository.create('floor') &&
+            this._tiles[z + 1][x][y] === TileRepository.create('floor') &&
             !connected[key]
           ) {
             // Since both tiles are floors and we haven't
