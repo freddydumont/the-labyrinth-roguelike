@@ -238,6 +238,8 @@ export const eatScreen = new ItemListScreen({
     if (!this._extraInput) {
       // Check satiation level to warn before overeating death
       if (this._player.getSatiation() < item.getFoodValue()) {
+        // Clear previous messages
+        this._player.clearMessages();
         // Warn player with a message
         Messages.sendMessage(
           this._player,
