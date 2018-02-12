@@ -7,6 +7,8 @@ class ItemListScreen {
     // Set up based on the template
     this._caption = template['caption'];
     this._okFunction = template['ok'];
+    this._yesFunction = template['yes'];
+    this._noFunction = template['no'];
     // By default, we use the identity function
     this._isAcceptableFunction =
       template['isAcceptable'] ||
@@ -19,6 +21,9 @@ class ItemListScreen {
     this._canSelectMultipleItems = template['canSelectMultipleItems'];
     // Whether a 'no item' option should appear.
     this._hasNoItemOption = template['hasNoItemOption'];
+    // Whether the user has to input a Y/N choice
+    this._extraInput = false;
+    this._yes = undefined;
   }
 
   setup(player, items) {
@@ -105,61 +110,76 @@ class ItemListScreen {
     for (const key in this._selectedIndices) {
       selectedItems[key] = this._items[key];
     }
-    // Switch back to the play screen.
-    Screen.playScreen.setSubScreen(undefined);
+
     // Call the OK function and end the player's turn if it returns true.
     if (this._okFunction(selectedItems)) {
+      // Switch back to the play screen.
+      Screen.playScreen.setSubScreen(undefined);
       this._player.getMap().getEngine().unlock();
     }
   }
 
   handleInput(inputType, inputData) {
-    if (inputType === 'keydown') {
-      // If the user hits escape, hits enter and can't select an item, or hits
-      // enter without any items selected, simply cancel out
-      if (
-        inputData.keyCode === ROT.VK_ESCAPE ||
-        (inputData.keyCode === ROT.VK_RETURN &&
-          (!this._canSelectItem ||
-            Object.keys(this._selectedIndices).length === 0))
-      ) {
-        Screen.playScreen.setSubScreen(undefined);
-        // Handle pressing return when items are selected
-      } else if (inputData.keyCode === ROT.VK_RETURN) {
-        this.executeOkFunction();
-        // Handle pressing zero when 'no item' selection is enabled
-      } else if (
-        this._canSelectItem &&
-        this._hasNoItemOption &&
-        inputData.keyCode === ROT.VK_0
-      ) {
-        this._selectedIndices = {};
-        this.executeOkFunction();
-        // Handle pressing a letter if we can select
-      } else if (
-        this._canSelectItem &&
-        inputData.keyCode >= ROT.VK_A &&
-        inputData.keyCode <= ROT.VK_Z
-      ) {
-        // Check if it maps to a valid item by subtracting 'a' from the character
-        // to know what letter of the alphabet we used.
-        const index = inputData.keyCode - ROT.VK_A;
-        if (this._items[index]) {
-          // If multiple selection is allowed, toggle the selection status, else
-          // select the item and exit the screen
-          if (this._canSelectMultipleItems) {
-            if (this._selectedIndices[index]) {
-              delete this._selectedIndices[index];
+    // if no extra input is required, these are the keys
+    if (!this._extraInput) {
+      if (inputType === 'keydown') {
+        // If the user hits escape, hits enter and can't select an item, or hits
+        // enter without any items selected, simply cancel out
+        if (
+          inputData.keyCode === ROT.VK_ESCAPE ||
+          (inputData.keyCode === ROT.VK_RETURN &&
+            (!this._canSelectItem ||
+              Object.keys(this._selectedIndices).length === 0))
+        ) {
+          Screen.playScreen.setSubScreen(undefined);
+          // Handle pressing return when items are selected
+        } else if (inputData.keyCode === ROT.VK_RETURN) {
+          this.executeOkFunction();
+          // Handle pressing zero when 'no item' selection is enabled
+        } else if (
+          this._canSelectItem &&
+          this._hasNoItemOption &&
+          inputData.keyCode === ROT.VK_0
+        ) {
+          this._selectedIndices = {};
+          this.executeOkFunction();
+          // Handle pressing a letter if we can select
+        } else if (
+          this._canSelectItem &&
+          inputData.keyCode >= ROT.VK_A &&
+          inputData.keyCode <= ROT.VK_Z
+        ) {
+          // Check if it maps to a valid item by subtracting 'a' from the character
+          // to know what letter of the alphabet we used.
+          const index = inputData.keyCode - ROT.VK_A;
+          if (this._items[index]) {
+            // If multiple selection is allowed, toggle the selection status, else
+            // select the item and exit the screen
+            if (this._canSelectMultipleItems) {
+              if (this._selectedIndices[index]) {
+                delete this._selectedIndices[index];
+              } else {
+                this._selectedIndices[index] = true;
+              }
+              // Redraw screen
+              Game.refresh();
             } else {
               this._selectedIndices[index] = true;
+              this.executeOkFunction();
             }
-            // Redraw screen
-            Game.refresh();
-          } else {
-            this._selectedIndices[index] = true;
-            this.executeOkFunction();
           }
         }
+      }
+    } else {
+      // if we are waiting for an extra input
+      if (inputData.keyCode === ROT.VK_Y) {
+        // Y: set yes to true and call ok function
+        this._yes = true;
+        this.executeOkFunction();
+      } else if (inputData.keyCode === ROT.VK_N) {
+        // N: set yes to false and call ok function
+        this._yes = false;
+        this.executeOkFunction();
       }
     }
   }
@@ -210,9 +230,49 @@ export const eatScreen = new ItemListScreen({
   },
 
   ok: function(selectedItems) {
-    // Eat the item, removing it if there are no consumptions remaining.
+    // grab selected key and item
     const key = Object.keys(selectedItems)[0];
-    let item = selectedItems[key];
+    const item = selectedItems[key];
+
+    // if not waiting for extra input
+    if (!this._extraInput) {
+      // Check satiation level to warn before overeating death
+      if (this._player.getSatiation() < item.getFoodValue()) {
+        // Warn player with a message
+        Messages.sendMessage(
+          this._player,
+          'This looks like a pretty big bite.\nAre you sure you want to proceed? Y/N'
+        );
+
+        // display messages in current screen
+        Messages.renderMessages.call(this, Game.getDisplay());
+
+        // set extraInput to true to change screen controls
+        this._extraInput = true;
+        // return false to keep engine locked while waiting for input
+        return false;
+      } else {
+        // return yes function to eat item
+        return this._yesFunction(item, key);
+      }
+    } else {
+      // if waiting for extra input, set it to false
+      this._extraInput = false;
+      // this._yes should not ne undefined
+      if (typeof this._yes !== 'undefined') {
+        // clear messages and refresh
+        this._player.clearMessages();
+        Game.refresh();
+        // if yes is true, return yes function, else return no
+        return this._yes ? this._yesFunction(item, key) : this._noFunction();
+      }
+      // return true in case of error
+      return true;
+    }
+  },
+
+  yes: function(item, key) {
+    // Eat the item, removing it if there are no consumptions remaining.
     Messages.sendMessage(this._player, 'You eat %s.', [item.describeThe()]);
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
@@ -229,6 +289,10 @@ export const eatScreen = new ItemListScreen({
       }
       this._player.removeItem(key);
     }
+    return true;
+  },
+
+  no: function() {
     return true;
   },
 });
