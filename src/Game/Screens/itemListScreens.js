@@ -167,7 +167,7 @@ class ItemListScreen {
 
 export const inventoryScreen = new ItemListScreen({
   caption: 'Inventory',
-  canSelect: false
+  canSelect: false,
 });
 
 export const pickupScreen = new ItemListScreen({
@@ -185,7 +185,7 @@ export const pickupScreen = new ItemListScreen({
       );
     }
     return true;
-  }
+  },
 });
 
 export const dropScreen = new ItemListScreen({
@@ -197,7 +197,7 @@ export const dropScreen = new ItemListScreen({
     // Drop the selected item
     this._player.dropItem(Object.keys(selectedItems)[0]);
     return true;
-  }
+  },
 });
 
 export const eatScreen = new ItemListScreen({
@@ -230,7 +230,7 @@ export const eatScreen = new ItemListScreen({
       this._player.removeItem(key);
     }
     return true;
-  }
+  },
 });
 
 export const wieldScreen = new ItemListScreen({
@@ -255,11 +255,11 @@ export const wieldScreen = new ItemListScreen({
       this._player.unequip(item);
       this._player.wield(item);
       Messages.sendMessage(this._player, 'You are wielding %s.', [
-        item.describeA()
+        item.describeA(),
       ]);
     }
     return true;
-  }
+  },
 });
 
 export const wearScreen = new ItemListScreen({
@@ -284,11 +284,11 @@ export const wearScreen = new ItemListScreen({
       this._player.unequip(item);
       this._player.wear(item);
       Messages.sendMessage(this._player, 'You are wearing %s.', [
-        item.describeA()
+        item.describeA(),
       ]);
     }
     return true;
-  }
+  },
 });
 
 export const examineScreen = new ItemListScreen({
@@ -306,9 +306,9 @@ export const examineScreen = new ItemListScreen({
       let item = selectedItems[keys[0]];
       Messages.sendMessage(this._player, "It's %s (%s).", [
         item.describeA(false),
-        item.details()
+        item.details(),
       ]);
     }
     return true;
-  }
+  },
 });

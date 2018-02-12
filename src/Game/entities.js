@@ -26,8 +26,8 @@ export const Player = {
     EntityMixins.MessageRecipient,
     EntityMixins.FoodConsumer,
     EntityMixins.ExperienceGainer,
-    EntityMixins.PlayerStatGainer
-  ]
+    EntityMixins.PlayerStatGainer,
+  ],
 };
 
 export const EntityRepository = new Repository('entities', Entity);
@@ -47,8 +47,8 @@ EntityRepository.define('bat', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('newt', {
@@ -65,8 +65,8 @@ EntityRepository.define('newt', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('rat', {
@@ -85,8 +85,8 @@ EntityRepository.define('rat', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('kobold', {
@@ -106,8 +106,8 @@ EntityRepository.define('kobold', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('goblin', {
@@ -128,8 +128,8 @@ EntityRepository.define('goblin', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('orc', {
@@ -150,8 +150,8 @@ EntityRepository.define('orc', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define('cyclop', {
@@ -172,8 +172,8 @@ EntityRepository.define('cyclop', {
     EntityMixins.Destructible,
     EntityMixins.CorpseDropper,
     EntityMixins.ExperienceGainer,
-    EntityMixins.RandomStatGainer
-  ]
+    EntityMixins.RandomStatGainer,
+  ],
 });
 
 EntityRepository.define(
@@ -197,10 +197,10 @@ EntityRepository.define(
       EntityMixins.Destructible,
       EntityMixins.CorpseDropper,
       EntityMixins.ExperienceGainer,
-      EntityMixins.RandomStatGainer
-    ]
+      EntityMixins.RandomStatGainer,
+    ],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
