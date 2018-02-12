@@ -401,7 +401,6 @@ const EntityMixins = {
     },
 
     hunt: function() {
-      console.log('hunting');
       const player = this.getMap().getPlayer();
 
       // If adjacent to the player, then attack instead of hunting.
@@ -449,7 +448,6 @@ const EntityMixins = {
     follow: function() {
       // Once we've gotten the path, we want to move to the second cell that is
       // passed in the callback (the first is the entity's starting point)
-      console.log('following');
       const z = this.getZ();
       let count = 0;
       this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
@@ -458,7 +456,14 @@ const EntityMixins = {
         }
         count++;
       });
-      console.log(`${this.getX()}, ${this.getY()}`);
+
+      // Check if actor has reached last known position
+      if (
+        this.getX() === this._pathToPlayer._toX &&
+        this.getY() === this._pathToPlayer._toY
+      ) {
+        this._sightStatus = 'unknown';
+      }
     },
 
     wander: function() {
