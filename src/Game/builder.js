@@ -254,7 +254,7 @@ export default class Builder {
           key = this._regions[z][x][y] + ',' + this._regions[z + 1][x][y];
           if (
             this._tiles[z][x][y].describe() === 'floor' &&
-            this._tiles[z + 1][x][y] === 'floor' &&
+            this._tiles[z + 1][x][y].describe() === 'floor' &&
             !connected[key]
           ) {
             // Since both tiles are floors and we haven't
