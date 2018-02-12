@@ -360,6 +360,10 @@ const EntityMixins = {
     init: function(template) {
       // Load tasks, default is wander
       this._tasks = template['tasks'] || ['wander'];
+      // unknown, insight or outofsight
+      this._sightStatus = 'unknown';
+      // last known path is saved here
+      this._pathToPlayer = undefined;
     },
 
     act: function() {
@@ -375,7 +379,20 @@ const EntityMixins = {
 
     canDoTask: function(task) {
       if (task === 'hunt') {
-        return this.hasMixin('Sight') && this.canSee(this.getMap().getPlayer());
+        if (this.hasMixin('Sight') && this.canSee(this.getMap().getPlayer())) {
+          // player has been spotted, switch playerSighted to true and hunt
+          this._sightStatus = 'insight';
+          return true;
+        } else {
+          // if sightStatus was insight, becomes outofsight, else stays as is
+          if (this._sightStatus === 'insight') {
+            this._sightStatus = 'outofsight';
+          }
+          return false;
+        }
+      } else if (task === 'follow') {
+        // if sightStatus is outofsight, follow to last known position
+        return this._sightStatus === 'outofsight' ? true : false;
       } else if (task === 'wander') {
         return true;
       } else {
@@ -384,6 +401,7 @@ const EntityMixins = {
     },
 
     hunt: function() {
+      console.log('hunting');
       const player = this.getMap().getPlayer();
 
       // If adjacent to the player, then attack instead of hunting.
@@ -399,7 +417,7 @@ const EntityMixins = {
 
       // Generate the path and move to the first tile.
       const z = this.getZ();
-      const path = new ROT.Path.AStar(
+      this._pathToPlayer = new ROT.Path.AStar(
         player.getX(),
         player.getY(),
         (x, y) => {
@@ -413,14 +431,34 @@ const EntityMixins = {
         { topology: 4 }
       );
       // Once we've gotten the path, we want to move to the second cell that is
-      // passed in the callback (the first is the entity's strting point)
+      // passed in the callback (the first is the entity's starting point)
       let count = 0;
-      path.compute(this.getX(), this.getY(), (x, y) => {
+      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
         if (count === 1) {
           this.tryMove(x, y, z);
         }
         count++;
       });
+    },
+
+    /**
+     * move to the next cell in pathToPlayer until either
+     *  1. player is spotted again, hunt will take over automatically
+     *  2. end of path is reached, set sightStatus to unknown to wander
+     */
+    follow: function() {
+      // Once we've gotten the path, we want to move to the second cell that is
+      // passed in the callback (the first is the entity's starting point)
+      console.log('following');
+      const z = this.getZ();
+      let count = 0;
+      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
+        if (count === 1) {
+          this.tryMove(x, y, z);
+        }
+        count++;
+      });
+      console.log(`${this.getX()}, ${this.getY()}`);
     },
 
     wander: function() {
