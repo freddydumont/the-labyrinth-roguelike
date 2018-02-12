@@ -429,15 +429,7 @@ const EntityMixins = {
         },
         { topology: 4 }
       );
-      // Once we've gotten the path, we want to move to the second cell that is
-      // passed in the callback (the first is the entity's starting point)
-      let count = 0;
-      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
-        if (count === 1) {
-          this.tryMove(x, y, z);
-        }
-        count++;
-      });
+      this._computePath();
     },
 
     /**
@@ -446,17 +438,7 @@ const EntityMixins = {
      *  2. end of path is reached, set sightStatus to unknown to wander
      */
     follow: function() {
-      // Once we've gotten the path, we want to move to the second cell that is
-      // passed in the callback (the first is the entity's starting point)
-      const z = this.getZ();
-      let count = 0;
-      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
-        if (count === 1) {
-          this.tryMove(x, y, z);
-        }
-        count++;
-      });
-
+      this._computePath();
       // Check if actor has reached last known position
       if (
         this.getX() === this._pathToPlayer._toX &&
@@ -475,6 +457,18 @@ const EntityMixins = {
       } else {
         this.tryMove(this.getX(), this.getY() + moveOffset, this.getZ());
       }
+    },
+
+    _computePath: function() {
+      // Once we've gotten the path, we want to move to the second cell that is
+      // passed in the callback (the first is the entity's starting point)
+      let count = 0;
+      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
+        if (count === 1) {
+          this.tryMove(x, y, this.getZ());
+        }
+        count++;
+      });
     },
   },
 
