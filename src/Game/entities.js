@@ -76,7 +76,7 @@ EntityRepository.define('rat', {
   foodValue: 100,
   maxHp: 15,
   attackValue: 5,
-  tasks: ['hunt', 'wander'],
+  tasks: ['hunt', 'follow', 'wander'],
   levelRange: [0, 1, 2],
   mixins: [
     EntityMixins.TaskActor,
@@ -97,7 +97,7 @@ EntityRepository.define('kobold', {
   sightRadius: 5,
   maxHp: 20,
   attackValue: 7,
-  tasks: ['hunt', 'wander'],
+  tasks: ['hunt', 'follow', 'wander'],
   levelRange: [1, 2, 3],
   mixins: [
     EntityMixins.TaskActor,
@@ -119,7 +119,7 @@ EntityRepository.define('goblin', {
   attackValue: 9,
   defenseValue: 2,
   sightRadius: 6,
-  tasks: ['hunt', 'wander'],
+  tasks: ['hunt', 'follow', 'wander'],
   levelRange: [2, 3, 4],
   mixins: [
     EntityMixins.TaskActor,
@@ -141,7 +141,7 @@ EntityRepository.define('orc', {
   attackValue: 12,
   defenseValue: 5,
   sightRadius: 7,
-  tasks: ['hunt', 'wander'],
+  tasks: ['hunt', 'follow', 'wander'],
   levelRange: [4, 5],
   mixins: [
     EntityMixins.TaskActor,
@@ -163,7 +163,7 @@ EntityRepository.define('cyclop', {
   attackValue: 15,
   defenseValue: 6,
   sightRadius: 4,
-  tasks: ['hunt', 'wander'],
+  tasks: ['hunt', 'follow', 'wander'],
   levelRange: [5],
   mixins: [
     EntityMixins.TaskActor,
@@ -187,7 +187,7 @@ EntityRepository.define(
     attackValue: 25,
     defenseValue: 10,
     sightRadius: 10,
-    tasks: ['hunt', 'wander'],
+    tasks: ['hunt', 'follow', 'wander'],
     levelRange: [6],
     mixins: [
       EntityMixins.BossActor,
