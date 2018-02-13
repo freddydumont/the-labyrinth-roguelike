@@ -379,7 +379,10 @@ const EntityMixins = {
 
     canDoTask: function(task) {
       if (task === 'hunt') {
-        if (this.hasMixin('Sight') && this.canSee(this.getMap().getPlayer())) {
+        if (
+          this.hasMixin('Sight') &&
+          this.canSeeEntity(this.getMap().getPlayer())
+        ) {
           // player has been spotted, switch playerSighted to true and hunt
           this._sightStatus = 'insight';
           return true;
@@ -491,20 +494,7 @@ const EntityMixins = {
       Messages.sendMessage(this, 'You are more aware of your surroundings!');
     },
 
-    // Allow an entity to check if it can see another entity
-    canSee: function(entity) {
-      // If not on the same map or on different floors, then exit early
-      if (
-        !entity ||
-        this._map !== entity.getMap() ||
-        this._z !== entity.getZ()
-      ) {
-        return false;
-      }
-
-      const otherX = entity.getX();
-      const otherY = entity.getY();
-
+    canSee: function(otherX, otherY) {
       // If we're not in a square field of view, then we won't be in a real
       // field of view either.
       if (
@@ -530,6 +520,20 @@ const EntityMixins = {
           }
         });
       return found;
+    },
+
+    // Allow an entity to check if it can see another entity
+    canSeeEntity: function(entity) {
+      // If not on the same map or on different floors, then exit early
+      if (
+        !entity ||
+        this._map !== entity.getMap() ||
+        this._z !== entity.getZ()
+      ) {
+        return false;
+      }
+
+      return this.canSee(entity.getX(), entity.getY());
     },
   },
 
