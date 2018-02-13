@@ -1,6 +1,6 @@
 import Repository from './repository';
-import Item from './item';
-import ItemMixins from './itemmixins';
+import Item from '../item';
+import ItemMixins from '../itemmixins';
 
 export const ItemRepository = new Repository('items', Item);
 export const GearRepository = new Repository('gear', Item);
@@ -12,7 +12,7 @@ ItemRepository.define('apple', {
   foreground: 'red',
   foodValue: 100,
   onGround: true,
-  mixins: [ItemMixins.Edible]
+  mixins: [ItemMixins.Edible],
 });
 
 ItemRepository.define('melon', {
@@ -22,7 +22,7 @@ ItemRepository.define('melon', {
   foodValue: 50,
   onGround: true,
   consumptions: 4,
-  mixins: [ItemMixins.Edible]
+  mixins: [ItemMixins.Edible],
 });
 
 ItemRepository.define(
@@ -33,10 +33,10 @@ ItemRepository.define(
     foodValue: 75,
     onGround: true,
     consumptions: 1,
-    mixins: [ItemMixins.Edible]
+    mixins: [ItemMixins.Edible],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -44,7 +44,7 @@ ItemRepository.define(
 ItemRepository.define('rock', {
   name: 'rock',
   character: '*',
-  foreground: 'white'
+  foreground: 'white',
 });
 
 // Weapons
@@ -57,10 +57,10 @@ GearRepository.define(
     attackValue: 2,
     wieldable: true,
     weightedValues: [0, 0, 0, 0, 0, 0, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -73,10 +73,10 @@ GearRepository.define(
     attackValue: 3,
     wieldable: true,
     weightedValues: [50, 30, 15, 10, 0, 0, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -89,10 +89,10 @@ GearRepository.define(
     attackValue: 5,
     wieldable: true,
     weightedValues: [0, 20, 25, 15, 10, 0, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -105,10 +105,10 @@ GearRepository.define(
     attackValue: 8,
     wieldable: true,
     weightedValues: [0, 0, 5, 10, 20, 15, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -122,10 +122,10 @@ GearRepository.define(
     defenseValue: 3,
     wieldable: true,
     weightedValues: [0, 0, 5, 10, 10, 15, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -138,10 +138,10 @@ GearRepository.define(
     attackValue: 12,
     wieldable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -155,10 +155,10 @@ GearRepository.define(
     defenseValue: 2,
     wearable: true,
     weightedValues: [50, 30, 15, 10, 0, 0, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -171,10 +171,10 @@ GearRepository.define(
     defenseValue: 3,
     wearable: true,
     weightedValues: [0, 20, 25, 15, 10, 0, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -187,10 +187,10 @@ GearRepository.define(
     defenseValue: 4,
     wearable: true,
     weightedValues: [0, 0, 5, 10, 20, 15, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -203,10 +203,10 @@ GearRepository.define(
     defenseValue: 5,
     wearable: true,
     weightedValues: [0, 0, 5, 10, 10, 15, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );
 
@@ -219,9 +219,9 @@ GearRepository.define(
     defenseValue: 6,
     wearable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
-    mixins: [ItemMixins.Equippable]
+    mixins: [ItemMixins.Equippable],
   },
   {
-    disableRandomCreation: true
+    disableRandomCreation: true,
   }
 );

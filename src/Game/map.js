@@ -1,7 +1,7 @@
 import { ROT } from './game';
-import TileRepository from './tileRepository';
-import { EntityRepository } from './entities';
-import { ItemRepository, GearRepository } from './items';
+import TileRepository from './Repositories/tileRepository';
+import { EntityRepository } from './Repositories/entityRepository';
+import { ItemRepository, GearRepository } from './Repositories/itemRepository';
 
 export default class Map {
   constructor(tiles, player) {

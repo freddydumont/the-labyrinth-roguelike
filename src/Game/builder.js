@@ -1,6 +1,6 @@
 import { ROT } from './game';
 import { getNeighborPositions } from './tile';
-import TileRepository from './tileRepository';
+import TileRepository from './Repositories/tileRepository';
 /**
  * Builder is responsible for all map generation, thus all the tiles for a world.
  * We can then use these tiles to create a Map object.

@@ -1,6 +1,6 @@
-import EntityMixins from './entitymixins';
+import EntityMixins from '../entitymixins';
 import Repository from './repository';
-import Entity from './entity';
+import Entity from '../entity';
 
 export const Player = {
   name: 'player',

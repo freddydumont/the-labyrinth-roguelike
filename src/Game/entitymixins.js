@@ -1,7 +1,7 @@
 import { ROT, Game } from './game';
 import * as Messages from './messages';
 import Screen from './Screens/index';
-import { ItemRepository } from './items';
+import { ItemRepository } from './Repositories/itemRepository';
 
 const EntityMixins = {
   BossActor: {

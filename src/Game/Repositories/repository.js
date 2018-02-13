@@ -1,4 +1,4 @@
-import { ROT } from './game';
+import { ROT } from '../game';
 /**
  * A repository has a name and a constructor. The constructor is used to create
  * items in the repository.

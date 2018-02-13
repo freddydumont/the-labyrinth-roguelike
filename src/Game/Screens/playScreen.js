@@ -3,10 +3,10 @@ import { ROT, Game } from '../game';
 import Map from '../map';
 import * as Messages from '../messages';
 import Entity from '../entity';
-import { Player } from '../entities';
+import { Player } from '../Repositories/entityRepository';
 import Builder from '../builder';
 import Screen from './index';
-import { GearRepository } from '../items';
+import { GearRepository } from '../Repositories/itemRepository';
 
 export const playScreen = {
   _map: null,

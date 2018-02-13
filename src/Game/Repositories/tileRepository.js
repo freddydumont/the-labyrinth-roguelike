@@ -1,5 +1,5 @@
 import Repository from './repository';
-import Tile from './tile';
+import Tile from '../tile';
 
 const TileRepository = new Repository('tiles', Tile);
 

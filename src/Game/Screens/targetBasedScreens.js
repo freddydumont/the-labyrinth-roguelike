@@ -1,7 +1,7 @@
 import Screen from './index';
 import { ROT, Game } from '../game';
 import Geometry from '../geometry';
-import TileRepository from '../tileRepository';
+import TileRepository from '../Repositories/tileRepository';
 
 class TargetBasedScreen {
   constructor(template = {}) {
