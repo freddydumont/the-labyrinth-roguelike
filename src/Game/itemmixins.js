@@ -90,6 +90,32 @@ const ItemMixins = {
       return this._wearable;
     },
   },
+
+  Throwable: {
+    name: 'Throwable',
+
+    // default AV is different depending on item type
+    // 1 for food etc, and attackValue for weapons
+    _defaultAV: function(template) {
+      return template['attackValue'] ? template['attackValue'] : 1;
+    },
+
+    init: function(template) {
+      this._throwableAttackValue =
+        template['throwableAttackValue'] || this._defaultAV(template);
+    },
+
+    listeners: {
+      details: function() {
+        return [{ key: 'throw damage', value: this._throwableAttackValue }];
+      },
+    },
+
+    // standard getters
+    getThrowableAttackValue: function() {
+      return this._throwableAttackValue;
+    },
+  },
 };
 
 export default ItemMixins;

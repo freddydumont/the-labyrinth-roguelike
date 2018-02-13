@@ -12,7 +12,7 @@ ItemRepository.define('apple', {
   foreground: 'red',
   foodValue: 100,
   onGround: true,
-  mixins: [ItemMixins.Edible],
+  mixins: [ItemMixins.Edible, ItemMixins.Throwable],
 });
 
 ItemRepository.define('melon', {
@@ -22,7 +22,7 @@ ItemRepository.define('melon', {
   foodValue: 50,
   onGround: true,
   consumptions: 4,
-  mixins: [ItemMixins.Edible],
+  mixins: [ItemMixins.Edible, ItemMixins.Throwable],
 });
 
 ItemRepository.define(
@@ -45,6 +45,8 @@ ItemRepository.define('rock', {
   name: 'rock',
   character: '*',
   foreground: 'white',
+  throwableAttackValue: 2,
+  mixins: [ItemMixins.Throwable],
 });
 
 // Weapons
@@ -57,7 +59,7 @@ GearRepository.define(
     attackValue: 2,
     wieldable: true,
     weightedValues: [0, 0, 0, 0, 0, 0, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
@@ -73,7 +75,7 @@ GearRepository.define(
     attackValue: 3,
     wieldable: true,
     weightedValues: [50, 30, 15, 10, 0, 0, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
@@ -89,7 +91,7 @@ GearRepository.define(
     attackValue: 5,
     wieldable: true,
     weightedValues: [0, 20, 25, 15, 10, 0, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
@@ -105,7 +107,7 @@ GearRepository.define(
     attackValue: 8,
     wieldable: true,
     weightedValues: [0, 0, 5, 10, 20, 15, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
@@ -122,7 +124,7 @@ GearRepository.define(
     defenseValue: 3,
     wieldable: true,
     weightedValues: [0, 0, 5, 10, 10, 15, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
@@ -138,7 +140,7 @@ GearRepository.define(
     attackValue: 12,
     wieldable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
-    mixins: [ItemMixins.Equippable],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
     disableRandomCreation: true,
