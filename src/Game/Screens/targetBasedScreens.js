@@ -20,7 +20,7 @@ class TargetBasedScreen {
       };
   }
 
-  setup(player, startX, startY, offsetX, offsetY) {
+  setup(player, startX, startY, offsetX, offsetY, args) {
     this._player = player;
     // Store original position. Subtract the offset to make life easy so we don't
     // always have to remove it.
@@ -46,6 +46,12 @@ class TargetBasedScreen {
         }
       );
     this._visibleCells = visibleCells;
+
+    // if args array is present, assign values
+    if (args) {
+      this._item = args[0];
+      this._key = args[1];
+    }
   }
 
   render(display) {
