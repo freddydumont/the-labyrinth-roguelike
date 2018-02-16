@@ -378,3 +378,32 @@ export const examineScreen = new ItemListScreen({
     return true;
   },
 });
+
+export const throwScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to throw',
+  canSelect: true,
+  canSelectMultipleItems: false,
+
+  // Acceptable items have the 'Throwable' mixin
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Throwable');
+  },
+
+  ok: function(selectedItems) {
+    // grab selected key and item
+    const key = Object.keys(selectedItems)[0];
+    const item = selectedItems[key];
+    // Setup the throwAt screen with extra args
+    const offsets = Screen.playScreen.getScreenOffsets();
+    Screen.throwAtScreen.setup(
+      this._player,
+      this._player.getX(),
+      this._player.getY(),
+      offsets.x,
+      offsets.y,
+      [item, key]
+    );
+    // switch to throwAt screen
+    Screen.playScreen.setSubScreen(Screen.throwAtScreen);
+  },
+});
