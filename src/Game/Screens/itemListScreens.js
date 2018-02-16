@@ -1,7 +1,6 @@
 import { ROT, Game } from '../game';
 import * as Messages from '../messages';
 import Screen from './index';
-import { ThrowAtScreen } from './targetBasedScreens';
 
 class ItemListScreen {
   constructor(template) {
