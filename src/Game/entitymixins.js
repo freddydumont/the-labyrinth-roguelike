@@ -793,10 +793,9 @@ const EntityMixins = {
         this.removeItem(key);
         // check if there is an entity on target cell
         const target = this.getMap().getEntityAt(x, y, z);
-        console.log(`target is: ${target}`);
         if (target) {
           // attack entity
-          this._throwAttack(item, target);
+          return this._throwAttack(item, target);
         } else {
           // place item at target
           this.getMap().addItem(x, y, z, item);
@@ -804,8 +803,10 @@ const EntityMixins = {
           Messages.sendMessage(this, 'You throw %s.', [
             item.describeThe(false),
           ]);
+          return true;
         }
       }
+      return false;
     },
 
     _throwAttack: function(item, target) {
@@ -829,7 +830,9 @@ const EntityMixins = {
         ]);
 
         target.takeDamage(this, damage);
+        return true;
       }
+      return false;
     },
   },
 };
