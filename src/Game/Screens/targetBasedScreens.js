@@ -12,11 +12,53 @@ class TargetBasedScreen {
         return false;
       };
 
-    // The defaut caption function simply returns an empty string.
+    // The defaut caption function returns a description of the tile
     this._captionFunction =
       template['captionFunction'] ||
-      function(x, y) {
-        return '';
+      function captionFunction(x, y) {
+        const z = this._player.getZ();
+        const map = this._player.getMap();
+        // If the tile is explored, we can give a better caption
+        if (map.isExplored(x, y, z)) {
+          // If the tile isn't explored, we have to check if we can actually
+          // see it before testing if there's an entity or item.
+          if (this._visibleCells[x + ',' + y]) {
+            const items = map.getItemsAt(x, y, z);
+            // If we have items, we want to render the top most item
+            if (items) {
+              const item = items[items.length - 1];
+              return String.format(
+                '%s - %s (%s)',
+                item.getRepresentation(),
+                item.describeA(true),
+                item.details()
+              );
+              // Else check if there's an entity
+            } else if (map.getEntityAt(x, y, z)) {
+              var entity = map.getEntityAt(x, y, z);
+              return String.format(
+                '%s - %s (%s)',
+                entity.getRepresentation(),
+                entity.describeA(true),
+                entity.details()
+              );
+            }
+          }
+          // If there was no entity/item or the tile wasn't visible, then use
+          // the tile information.
+          return String.format(
+            '%s - %s',
+            map.getTile(x, y, z).getRepresentation(),
+            map.getTile(x, y, z).getDescription()
+          );
+        } else {
+          // If the tile is not explored, show the null tile description.
+          return String.format(
+            '%s - %s',
+            TileRepository.create('null').getRepresentation(),
+            TileRepository.create('null').getDescription()
+          );
+        }
       };
   }
 
@@ -129,50 +171,4 @@ class TargetBasedScreen {
   }
 }
 
-export const lookScreen = new TargetBasedScreen({
-  captionFunction: function(x, y) {
-    const z = this._player.getZ();
-    const map = this._player.getMap();
-    // If the tile is explored, we can give a better caption
-    if (map.isExplored(x, y, z)) {
-      // If the tile isn't explored, we have to check if we can actually
-      // see it before testing if there's an entity or item.
-      if (this._visibleCells[x + ',' + y]) {
-        const items = map.getItemsAt(x, y, z);
-        // If we have items, we want to render the top most item
-        if (items) {
-          const item = items[items.length - 1];
-          return String.format(
-            '%s - %s (%s)',
-            item.getRepresentation(),
-            item.describeA(true),
-            item.details()
-          );
-          // Else check if there's an entity
-        } else if (map.getEntityAt(x, y, z)) {
-          var entity = map.getEntityAt(x, y, z);
-          return String.format(
-            '%s - %s (%s)',
-            entity.getRepresentation(),
-            entity.describeA(true),
-            entity.details()
-          );
-        }
-      }
-      // If there was no entity/item or the tile wasn't visible, then use
-      // the tile information.
-      return String.format(
-        '%s - %s',
-        map.getTile(x, y, z).getRepresentation(),
-        map.getTile(x, y, z).getDescription()
-      );
-    } else {
-      // If the tile is not explored, show the null tile description.
-      return String.format(
-        '%s - %s',
-        TileRepository.create('null').getRepresentation(),
-        TileRepository.create('null').getDescription()
-      );
-    }
-  },
-});
+export const lookScreen = new TargetBasedScreen({});
