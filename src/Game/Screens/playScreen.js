@@ -292,6 +292,14 @@ export const playScreen = {
             'You have nothing to examine.'
           );
           return;
+        case ROT.VK_T:
+          // Show the throw screen
+          this.showItemsSubScreen(
+            Screen.throwScreen,
+            this._player.getItems(),
+            'You have nothing to throw.'
+          );
+          return;
         case ROT.VK_COMMA:
           if (!inputData.shiftKey) {
             // Pick up item
