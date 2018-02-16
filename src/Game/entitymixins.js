@@ -782,6 +782,56 @@ const EntityMixins = {
       },
     },
   },
+
+  Thrower: {
+    name: 'Thrower',
+
+    throwItem: function(item, key, x, y, z) {
+      // check if we can see target
+      if (this.hasMixin('Sight') && this.canSee(x, y)) {
+        // remove item from inventory
+        this.removeItem(key);
+        // check if there is an entity on target cell
+        const target = this.getMap().getEntityAt(x, y, z);
+        console.log(`target is: ${target}`);
+        if (target) {
+          // attack entity
+          this._throwAttack(item, target);
+        } else {
+          // place item at target
+          this.getMap().addItem(x, y, z, item);
+          // send message
+          Messages.sendMessage(this, 'You throw %s.', [
+            item.describeThe(false),
+          ]);
+        }
+      }
+    },
+
+    _throwAttack: function(item, target) {
+      // If the target is destructible, calculate the damage
+      // based on attack and defense value
+      if (target.hasMixin('Destructible')) {
+        let attack = item.getThrowableAttackValue();
+        let defense = target.getDefenseValue();
+        let max = Math.max(0, attack - defense);
+        let damage = 1 + Math.floor(Math.random() * max);
+
+        Messages.sendMessage(this, 'You throw %s at the %s for %d damage!', [
+          item.describeThe(false),
+          target.getName(),
+          damage,
+        ]);
+        Messages.sendMessage(target, 'The %s throws %s at you for %d damage!', [
+          this.getName(),
+          item.describeA(false),
+          damage,
+        ]);
+
+        target.takeDamage(this, damage);
+      }
+    },
+  },
 };
 
 export default EntityMixins;
