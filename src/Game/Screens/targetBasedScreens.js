@@ -2,12 +2,13 @@ import Screen from './index';
 import { ROT, Game } from '../game';
 import Geometry from '../geometry';
 import TileRepository from '../Repositories/tileRepository';
+import * as Messages from '../messages';
 
 class TargetBasedScreen {
   constructor(template = {}) {
     // By default, our ok return does nothing and does not consume a turn.
     this._okFunction =
-      template['okFunction'] ||
+      template['ok'] ||
       function(x, y) {
         return false;
       };
@@ -166,9 +167,27 @@ class TargetBasedScreen {
         this._cursorY + this._offsetY
       )
     ) {
+      // message const to work around the unlock
+      const message = this._player.getMessages()[0];
       this._player.getMap().getEngine().unlock();
+      this._player.receiveMessage(message);
     }
   }
 }
 
 export const lookScreen = new TargetBasedScreen({});
+
+export const throwAtScreen = new TargetBasedScreen({
+  ok: function(x, y) {
+    // test throwItem call to return appropriate bool to executeOkFunction()
+    if (
+      this._player.throwItem(this._item, this._key, x, y, this._player.getZ())
+    ) {
+      return true;
+    } else {
+      // if it returns false, send message you cannot throw there
+      Messages.sendMessage(this._player, 'You cannot throw there!');
+      return false;
+    }
+  },
+});
