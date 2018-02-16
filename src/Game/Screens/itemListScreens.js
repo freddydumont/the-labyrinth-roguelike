@@ -1,6 +1,7 @@
 import { ROT, Game } from '../game';
 import * as Messages from '../messages';
 import Screen from './index';
+import { ThrowAtScreen } from './targetBasedScreens';
 
 class ItemListScreen {
   constructor(template) {
@@ -376,5 +377,24 @@ export const examineScreen = new ItemListScreen({
       ]);
     }
     return true;
+  },
+});
+
+export const throwScreen = new ItemListScreen({
+  caption: 'Choose the item you wish to throw',
+  canSelect: true,
+  canSelectMultipleItems: false,
+
+  // Acceptable items have the 'Throwable' mixin
+  isAcceptable: function(item) {
+    return item && item.hasMixin('Throwable');
+  },
+
+  ok: function(selectedItems) {
+    // grab selected key and item
+    const key = Object.keys(selectedItems)[0];
+    const item = selectedItems[key];
+    // pass them to the thowAtScreen
+    return Screen.playScreen.setSubScreen(new ThrowAtScreen(item, key));
   },
 });
