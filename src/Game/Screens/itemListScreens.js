@@ -394,7 +394,17 @@ export const throwScreen = new ItemListScreen({
     // grab selected key and item
     const key = Object.keys(selectedItems)[0];
     const item = selectedItems[key];
-    // pass them to the thowAtScreen
-    return Screen.playScreen.setSubScreen(new ThrowAtScreen(item, key));
+    // Setup the throwAt screen with extra args
+    const offsets = Screen.playScreen.getScreenOffsets();
+    Screen.throwAtScreen.setup(
+      this._player,
+      this._player.getX(),
+      this._player.getY(),
+      offsets.x,
+      offsets.y,
+      [item, key]
+    );
+    // switch to throwAt screen
+    Screen.playScreen.setSubScreen(Screen.throwAtScreen);
   },
 });
