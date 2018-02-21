@@ -300,6 +300,27 @@ export const playScreen = {
             'You have nothing to throw.'
           );
           return;
+        case ROT.VK_F:
+          // Show the fire screen
+          if (!this._player.getWeapon().isRanged) {
+            // if the weapon is not ranged, notify player
+            Messages.sendMessage(
+              this._player,
+              'You are not wielding a ranged weapon.'
+            );
+          } else {
+            // if the weapon is ranged, show the Fire screen
+            const offsets = this.getScreenOffsets();
+            Screen.fireScreen.setup(
+              this._player,
+              this._player.getX(),
+              this._player.getY(),
+              offsets.x,
+              offsets.y
+            );
+            this.setSubScreen(Screen.fireScreen);
+          }
+          return;
         case ROT.VK_COMMA:
           if (!inputData.shiftKey) {
             // Pick up item

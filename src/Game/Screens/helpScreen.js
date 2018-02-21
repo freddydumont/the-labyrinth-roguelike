@@ -30,6 +30,7 @@ export const helpScreen = {
     display.drawText(0, y++, '[W] to wear items');
     display.drawText(0, y++, '[x] to examine items');
     display.drawText(0, y++, '[t] to throw items');
+    display.drawText(0, y++, '[f] to fire ranged weapon');
     display.drawText(0, y++, '[;] to look around you');
     display.drawText(0, y++, '[?] to show this help screen');
     y += 3;
