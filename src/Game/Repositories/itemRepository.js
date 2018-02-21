@@ -149,7 +149,7 @@ GearRepository.define(
 
 // Ranged Weapons
 GearRepository.define(
-  'Sling',
+  'sling',
   {
     name: 'sling',
     character: '^',
@@ -166,7 +166,7 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'Bow',
+  'bow',
   {
     name: 'bow',
     character: '3',

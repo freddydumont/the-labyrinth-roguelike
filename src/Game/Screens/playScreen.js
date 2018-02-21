@@ -302,12 +302,15 @@ export const playScreen = {
           return;
         case ROT.VK_F:
           // Show the fire screen
-          if (!this._player.getWeapon().isRanged) {
+          if (!this._player.getWeapon().isRanged()) {
+            // Clear previous messages
+            this._player.clearMessages();
             // if the weapon is not ranged, notify player
             Messages.sendMessage(
               this._player,
               'You are not wielding a ranged weapon.'
             );
+            Messages.renderMessages.call(this, Game.getDisplay());
           } else {
             // if the weapon is ranged, show the Fire screen
             const offsets = this.getScreenOffsets();
