@@ -102,7 +102,7 @@ GearRepository.define(
   'war hammer',
   {
     name: 'war hammer',
-    character: 'T',
+    character: '†',
     foreground: 'slategray',
     attackValue: 8,
     wieldable: true,
@@ -140,6 +140,41 @@ GearRepository.define(
     attackValue: 12,
     wieldable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+// Ranged Weapons
+GearRepository.define(
+  'Sling',
+  {
+    name: 'sling',
+    character: '^',
+    foreground: 'saddlebrown',
+    rangedAttackValue: 3,
+    wieldable: true,
+    ranged: true,
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+GearRepository.define(
+  'Bow',
+  {
+    name: 'bow',
+    character: '3',
+    foreground: 'tan',
+    rangedAttackValue: 5,
+    wieldable: true,
+    ranged: true,
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
     mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {
