@@ -274,25 +274,26 @@ const EntityMixins = {
     },
 
     getAttackValue: function() {
+      let modifier = 0;
       // If we can equip items, then have to take into
       // consideration weapon and armor, along with ranged weapons
       if (this.hasMixin(EntityMixins.Equipper)) {
-        let modifier = 0;
-        const weapon = this.getWeapon();
-        if (weapon) {
-          modifier += weapon.isRanged()
-            ? weapon.getRangedAttackValue()
-            : weapon.getAttackValue();
-        }
         if (this.getArmor()) {
           modifier += this.getArmor().getAttackValue();
         }
-        // AV is halved for ranged weapons, otherwise too OP
-        const attack = this._attackValue + modifier;
-        return weapon.isRanged() ? Math.round(attack / 2) : attack;
-      } else {
-        return this._attackValue;
+
+        if (this.getWeapon()) {
+          const weapon = this.getWeapon();
+          modifier += weapon.isRanged()
+            ? weapon.getRangedAttackValue()
+            : weapon.getAttackValue();
+
+          // AV is halved for ranged weapons, otherwise too OP
+          const attack = this._attackValue + modifier;
+          return weapon.isRanged() ? Math.round(attack / 2) : attack;
+        }
       }
+      return this._attackValue + modifier;
     },
 
     increaseAttackValue: function(value = 2) {
