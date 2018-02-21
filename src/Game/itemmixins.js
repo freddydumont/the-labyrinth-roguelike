@@ -59,13 +59,20 @@ const ItemMixins = {
       this._defenseValue = template['defenseValue'] || 0;
       this._wieldable = template['wieldable'] || false;
       this._wearable = template['wearable'] || false;
+      this._rangedAttackValue = template['rangedAttackValue'] || 0;
+      this._ranged = template['ranged'] || false;
     },
 
     listeners: {
       details: function() {
         let results = [];
         if (this._wieldable) {
-          results.push({ key: 'attack', value: this.getAttackValue() });
+          results.push({
+            key: 'attack',
+            value: this._ranged
+              ? this.getRangedAttackValue()
+              : this.getAttackValue(),
+          });
         }
         if (this._wearable) {
           results.push({ key: 'defense', value: this.getDefenseValue() });
@@ -88,6 +95,14 @@ const ItemMixins = {
 
     isWearable: function() {
       return this._wearable;
+    },
+
+    getRangedAttackValue: function() {
+      return this._rangedAttackValue;
+    },
+
+    isRanged: function() {
+      return this._ranged;
     },
   },
 
