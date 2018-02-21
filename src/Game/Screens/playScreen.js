@@ -214,6 +214,8 @@ export const playScreen = {
     }
 
     if (inputType === 'keydown') {
+      // Clear previous messages to avoid a massive message display
+      this._player.clearMessages();
       switch (inputData.keyCode) {
         // MOVEMENT
         case ROT.VK_LEFT:
@@ -303,8 +305,6 @@ export const playScreen = {
         case ROT.VK_F:
           // Show the fire screen
           if (!this._player.getWeapon().isRanged()) {
-            // Clear previous messages
-            this._player.clearMessages();
             // if the weapon is not ranged, notify player
             Messages.sendMessage(
               this._player,
