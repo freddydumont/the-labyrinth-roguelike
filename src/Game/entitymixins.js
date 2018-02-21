@@ -266,6 +266,7 @@ const EntityMixins = {
     init: function(props) {
       this._attackValue = props['attackValue'] || 1;
     },
+
     listeners: {
       details: function() {
         return [{ key: 'attack', value: this.getAttackValue() }];
@@ -275,16 +276,21 @@ const EntityMixins = {
     getAttackValue: function() {
       let modifier = 0;
       // If we can equip items, then have to take into
-      // consideration weapon and armor
+      // consideration weapon and armor, along with ranged weapons
+      const weapon = this.getWeapon();
       if (this.hasMixin(EntityMixins.Equipper)) {
-        if (this.getWeapon()) {
-          modifier += this.getWeapon().getAttackValue();
+        if (weapon) {
+          modifier += weapon.isRanged()
+            ? weapon.getRangedAttackValue()
+            : weapon.getAttackValue();
         }
         if (this.getArmor()) {
           modifier += this.getArmor().getAttackValue();
         }
       }
-      return this._attackValue + modifier;
+      // AV is halved for ranged weapons, otherwise too OP
+      const attack = this._attackValue + modifier;
+      return weapon.isRanged() ? Math.round(attack / 2) : attack;
     },
 
     increaseAttackValue: function(value = 2) {
@@ -293,7 +299,7 @@ const EntityMixins = {
       Messages.sendMessage(this, 'You look stronger!');
     },
 
-    attack: function(target) {
+    _commonAttack: function(target, thisMessage, targetMessage) {
       // If the target is destructible, calculate the damage
       // based on attack and defense value
       if (target.hasMixin('Destructible')) {
@@ -302,17 +308,29 @@ const EntityMixins = {
         let max = Math.max(0, attack - defense);
         let damage = 1 + Math.floor(Math.random() * max);
 
-        Messages.sendMessage(this, 'You strike the %s for %d damage!', [
-          target.getName(),
-          damage,
-        ]);
-        Messages.sendMessage(target, 'The %s strikes you for %d damage!', [
-          this.getName(),
-          damage,
-        ]);
+        Messages.sendMessage(this, thisMessage, [target.getName(), damage]);
+        Messages.sendMessage(target, targetMessage, [this.getName(), damage]);
 
         target.takeDamage(this, damage);
       }
+    },
+
+    attack: function(target) {
+      this._commonAttack(
+        target,
+        'You strike the %s for %d damage!',
+        'The %s strikes you for %d damage!'
+      );
+    },
+
+    rangedAttack: function(target) {
+      this._commonAttack(
+        target,
+        `You fire ${this.getWeapon().describeThe(
+          false
+        )} at the %s for %d damage`,
+        `The %s fires ${this.getWeapon().describeA(false)} at you for %d damage`
+      );
     },
   },
 
