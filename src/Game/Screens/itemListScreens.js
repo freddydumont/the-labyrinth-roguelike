@@ -71,7 +71,7 @@ class ItemListScreen {
           this._selectedIndices[i]
             ? '+'
             : '-';
-        // Check if the item is worn or wielded or is and edible on the ground
+        // Check if the item is worn, wielded, an edible on the ground, or ammo
         let suffix = '';
         if (this._items[i] === this._player.getArmor()) {
           suffix = ' (wearing)';
@@ -82,6 +82,8 @@ class ItemListScreen {
           this._items[i].getGroundStatus()
         ) {
           suffix = ' (on the ground)';
+        } else if (this._items[i].hasMixin('Ammo')) {
+          suffix = ` (${this._items[i].getCount()})`;
         }
         // Render at the correct row and add 2.
         display.drawText(
