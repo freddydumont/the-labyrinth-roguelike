@@ -808,8 +808,12 @@ const EntityMixins = {
     name: 'Thrower',
 
     throwItem: function(item, key, x, y, z) {
-      // check if we can see target
-      if (this.hasMixin('Sight') && this.canSee(x, y)) {
+      // check if we can see target and that the tile is walkable
+      if (
+        this.hasMixin('Sight') &&
+        this.canSee(x, y) &&
+        this.getMap().getTile(x, y, this.getZ()).isWalkable()
+      ) {
         // remove item from inventory
         this.removeItem(key);
         // check if there is an entity on target cell
