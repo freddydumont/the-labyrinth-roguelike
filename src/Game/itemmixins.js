@@ -131,6 +131,33 @@ const ItemMixins = {
       return this._throwableAttackValue;
     },
   },
+
+  Ammo: {
+    name: 'Ammo',
+
+    init: function(template) {
+      this._count = template['count'] || 1;
+    },
+
+    getCount: function() {
+      return this._count;
+    },
+
+    setCount: function(count) {
+      this._count = count;
+    },
+
+    addAmmo: function(count) {
+      this._count += count;
+    },
+
+    removeAmmo: function(count) {
+      this._count -= count;
+      if (this._count < 0) {
+        this._count = 0;
+      }
+    },
+  },
 };
 
 export default ItemMixins;
