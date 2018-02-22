@@ -3,6 +3,7 @@ import { ROT, Game } from '../game';
 import Geometry from '../geometry';
 import TileRepository from '../Repositories/tileRepository';
 import * as Messages from '../messages';
+import { ItemRepository } from '../Repositories/itemRepository';
 
 class TargetBasedScreen {
   constructor(template = {}) {
@@ -199,8 +200,12 @@ export const fireScreen = new TargetBasedScreen({
       this._player.canSee(x, y) &&
       this._player.getMap().getTile(x, y, this._player.getZ()).isWalkable()
     ) {
-      // remove ammo, there should be a 50% chance to recover it
-      console.log('-1 ammo');
+      // remove ammo
+      const ammo = this._player.getWeapon().getAmmo();
+      const i = this._player.getItems().findIndex(invItem => {
+        return invItem.describe() === ammo;
+      });
+      this._player.removeAmmo(i, 1);
       // get target at coordinates
       const target = this._player
         .getMap()
@@ -210,8 +215,15 @@ export const fireScreen = new TargetBasedScreen({
         this._player.rangedAttack(target);
         return true;
       } else {
-        // otherwise place ammo at coords
-        console.log(`fired at ${x},${y}`);
+        // otherwise place ammo at coords, 50% chance to recover
+        if (ROT.RNG.getUniformInt(0, 1)) {
+          let item = ItemRepository.create(ammo);
+          item.setCount(1);
+          this._player.getMap().addItem(x, y, this._player.getZ(), item);
+        }
+        Messages.sendMessage(this._player, 'You fire %s!', [
+          this._player.getWeapon().describeThe(false),
+        ]);
         return true;
       }
     } else {
