@@ -197,7 +197,7 @@ export const fireScreen = new TargetBasedScreen({
     if (
       this._player.hasMixin('Sight') &&
       this._player.canSee(x, y) &&
-      this._player.getMap().getTile(x, y, this.getZ()).isWalkable()
+      this._player.getMap().getTile(x, y, this._player.getZ()).isWalkable()
     ) {
       // remove ammo, there should be a 50% chance to recover it
       console.log('-1 ammo');
