@@ -589,7 +589,7 @@ const EntityMixins = {
       if (item.hasMixin('Ammo')) {
         // check if already present in inventory
         const i = this._items.findIndex(invItem => {
-          return invItem.describe() === item.describe();
+          return invItem ? invItem.describe() === item.describe() : false;
         });
         // add the count to the one in inv
         if (i >= 0) {
