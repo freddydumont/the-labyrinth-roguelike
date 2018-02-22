@@ -139,6 +139,12 @@ const ItemMixins = {
       this._count = template['count'] || 1;
     },
 
+    listeners: {
+      details: function() {
+        return [{ key: 'count', value: this._count }];
+      },
+    },
+
     getCount: function() {
       return this._count;
     },
