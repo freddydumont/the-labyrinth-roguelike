@@ -191,3 +191,35 @@ export const throwAtScreen = new TargetBasedScreen({
     }
   },
 });
+
+export const fireScreen = new TargetBasedScreen({
+  ok: function(x, y) {
+    if (
+      this._player.hasMixin('Sight') &&
+      this._player.canSee(x, y) &&
+      this._player.getMap().getTile(x, y, this.getZ()).isWalkable()
+    ) {
+      // remove ammo, there should be a 50% chance to recover it
+      console.log('-1 ammo');
+      // get target at coordinates
+      const target = this._player
+        .getMap()
+        .getEntityAt(x, y, this._player.getZ());
+      // if there is an entity, attack it
+      if (target) {
+        this._player.rangedAttack(target);
+        return true;
+      } else {
+        // otherwise place ammo at coords
+        console.log(`fired at ${x},${y}`);
+        return true;
+      }
+    } else {
+      // if it returns false, send message you cannot throw there
+      Messages.sendMessage(this._player, 'You cannot fire %s there!', [
+        this._player.getWeapon().describeThe(false),
+      ]);
+      return false;
+    }
+  },
+});
