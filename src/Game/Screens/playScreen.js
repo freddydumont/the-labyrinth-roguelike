@@ -304,8 +304,12 @@ export const playScreen = {
           return;
         case ROT.VK_F:
           // Show the fire screen
-          if (!this._player.getWeapon().isRanged()) {
-            // if the weapon is not ranged, notify player
+          if (
+            !this._player.getWeapon() ||
+            !this._player.getWeapon().isRanged()
+          ) {
+            // if the player is not wielding a weapon,
+            // or if the weapon is not ranged, notify player
             Messages.sendMessage(
               this._player,
               'You are not wielding a ranged weapon.'
