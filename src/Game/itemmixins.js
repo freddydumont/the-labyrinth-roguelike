@@ -61,6 +61,7 @@ const ItemMixins = {
       this._wearable = template['wearable'] || false;
       this._rangedAttackValue = template['rangedAttackValue'] || 0;
       this._ranged = template['ranged'] || false;
+      this._ammo = template['ammo'] || false;
     },
 
     listeners: {
@@ -103,6 +104,10 @@ const ItemMixins = {
 
     isRanged: function() {
       return this._ranged;
+    },
+
+    getAmmo: function() {
+      return this._ammo;
     },
   },
 
