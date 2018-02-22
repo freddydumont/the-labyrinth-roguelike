@@ -55,7 +55,7 @@ ItemRepository.define('arrow', {
   character: '›',
   foreground: 'white',
   count: ROT.RNG.getUniformInt(1, 5),
-  mixins: [ItemMixins.Throwable, ItemMixins.Ammo],
+  mixins: [ItemMixins.Ammo],
 });
 
 // Weapons
