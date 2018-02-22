@@ -153,9 +153,6 @@ const ItemMixins = {
 
     removeAmmo: function(count) {
       this._count -= count;
-      if (this._count < 0) {
-        this._count = 0;
-      }
     },
   },
 };

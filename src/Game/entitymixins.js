@@ -585,6 +585,19 @@ const EntityMixins = {
     },
 
     addItem: function(item) {
+      // check if the item is of type ammo
+      if (item.hasMixin('Ammo')) {
+        // check if already present in inventory
+        const i = this._items.findIndex(invItem => {
+          return invItem.describe() === item.describe();
+        });
+        // add the count to the one in inv
+        if (i >= 0) {
+          this._items[i].addAmmo(item.getCount());
+          return true;
+        }
+        // if not found in inv, add it like any other item
+      }
       // Try to find a slot, returning true only if we could add the item.
       for (let i = 0; i < this._items.length; i++) {
         if (!this._items[i]) {
@@ -597,6 +610,13 @@ const EntityMixins = {
         }
       }
       return false;
+    },
+
+    removeAmmo: function(i, count) {
+      this._items[i].removeAmmo(count);
+      if (this._items[i].getCount() <= 0) {
+        this._items[i] = null;
+      }
     },
 
     removeItem: function(i) {
