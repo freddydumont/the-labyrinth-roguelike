@@ -1,3 +1,4 @@
+import { ROT } from '../game';
 import Repository from './repository';
 import Item from '../item';
 import ItemMixins from '../itemmixins';
@@ -46,7 +47,15 @@ ItemRepository.define('rock', {
   character: '*',
   foreground: 'white',
   throwableAttackValue: 2,
-  mixins: [ItemMixins.Throwable],
+  mixins: [ItemMixins.Throwable, ItemMixins.Ammo],
+});
+
+ItemRepository.define('arrow', {
+  name: 'arrow',
+  character: '›',
+  foreground: 'white',
+  count: ROT.RNG.getUniformInt(1, 5),
+  mixins: [ItemMixins.Throwable, ItemMixins.Ammo],
 });
 
 // Weapons
