@@ -619,6 +619,17 @@ const EntityMixins = {
       }
     },
 
+    hasAmmo: function() {
+      // check if the entity has the proper ammo depending on weapon held
+      // the check for ranged weapon is already made when that fn is called
+      const ammo = this.getWeapon().getAmmo();
+      return this._items.findIndex(invItem => {
+        return invItem ? invItem.describe() === ammo : false;
+      }) >= 0
+        ? true
+        : false;
+    },
+
     removeItem: function(i) {
       // If we can equip items, then make sure we unequip the item we are removing.
       if (this._items[i] && this.hasMixin(EntityMixins.Equipper)) {

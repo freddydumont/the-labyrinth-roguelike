@@ -315,6 +315,10 @@ export const playScreen = {
               'You are not wielding a ranged weapon.'
             );
             Messages.renderMessages.call(this, Game.getDisplay());
+          } else if (!this._player.hasAmmo()) {
+            // if the player has no ammo
+            Messages.sendMessage(this._player, 'You are out of ammo!');
+            Messages.renderMessages.call(this, Game.getDisplay());
           } else {
             // if the weapon is ranged, show the Fire screen
             const offsets = this.getScreenOffsets();
