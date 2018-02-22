@@ -834,8 +834,8 @@ const EntityMixins = {
         this.canSee(x, y) &&
         this.getMap().getTile(x, y, this.getZ()).isWalkable()
       ) {
-        // remove item from inventory
-        this.removeItem(key);
+        // remove item from inventory (only one count if ammo)
+        item.hasMixin('Ammo') ? this.removeAmmo(key, 1) : this.removeItem(key);
         // check if there is an entity on target cell
         const target = this.getMap().getEntityAt(x, y, z);
         if (target) {
@@ -843,7 +843,14 @@ const EntityMixins = {
           return this._throwAttack(item, target);
         } else {
           // place item at target
-          this.getMap().addItem(x, y, z, item);
+          this.getMap().addItem(
+            x,
+            y,
+            z,
+            item.hasMixin('Ammo')
+              ? ItemRepository.create(item.describe())
+              : item
+          );
           // send message
           Messages.sendMessage(this, 'You throw %s.', [
             item.describeThe(false),
