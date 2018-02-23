@@ -277,7 +277,14 @@ export const eatScreen = new ItemListScreen({
 
   yes: function(item, key) {
     // Eat the item, removing it if there are no consumptions remaining.
-    Messages.sendMessage(this._player, 'You eat %s.', [item.describeThe()]);
+    // Append to the message if the item heals
+    let text = '';
+    if (item.getHealAmount() > 0) {
+      text = ` ${item.describeThe(true)} heals your wounds.`;
+    }
+    Messages.sendMessage(this._player, `You eat %s.${text}`, [
+      item.describeThe(false),
+    ]);
     item.eat(this._player);
     if (!item.hasRemainingConsumptions()) {
       if (item.getGroundStatus()) {

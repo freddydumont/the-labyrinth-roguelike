@@ -12,6 +12,7 @@ ItemRepository.define('apple', {
   character: '%',
   foreground: 'red',
   foodValue: 100,
+  healAmount: 5,
   onGround: true,
   mixins: [ItemMixins.Edible, ItemMixins.Throwable],
 });
@@ -21,6 +22,7 @@ ItemRepository.define('melon', {
   character: '%',
   foreground: 'lightgreen',
   foodValue: 50,
+  healAmount: 2,
   onGround: true,
   consumptions: 4,
   mixins: [ItemMixins.Edible, ItemMixins.Throwable],

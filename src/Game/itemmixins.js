@@ -10,10 +10,15 @@ const ItemMixins = {
       this._maxConsumptions = template['consumptions'] || 1;
       this._remainingConsumptions = this._maxConsumptions;
       this._isOnGround = template['onGround'] || false;
+      this._healAmount = template['healAmount'] || 0;
     },
 
     getFoodValue: function() {
       return this._foodValue;
+    },
+
+    getHealAmount: function() {
+      return this._healAmount;
     },
 
     getGroundStatus: function() {
@@ -34,6 +39,9 @@ const ItemMixins = {
       if (entity.hasMixin('FoodConsumer')) {
         if (this.hasRemainingConsumptions()) {
           entity.modifyFullnessBy(this._foodValue);
+          if (this._healAmount > 0) {
+            entity.heal(this._healAmount);
+          }
           this._remainingConsumptions--;
         }
       }
