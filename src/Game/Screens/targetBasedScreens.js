@@ -191,3 +191,17 @@ export const throwAtScreen = new TargetBasedScreen({
     }
   },
 });
+
+export const fireScreen = new TargetBasedScreen({
+  ok: function(x, y) {
+    if (this._player.rangedAttack(x, y, this._player.getZ())) {
+      return true;
+    } else {
+      // if it returns false, send message you cannot fire there
+      Messages.sendMessage(this._player, 'You cannot fire %s there!', [
+        this._player.getWeapon().describeThe(false),
+      ]);
+      return false;
+    }
+  },
+});

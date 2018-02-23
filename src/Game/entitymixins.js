@@ -266,6 +266,7 @@ const EntityMixins = {
     init: function(props) {
       this._attackValue = props['attackValue'] || 1;
     },
+
     listeners: {
       details: function() {
         return [{ key: 'attack', value: this.getAttackValue() }];
@@ -275,13 +276,21 @@ const EntityMixins = {
     getAttackValue: function() {
       let modifier = 0;
       // If we can equip items, then have to take into
-      // consideration weapon and armor
+      // consideration weapon and armor, along with ranged weapons
       if (this.hasMixin(EntityMixins.Equipper)) {
-        if (this.getWeapon()) {
-          modifier += this.getWeapon().getAttackValue();
-        }
         if (this.getArmor()) {
           modifier += this.getArmor().getAttackValue();
+        }
+
+        if (this.getWeapon()) {
+          const weapon = this.getWeapon();
+          modifier += weapon.isRanged()
+            ? weapon.getRangedAttackValue()
+            : weapon.getAttackValue();
+
+          // AV is halved for ranged weapons, otherwise too OP
+          const attack = this._attackValue + modifier;
+          return weapon.isRanged() ? Math.round(attack / 2) : attack;
         }
       }
       return this._attackValue + modifier;
@@ -293,26 +302,105 @@ const EntityMixins = {
       Messages.sendMessage(this, 'You look stronger!');
     },
 
-    attack: function(target) {
+    _commonAttack: function(target, attack, thisMessage, targetMessage) {
       // If the target is destructible, calculate the damage
       // based on attack and defense value
       if (target.hasMixin('Destructible')) {
-        let attack = this.getAttackValue();
         let defense = target.getDefenseValue();
         let max = Math.max(0, attack - defense);
         let damage = 1 + Math.floor(Math.random() * max);
 
-        Messages.sendMessage(this, 'You strike the %s for %d damage!', [
-          target.getName(),
-          damage,
-        ]);
-        Messages.sendMessage(target, 'The %s strikes you for %d damage!', [
-          this.getName(),
-          damage,
-        ]);
+        Messages.sendMessage(this, thisMessage, [target.getName(), damage]);
+        Messages.sendMessage(target, targetMessage, [this.getName(), damage]);
 
         target.takeDamage(this, damage);
+        return true;
       }
+      return false;
+    },
+
+    attack: function(target) {
+      this._commonAttack(
+        target,
+        this.getAttackValue(),
+        'You strike the %s for %d damage!',
+        'The %s strikes you for %d damage!'
+      );
+    },
+
+    rangedAttack: function(x, y, z) {
+      if (this.canDoAction('ranged', { x, y, z })) {
+        // remove ammo
+        const ammo = this.getWeapon().getAmmo();
+        const i = this.getItems().findIndex(invItem => {
+          return invItem.describe() === ammo;
+        });
+        this.removeAmmo(i, 1);
+        // get target at coordinates
+        const target = this.getMap().getEntityAt(x, y, z);
+        // if there is an entity, attack it
+        if (target) {
+          return this._commonAttack(
+            target,
+            this.getAttackValue(),
+            `You fire ${this.getWeapon().describeThe(
+              false
+            )} at the %s for %d damage`,
+            `The %s fires ${this.getWeapon().describeA(
+              false
+            )} at you for %d damage`
+          );
+        } else {
+          // otherwise place ammo at coords, 50% chance to recover
+          if (ROT.RNG.getUniformInt(0, 1)) {
+            let item = ItemRepository.create(ammo);
+            item.setCount(1);
+            this.getMap().addItem(x, y, z, item);
+          }
+          Messages.sendMessage(this, 'You fire %s!', [
+            this.getWeapon().describeThe(false),
+          ]);
+          return true;
+        }
+      }
+      return false;
+    },
+  },
+
+  Thrower: {
+    name: 'Thrower',
+    groupName: 'Attacker',
+
+    throwItem: function(item, key, x, y, z) {
+      // check if we can see target and that the tile is walkable
+      if (this.canDoAction('ranged', { x, y, z })) {
+        // remove item from inventory (only one count if ammo)
+        item.hasMixin('Ammo') ? this.removeAmmo(key, 1) : this.removeItem(key);
+        // check if there is an entity on target cell
+        const target = this.getMap().getEntityAt(x, y, z);
+        if (target) {
+          // attack entity
+          return this._commonAttack(
+            target,
+            item.getThrowableAttackValue(),
+            `You throw ${item.describeThe(false)} at the %s for %d damage!`,
+            `The %s throws ${item.describeA(false)} at you for %d damage!`
+          );
+        } else {
+          let thrownItem = ItemRepository.create(item.describe());
+          if (item.hasMixin('Ammo')) {
+            thrownItem.setCount(1);
+          }
+          // place item at target
+          this.getMap().addItem(x, y, z, thrownItem);
+          // send message
+          Messages.sendMessage(this, 'You throw %s.', [
+            item.describeThe(false),
+          ]);
+          return true;
+        }
+      }
+      return false;
     },
   },
 
@@ -564,6 +652,19 @@ const EntityMixins = {
     },
 
     addItem: function(item) {
+      // check if the item is of type ammo
+      if (item.hasMixin('Ammo')) {
+        // check if already present in inventory
+        const i = this._items.findIndex(invItem => {
+          return invItem ? invItem.describe() === item.describe() : false;
+        });
+        // add the count to the one in inv
+        if (i >= 0) {
+          this._items[i].addAmmo(item.getCount());
+          return true;
+        }
+        // if not found in inv, add it like any other item
+      }
       // Try to find a slot, returning true only if we could add the item.
       for (let i = 0; i < this._items.length; i++) {
         if (!this._items[i]) {
@@ -576,6 +677,24 @@ const EntityMixins = {
         }
       }
       return false;
+    },
+
+    removeAmmo: function(i, count) {
+      this._items[i].removeAmmo(count);
+      if (this._items[i].getCount() <= 0) {
+        this._items[i] = null;
+      }
+    },
+
+    hasAmmo: function() {
+      // check if the entity has the proper ammo depending on weapon held
+      // the check for ranged weapon is already made when that fn is called
+      const ammo = this.getWeapon().getAmmo();
+      return this._items.findIndex(invItem => {
+        return invItem ? invItem.describe() === ammo : false;
+      }) >= 0
+        ? true
+        : false;
     },
 
     removeItem: function(i) {
@@ -780,59 +899,6 @@ const EntityMixins = {
         Screen.gainStatScreen.setup(this);
         Screen.playScreen.setSubScreen(Screen.gainStatScreen);
       },
-    },
-  },
-
-  Thrower: {
-    name: 'Thrower',
-
-    throwItem: function(item, key, x, y, z) {
-      // check if we can see target
-      if (this.hasMixin('Sight') && this.canSee(x, y)) {
-        // remove item from inventory
-        this.removeItem(key);
-        // check if there is an entity on target cell
-        const target = this.getMap().getEntityAt(x, y, z);
-        if (target) {
-          // attack entity
-          return this._throwAttack(item, target);
-        } else {
-          // place item at target
-          this.getMap().addItem(x, y, z, item);
-          // send message
-          Messages.sendMessage(this, 'You throw %s.', [
-            item.describeThe(false),
-          ]);
-          return true;
-        }
-      }
-      return false;
-    },
-
-    _throwAttack: function(item, target) {
-      // If the target is destructible, calculate the damage
-      // based on attack and defense value
-      if (target.hasMixin('Destructible')) {
-        let attack = item.getThrowableAttackValue();
-        let defense = target.getDefenseValue();
-        let max = Math.max(0, attack - defense);
-        let damage = 1 + Math.floor(Math.random() * max);
-
-        Messages.sendMessage(this, 'You throw %s at the %s for %d damage!', [
-          item.describeThe(false),
-          target.getName(),
-          damage,
-        ]);
-        Messages.sendMessage(target, 'The %s throws %s at you for %d damage!', [
-          this.getName(),
-          item.describeA(false),
-          damage,
-        ]);
-
-        target.takeDamage(this, damage);
-        return true;
-      }
-      return false;
     },
   },
 };

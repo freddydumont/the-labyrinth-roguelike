@@ -90,6 +90,19 @@ export const playScreen = {
     };
   },
 
+  setupWithOffsets: function(subscreen, args) {
+    const offsets = this.getScreenOffsets();
+    Screen[subscreen].setup(
+      this._player,
+      this._player.getX(),
+      this._player.getY(),
+      offsets.x,
+      offsets.y,
+      args
+    );
+    this.setSubScreen(Screen[subscreen]);
+  },
+
   renderTiles: function(display) {
     const screenWidth = Game.getScreenWidth();
     const screenHeight = Game.getScreenHeight();
@@ -214,6 +227,8 @@ export const playScreen = {
     }
 
     if (inputType === 'keydown') {
+      // Clear previous messages to avoid a massive message display
+      this._player.clearMessages();
       switch (inputData.keyCode) {
         // MOVEMENT
         case ROT.VK_LEFT:
@@ -300,6 +315,28 @@ export const playScreen = {
             'You have nothing to throw.'
           );
           return;
+        case ROT.VK_F:
+          // Show the fire screen
+          if (
+            !this._player.getWeapon() ||
+            !this._player.getWeapon().isRanged()
+          ) {
+            // if the player is not wielding a weapon,
+            // or if the weapon is not ranged, notify player
+            Messages.sendMessage(
+              this._player,
+              'You are not wielding a ranged weapon.'
+            );
+            Messages.renderMessages.call(this, Game.getDisplay());
+          } else if (!this._player.hasAmmo()) {
+            // if the player has no ammo
+            Messages.sendMessage(this._player, 'You are out of ammo!');
+            Messages.renderMessages.call(this, Game.getDisplay());
+          } else {
+            // if the weapon is ranged, show the Fire screen
+            this.setupWithOffsets('fireScreen');
+          }
+          return;
         case ROT.VK_COMMA:
           if (!inputData.shiftKey) {
             // Pick up item
@@ -342,15 +379,7 @@ export const playScreen = {
         case 186:
         case ROT.VK_SEMICOLON:
           // Setup the look screen.
-          const offsets = this.getScreenOffsets();
-          Screen.lookScreen.setup(
-            this._player,
-            this._player.getX(),
-            this._player.getY(),
-            offsets.x,
-            offsets.y
-          );
-          this.setSubScreen(Screen.lookScreen);
+          this.setupWithOffsets('lookScreen');
           return;
         default:
           // Not a valid key

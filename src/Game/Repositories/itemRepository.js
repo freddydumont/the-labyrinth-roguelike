@@ -1,3 +1,4 @@
+import { ROT } from '../game';
 import Repository from './repository';
 import Item from '../item';
 import ItemMixins from '../itemmixins';
@@ -46,7 +47,15 @@ ItemRepository.define('rock', {
   character: '*',
   foreground: 'white',
   throwableAttackValue: 2,
-  mixins: [ItemMixins.Throwable],
+  mixins: [ItemMixins.Throwable, ItemMixins.Ammo],
+});
+
+ItemRepository.define('arrow', {
+  name: 'arrow',
+  character: '›',
+  foreground: 'white',
+  count: ROT.RNG.getUniformInt(1, 5),
+  mixins: [ItemMixins.Ammo],
 });
 
 // Weapons
@@ -102,7 +111,7 @@ GearRepository.define(
   'war hammer',
   {
     name: 'war hammer',
-    character: 'T',
+    character: '†',
     foreground: 'slategray',
     attackValue: 8,
     wieldable: true,
@@ -140,6 +149,43 @@ GearRepository.define(
     attackValue: 12,
     wieldable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+// Ranged Weapons
+GearRepository.define(
+  'sling',
+  {
+    name: 'sling',
+    character: '^',
+    foreground: 'saddlebrown',
+    rangedAttackValue: 3,
+    wieldable: true,
+    ranged: true,
+    ammo: 'rock',
+    weightedValues: [50, 30, 15, 10, 0, 0, 0],
+    mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+GearRepository.define(
+  'bow',
+  {
+    name: 'bow',
+    character: '3',
+    foreground: 'tan',
+    rangedAttackValue: 5,
+    wieldable: true,
+    ranged: true,
+    ammo: 'arrow',
+    weightedValues: [0, 20, 25, 15, 10, 0, 0],
     mixins: [ItemMixins.Equippable, ItemMixins.Throwable],
   },
   {

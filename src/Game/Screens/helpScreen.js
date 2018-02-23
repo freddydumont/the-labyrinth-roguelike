@@ -13,26 +13,25 @@ export const helpScreen = {
       border
     );
     y++;
-    display.drawText(
-      0,
-      y++,
-      'You have been tasked to enter the Labyrinth and slay the Minotaur.'
-    );
-    display.drawText(0, y++, 'Find him and end his tyranny!');
-    y += 3;
-    display.drawText(0, y++, '[>] to go down a level');
-    display.drawText(0, y++, '[<] to go up a level');
-    display.drawText(0, y++, '[.] to wait');
-    display.drawText(0, y++, '[,] to pick up items');
-    display.drawText(0, y++, '[d] to drop items');
-    display.drawText(0, y++, '[e] to eat items');
-    display.drawText(0, y++, '[w] to wield items');
-    display.drawText(0, y++, '[W] to wear items');
-    display.drawText(0, y++, '[x] to examine items');
-    display.drawText(0, y++, '[t] to throw items');
-    display.drawText(0, y++, '[;] to look around you');
-    display.drawText(0, y++, '[?] to show this help screen');
-    y += 3;
+    text = 'You have been tasked to enter the Labyrinth and slay the Minotaur.';
+    display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
+    text = 'Find him and end his tyranny!';
+    display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
+    y += 2;
+    display.drawText(1, y++, '[>] to go down a level');
+    display.drawText(1, y++, '[<] to go up a level');
+    display.drawText(1, y++, '[.] to wait');
+    display.drawText(1, y++, '[,] to pick up items');
+    display.drawText(1, y++, '[d] to drop items');
+    display.drawText(1, y++, '[e] to eat items');
+    display.drawText(1, y++, '[w] to wield items');
+    display.drawText(1, y++, '[W] to wear items');
+    display.drawText(1, y++, '[x] to examine items');
+    display.drawText(1, y++, '[t] to throw items');
+    display.drawText(1, y++, '[f] to fire ranged weapon');
+    display.drawText(1, y++, '[;] to look around you');
+    display.drawText(1, y++, '[?] to show this help screen');
+    y += 2;
     text = '--- press any key to continue ---';
     display.drawText(Game.getScreenWidth() / 2 - text.length / 2, y++, text);
   },

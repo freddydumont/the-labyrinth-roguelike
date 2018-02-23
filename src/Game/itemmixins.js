@@ -59,13 +59,21 @@ const ItemMixins = {
       this._defenseValue = template['defenseValue'] || 0;
       this._wieldable = template['wieldable'] || false;
       this._wearable = template['wearable'] || false;
+      this._rangedAttackValue = template['rangedAttackValue'] || 0;
+      this._ranged = template['ranged'] || false;
+      this._ammo = template['ammo'] || false;
     },
 
     listeners: {
       details: function() {
         let results = [];
         if (this._wieldable) {
-          results.push({ key: 'attack', value: this.getAttackValue() });
+          results.push({
+            key: 'attack',
+            value: this._ranged
+              ? this.getRangedAttackValue()
+              : this.getAttackValue(),
+          });
         }
         if (this._wearable) {
           results.push({ key: 'defense', value: this.getDefenseValue() });
@@ -88,6 +96,18 @@ const ItemMixins = {
 
     isWearable: function() {
       return this._wearable;
+    },
+
+    getRangedAttackValue: function() {
+      return this._rangedAttackValue;
+    },
+
+    isRanged: function() {
+      return this._ranged;
+    },
+
+    getAmmo: function() {
+      return this._ammo;
     },
   },
 
@@ -114,6 +134,36 @@ const ItemMixins = {
     // standard getters
     getThrowableAttackValue: function() {
       return this._throwableAttackValue;
+    },
+  },
+
+  Ammo: {
+    name: 'Ammo',
+
+    init: function(template) {
+      this._count = template['count'] || 1;
+    },
+
+    listeners: {
+      details: function() {
+        return [{ key: 'count', value: this._count }];
+      },
+    },
+
+    getCount: function() {
+      return this._count;
+    },
+
+    setCount: function(count) {
+      this._count = count;
+    },
+
+    addAmmo: function(count) {
+      this._count += count;
+    },
+
+    removeAmmo: function(count) {
+      this._count -= count;
     },
   },
 };
