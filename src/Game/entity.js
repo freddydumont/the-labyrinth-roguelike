@@ -105,14 +105,37 @@ export default class Entity extends DynamicGlyph {
     } else if (tile.isWalkable()) {
       // Update the entity's position
       this.setPosition(x, y, z);
-      // Notify the entity if there are items at this position
+      // Notify the entity if there are items or a staircase at this position
+      // setup an empty message
+      let message = '';
+      // grab the items and staircase
       const items = this.getMap().getItemsAt(x, y, z);
+      const staircase =
+        tile.describe() === 'stairsUp'
+          ? 'up'
+          : tile.describe() === 'stairsDown' ? 'down' : false;
+
+      // if there is a staircase, add to the message
+      if (staircase) {
+        message += `You see a staircase leading ${staircase}.`;
+      }
+
+      // if there is items, add to the message
       if (items) {
-        if (items.length === 1) {
-          Messages.sendMessage(this, 'You see %s.', [items[0].describeA()]);
-        } else {
-          Messages.sendMessage(this, 'There are several objects here.');
+        // if the message is not empty, add a space
+        if (message.length > 0) {
+          message += ' ';
         }
+        // add to the message depending on the amount of items
+        if (items.length === 1) {
+          message += `You see a ${items[0].describeA()}.`;
+        } else {
+          message += 'There are several objects here.';
+        }
+      }
+      // if there is a message, send it
+      if (message.length > 0) {
+        Messages.sendMessage(this, message);
       }
       return true;
       // Check if the tile is diggable
