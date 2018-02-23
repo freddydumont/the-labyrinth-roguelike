@@ -90,6 +90,19 @@ export const playScreen = {
     };
   },
 
+  setupWithOffsets: function(subscreen, args) {
+    const offsets = this.getScreenOffsets();
+    Screen[subscreen].setup(
+      this._player,
+      this._player.getX(),
+      this._player.getY(),
+      offsets.x,
+      offsets.y,
+      args
+    );
+    this.setSubScreen(Screen[subscreen]);
+  },
+
   renderTiles: function(display) {
     const screenWidth = Game.getScreenWidth();
     const screenHeight = Game.getScreenHeight();
@@ -321,15 +334,7 @@ export const playScreen = {
             Messages.renderMessages.call(this, Game.getDisplay());
           } else {
             // if the weapon is ranged, show the Fire screen
-            const offsets = this.getScreenOffsets();
-            Screen.fireScreen.setup(
-              this._player,
-              this._player.getX(),
-              this._player.getY(),
-              offsets.x,
-              offsets.y
-            );
-            this.setSubScreen(Screen.fireScreen);
+            this.setupWithOffsets('fireScreen');
           }
           return;
         case ROT.VK_COMMA:
@@ -374,15 +379,7 @@ export const playScreen = {
         case 186:
         case ROT.VK_SEMICOLON:
           // Setup the look screen.
-          const offsets = this.getScreenOffsets();
-          Screen.lookScreen.setup(
-            this._player,
-            this._player.getX(),
-            this._player.getY(),
-            offsets.x,
-            offsets.y
-          );
-          this.setSubScreen(Screen.lookScreen);
+          this.setupWithOffsets('lookScreen');
           return;
         default:
           // Not a valid key
