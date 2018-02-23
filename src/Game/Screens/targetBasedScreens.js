@@ -195,11 +195,7 @@ export const throwAtScreen = new TargetBasedScreen({
 
 export const fireScreen = new TargetBasedScreen({
   ok: function(x, y) {
-    if (
-      this._player.hasMixin('Sight') &&
-      this._player.canSee(x, y) &&
-      this._player.getMap().getTile(x, y, this._player.getZ()).isWalkable()
-    ) {
+    if (this._player.canDoAction('ranged', { x, y, z: this._player.getZ() })) {
       // remove ammo
       const ammo = this._player.getWeapon().getAmmo();
       const i = this._player.getItems().findIndex(invItem => {

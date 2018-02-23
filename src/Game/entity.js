@@ -54,6 +54,18 @@ export default class Entity extends DynamicGlyph {
     }
   }
 
+  canDoAction(action, { x, y, z }) {
+    if (action === 'ranged') {
+      // general checks for ranged actions
+      return (
+        this.hasMixin('Sight') &&
+        this.canSee(x, y) &&
+        this.getMap().getTile(x, y, z).isWalkable()
+      );
+    }
+    return false;
+  }
+
   tryMove(x, y, z, map = this.getMap()) {
     // returns true if walkable else false
     let tile = map.getTile(x, y, this.getZ());
