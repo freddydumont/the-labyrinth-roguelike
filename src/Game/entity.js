@@ -54,8 +54,9 @@ export default class Entity extends DynamicGlyph {
     }
   }
 
-  canDoAction(action, { x, y, z }) {
+  canDoAction(action, args) {
     if (action === 'ranged') {
+      const { x, y, z } = args;
       // general checks for ranged actions
       return (
         this.hasMixin('Sight') &&
