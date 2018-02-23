@@ -388,8 +388,9 @@ const EntityMixins = {
           );
         } else {
           if (!item.hasMixin('Edible')) {
-            let thrownItem = ItemRepository.create(item.describe());
+            let thrownItem = item;
             if (item.hasMixin('Ammo')) {
+              thrownItem = ItemRepository.create(item.describe());
               thrownItem.setCount(1);
             }
             // place item at target
