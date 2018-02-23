@@ -302,11 +302,10 @@ const EntityMixins = {
       Messages.sendMessage(this, 'You look stronger!');
     },
 
-    _commonAttack: function(target, thisMessage, targetMessage) {
+    _commonAttack: function(target, attack, thisMessage, targetMessage) {
       // If the target is destructible, calculate the damage
       // based on attack and defense value
       if (target.hasMixin('Destructible')) {
-        let attack = this.getAttackValue();
         let defense = target.getDefenseValue();
         let max = Math.max(0, attack - defense);
         let damage = 1 + Math.floor(Math.random() * max);
@@ -315,12 +314,15 @@ const EntityMixins = {
         Messages.sendMessage(target, targetMessage, [this.getName(), damage]);
 
         target.takeDamage(this, damage);
+        return true;
       }
+      return false;
     },
 
     attack: function(target) {
       this._commonAttack(
         target,
+        this.getAttackValue(),
         'You strike the %s for %d damage!',
         'The %s strikes you for %d damage!'
       );
@@ -338,8 +340,9 @@ const EntityMixins = {
         const target = this.getMap().getEntityAt(x, y, z);
         // if there is an entity, attack it
         if (target) {
-          this._commonAttack(
+          return this._commonAttack(
             target,
+            this.getAttackValue(),
             `You fire ${this.getWeapon().describeThe(
               false
             )} at the %s for %d damage`,
@@ -347,7 +350,6 @@ const EntityMixins = {
               false
             )} at you for %d damage`
           );
-          return true;
         } else {
           // otherwise place ammo at coords, 50% chance to recover
           if (ROT.RNG.getUniformInt(0, 1)) {
@@ -378,49 +380,25 @@ const EntityMixins = {
         const target = this.getMap().getEntityAt(x, y, z);
         if (target) {
           // attack entity
-          return this._throwAttack(item, target);
-        } else {
-          // place item at target
-          this.getMap().addItem(
-            x,
-            y,
-            z,
-            item.hasMixin('Ammo')
-              ? ItemRepository.create(item.describe())
-              : item
+          return this._commonAttack(
+            target,
+            item.getThrowableAttackValue(),
+            `You throw ${item.describeThe(false)} at the %s for %d damage!`,
+            `The %s throws ${item.describeA(false)} at you for %d damage!`
           );
+        } else {
+          let thrownItem = ItemRepository.create(item.describe());
+          if (item.hasMixin('Ammo')) {
+            thrownItem.setCount(1);
+          }
+          // place item at target
+          this.getMap().addItem(x, y, z, thrownItem);
           // send message
           Messages.sendMessage(this, 'You throw %s.', [
             item.describeThe(false),
           ]);
           return true;
         }
-      }
-      return false;
-    },
-
-    _throwAttack: function(item, target) {
-      // If the target is destructible, calculate the damage
-      // based on attack and defense value
-      if (target.hasMixin('Destructible')) {
-        let attack = item.getThrowableAttackValue();
-        let defense = target.getDefenseValue();
-        let max = Math.max(0, attack - defense);
-        let damage = 1 + Math.floor(Math.random() * max);
-
-        Messages.sendMessage(this, 'You throw %s at the %s for %d damage!', [
-          item.describeThe(false),
-          target.getName(),
-          damage,
-        ]);
-        Messages.sendMessage(target, 'The %s throws %s at you for %d damage!', [
-          this.getName(),
-          item.describeA(false),
-          damage,
-        ]);
-
-        target.takeDamage(this, damage);
-        return true;
       }
       return false;
     },
