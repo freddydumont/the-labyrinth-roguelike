@@ -387,16 +387,24 @@ const EntityMixins = {
             `The %s throws ${item.describeA(false)} at you for %d damage!`
           );
         } else {
-          let thrownItem = ItemRepository.create(item.describe());
-          if (item.hasMixin('Ammo')) {
-            thrownItem.setCount(1);
+          if (!item.hasMixin('Edible')) {
+            let thrownItem = ItemRepository.create(item.describe());
+            if (item.hasMixin('Ammo')) {
+              thrownItem.setCount(1);
+            }
+            // place item at target
+            this.getMap().addItem(x, y, z, thrownItem);
+            // send message
+            Messages.sendMessage(this, 'You throw %s.', [
+              item.describeThe(false),
+            ]);
+          } else {
+            Messages.sendMessage(
+              this,
+              'You throw %s. It explodes upon impact.',
+              [item.describeThe(false)]
+            );
           }
-          // place item at target
-          this.getMap().addItem(x, y, z, thrownItem);
-          // send message
-          Messages.sendMessage(this, 'You throw %s.', [
-            item.describeThe(false),
-          ]);
           return true;
         }
       }
