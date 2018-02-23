@@ -326,14 +326,42 @@ const EntityMixins = {
       );
     },
 
-    rangedAttack: function(target) {
-      this._commonAttack(
-        target,
-        `You fire ${this.getWeapon().describeThe(
-          false
-        )} at the %s for %d damage`,
-        `The %s fires ${this.getWeapon().describeA(false)} at you for %d damage`
-      );
+    rangedAttack: function(x, y, z) {
+      if (this.canDoAction('ranged', { x, y, z })) {
+        // remove ammo
+        const ammo = this.getWeapon().getAmmo();
+        const i = this.getItems().findIndex(invItem => {
+          return invItem.describe() === ammo;
+        });
+        this.removeAmmo(i, 1);
+        // get target at coordinates
+        const target = this.getMap().getEntityAt(x, y, z);
+        // if there is an entity, attack it
+        if (target) {
+          this._commonAttack(
+            target,
+            `You fire ${this.getWeapon().describeThe(
+              false
+            )} at the %s for %d damage`,
+            `The %s fires ${this.getWeapon().describeA(
+              false
+            )} at you for %d damage`
+          );
+          return true;
+        } else {
+          // otherwise place ammo at coords, 50% chance to recover
+          if (ROT.RNG.getUniformInt(0, 1)) {
+            let item = ItemRepository.create(ammo);
+            item.setCount(1);
+            this.getMap().addItem(x, y, z, item);
+          }
+          Messages.sendMessage(this, 'You fire %s!', [
+            this.getWeapon().describeThe(false),
+          ]);
+          return true;
+        }
+      }
+      return false;
     },
   },
 

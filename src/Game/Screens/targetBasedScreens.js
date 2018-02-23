@@ -3,7 +3,6 @@ import { ROT, Game } from '../game';
 import Geometry from '../geometry';
 import TileRepository from '../Repositories/tileRepository';
 import * as Messages from '../messages';
-import { ItemRepository } from '../Repositories/itemRepository';
 
 class TargetBasedScreen {
   constructor(template = {}) {
@@ -195,35 +194,10 @@ export const throwAtScreen = new TargetBasedScreen({
 
 export const fireScreen = new TargetBasedScreen({
   ok: function(x, y) {
-    if (this._player.canDoAction('ranged', { x, y, z: this._player.getZ() })) {
-      // remove ammo
-      const ammo = this._player.getWeapon().getAmmo();
-      const i = this._player.getItems().findIndex(invItem => {
-        return invItem.describe() === ammo;
-      });
-      this._player.removeAmmo(i, 1);
-      // get target at coordinates
-      const target = this._player
-        .getMap()
-        .getEntityAt(x, y, this._player.getZ());
-      // if there is an entity, attack it
-      if (target) {
-        this._player.rangedAttack(target);
-        return true;
-      } else {
-        // otherwise place ammo at coords, 50% chance to recover
-        if (ROT.RNG.getUniformInt(0, 1)) {
-          let item = ItemRepository.create(ammo);
-          item.setCount(1);
-          this._player.getMap().addItem(x, y, this._player.getZ(), item);
-        }
-        Messages.sendMessage(this._player, 'You fire %s!', [
-          this._player.getWeapon().describeThe(false),
-        ]);
-        return true;
-      }
+    if (this._player.rangedAttack(x, y, this._player.getZ())) {
+      return true;
     } else {
-      // if it returns false, send message you cannot throw there
+      // if it returns false, send message you cannot fire there
       Messages.sendMessage(this._player, 'You cannot fire %s there!', [
         this._player.getWeapon().describeThe(false),
       ]);
