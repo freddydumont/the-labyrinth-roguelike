@@ -205,3 +205,25 @@ EntityRepository.define(
     disableRandomCreation: true,
   }
 );
+
+EntityRepository.define(
+  'youth',
+  {
+    name: 'sacrificed youth',
+    character: 'Y',
+    foreground: 'yellow',
+    maxHp: 10,
+    foodValue: 300,
+    tasks: ['wander'],
+    levelRange: [6],
+    mixins: [
+      EntityMixins.TaskActor,
+      EntityMixins.Sight,
+      EntityMixins.Destructible,
+      EntityMixins.CorpseDropper,
+    ],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
