@@ -2,6 +2,7 @@ import { ROT } from './game';
 import TileRepository from './Repositories/tileRepository';
 import { EntityRepository } from './Repositories/entityRepository';
 import { ItemRepository, GearRepository } from './Repositories/itemRepository';
+import Geometry from './geometry';
 
 export default class Map {
   constructor(tiles, player) {
@@ -179,6 +180,25 @@ export default class Map {
       }
     }
     return results;
+  }
+
+  getEntityClosestTo(x, y, z, isEntity) {
+    // get the array of entities on the level
+    const entities = this.getEntitiesWithinRadius(x, y, z, 100);
+    // calculate distance from center on each entity, saving index for later
+    let entitiesByDistance = entities.map((entity, i) => {
+      return {
+        index: i,
+        distance: Geometry.getDistance(x, y, entity.getX(), entity.getY()),
+      };
+    });
+    // sort the array to get the closest entity first
+    entitiesByDistance.sort((a, b) => {
+      return a.distance - b.distance;
+    });
+    // if we searched from an entity, we skip the first index
+    // as we don't want to return the original entity
+    return entities[entitiesByDistance[isEntity ? 1 : 0].index];
   }
 
   addEntityAtRandomPosition(entity, z) {
