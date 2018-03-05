@@ -25,10 +25,14 @@ export default class Map {
     this.addEntityAtRandomPosition(player, 0);
 
     // Add random enemies and items to each floor.
-    // Except last one where we only add a minotaur.
+    // Except last one where we only add minotaur and youths.
     for (let z = 0; z < this._depth; z++) {
       if (z === this._depth - 1) {
         this.addEntityAtRandomPosition(EntityRepository.create('minotaur'), z);
+        // 13 youths
+        for (let i = 0; i < 13; i++) {
+          this.addEntityAtRandomPosition(EntityRepository.create('youth'), z);
+        }
       } else {
         // 15 entities per floor
         for (let i = 0; i < 15; i++) {
