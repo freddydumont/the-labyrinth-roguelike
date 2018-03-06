@@ -150,17 +150,30 @@ let EntityMixins = {
      */
   MessageRecipient: {
     name: 'MessageRecipient',
+
     init: function(props) {
       this._messages = [];
+      this._delayedMessages = [];
     },
-    receiveMessage: function(message) {
-      this._messages.push(message);
+
+    receiveMessage: function(message, ttl = 0) {
+      if (ttl > 1) {
+        this._delayedMessages.push(message);
+        return this.receiveMessage(message, ttl - 1);
+      } else {
+        this._messages.push(message);
+      }
     },
+
     getMessages: function() {
       return this._messages;
     },
+
     clearMessages: function() {
       this._messages = [];
+      if (this._delayedMessages.length > 0) {
+        this._messages.push(this._delayedMessages.shift());
+      }
     },
   },
 
