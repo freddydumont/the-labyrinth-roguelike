@@ -928,24 +928,26 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
       // when minotaur kills, set prey to false and increment kills
       this._prey = false;
       this._kills++;
-      // setup a message with direction
       const player = this.getMap().getPlayer();
-      const direction = Geometry.getCardinal(
-        player.getX(),
-        player.getY(),
-        prey.getX(),
-        prey.getY()
-      );
-      let message = `You hear a terrible scream coming from the ${direction}.`;
-      // gain a level for first kill, then requires two more kills, etc
-      if (this._gainLevel[this._kills]) {
-        this.giveExperience(
-          this.getNextLevelExperience() - this.getExperience()
+      if (prey !== player) {
+        // setup a message with direction
+        const direction = Geometry.getCardinal(
+          player.getX(),
+          player.getY(),
+          prey.getX(),
+          prey.getY()
         );
-        message += ' The minotaur grows in power!';
+        let message = `You hear a terrible scream coming from the ${direction}.`;
+        // gain a level for first kill, then requires two more kills, etc
+        if (this._gainLevel[this._kills]) {
+          this.giveExperience(
+            this.getNextLevelExperience() - this.getExperience()
+          );
+          message += ' The minotaur grows in power!';
+        }
+        // send message to player to alert direction + increase in power
+        Messages.sendMessage(player, message, null, 10);
       }
-      // send message to player to alert direction + increase in power
-      Messages.sendMessage(player, message);
     },
   },
 
