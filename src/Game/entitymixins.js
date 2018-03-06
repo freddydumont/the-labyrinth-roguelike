@@ -460,7 +460,7 @@ const EntityMixins = {
       // unknown, insight or outofsight
       this._sightStatus = 'unknown';
       // last known path is saved here
-      this._pathToPlayer = undefined;
+      this._pathToPrey = undefined;
     },
 
     act: function() {
@@ -480,7 +480,7 @@ const EntityMixins = {
           this.hasMixin('Sight') &&
           this.canSeeEntity(this.getMap().getPlayer())
         ) {
-          // player has been spotted, switch playerSighted to true and hunt
+          // player has been spotted, switch sightStatus and hunt
           this._sightStatus = 'insight';
           return true;
         } else {
@@ -501,28 +501,28 @@ const EntityMixins = {
     },
 
     hunt: function() {
-      const player = this.getMap().getPlayer();
-
-      // If adjacent to the player, then attack instead of hunting.
+      // default to prey if there is one, otherwise player
+      const prey = this._prey || this.getMap().getPlayer();
+      // If adjacent to the prey, then attack instead of hunting.
       const offsets =
-        Math.abs(player.getX() - this.getX()) +
-        Math.abs(player.getY() - this.getY());
+        Math.abs(prey.getX() - this.getX()) +
+        Math.abs(prey.getY() - this.getY());
       if (offsets === 1) {
         if (this.hasMixin('Attacker')) {
-          this.attack(player);
+          this.attack(prey);
           return;
         }
       }
 
       // Generate the path and move to the first tile.
       const z = this.getZ();
-      this._pathToPlayer = new ROT.Path.AStar(
-        player.getX(),
-        player.getY(),
+      this._pathToPrey = new ROT.Path.AStar(
+        prey.getX(),
+        prey.getY(),
         (x, y) => {
           // If an entity is present at the tile, can't move there.
           const entity = this.getMap().getEntityAt(x, y, z);
-          if (entity && entity !== player && entity !== this) {
+          if (entity && entity !== prey && entity !== this) {
             return false;
           }
           return this.getMap().getTile(x, y, z).isWalkable();
@@ -541,8 +541,8 @@ const EntityMixins = {
       this._computePath();
       // Check if actor has reached last known position
       if (
-        this.getX() === this._pathToPlayer._toX &&
-        this.getY() === this._pathToPlayer._toY
+        this.getX() === this._pathToPrey._toX &&
+        this.getY() === this._pathToPrey._toY
       ) {
         this._sightStatus = 'unknown';
       }
@@ -563,7 +563,7 @@ const EntityMixins = {
       // Once we've gotten the path, we want to move to the second cell that is
       // passed in the callback (the first is the entity's starting point)
       let count = 0;
-      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
+      this._pathToPrey.compute(this.getX(), this.getY(), (x, y) => {
         if (count === 1) {
           this.tryMove(x, y, this.getZ());
         }
