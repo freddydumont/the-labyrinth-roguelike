@@ -211,7 +211,7 @@ EntityRepository.define(
     name: 'sacrificed youth',
     character: 'Y',
     foreground: 'yellow',
-    maxHp: 10,
+    maxHp: 1,
     foodValue: 300,
     tasks: ['wander'],
     levelRange: [6],

@@ -91,9 +91,11 @@ export default class Entity extends DynamicGlyph {
     } else if (target) {
       // An entity can only attack if the entity has the Attacker mixin and
       // either the entity or the target is the player.
+      // Special case for boss who will attack anything in his path
       if (
         this.hasMixin('Attacker') &&
         (this.hasMixin(EntityMixins.PlayerActor) ||
+          this.hasMixin('BossActor') ||
           target.hasMixin(EntityMixins.PlayerActor))
       ) {
         this.attack(target);

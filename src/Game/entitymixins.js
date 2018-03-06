@@ -523,10 +523,13 @@ let EntityMixins = {
         prey.getX(),
         prey.getY(),
         (x, y) => {
-          // If an entity is present at the tile, can't move there.
-          const entity = this.getMap().getEntityAt(x, y, z);
-          if (entity && entity !== prey && entity !== this) {
-            return false;
+          if (!this.hasMixin('BossActor')) {
+            // If an entity is present at the tile, can't move there.
+            // N/A to Boss who will attack anything in his path
+            const entity = this.getMap().getEntityAt(x, y, z);
+            if (entity && entity !== prey && entity !== this) {
+              return false;
+            }
           }
           return this.getMap().getTile(x, y, z).isWalkable();
         },
