@@ -2,19 +2,9 @@ import { ROT, Game } from './game';
 import * as Messages from './messages';
 import Screen from './Screens/index';
 import { ItemRepository } from './Repositories/itemRepository';
+import Geometry from './geometry';
 
-const EntityMixins = {
-  BossActor: {
-    name: 'BossActor',
-    groupName: 'Actor',
-    listeners: {
-      onDeath: function(attacker) {
-        // Switch to win screen when killed!
-        Game.switchScreen(Screen.winScreen);
-      },
-    },
-  },
-
+let EntityMixins = {
   Equipper: {
     name: 'Equipper',
     init: function(template) {
@@ -911,5 +901,78 @@ const EntityMixins = {
     },
   },
 };
+
+// Combine TaskActor mixin with BossActor specifics
+EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
+  name: 'BossActor',
+  groupName: 'Actor',
+  listeners: {
+    onDeath: function(attacker) {
+      // Switch to win screen when killed!
+      Game.switchScreen(Screen.winScreen);
+    },
+    onKill: function(prey) {
+      // when minotaur kills, set prey to false and increment kills
+      this._prey = false;
+      this._kills++;
+      // setup a message with direction
+      const player = this.getMap().getPlayer();
+      const direction = Geometry.getCardinal(
+        player.getX(),
+        player.getY(),
+        prey.getX(),
+        prey.getY()
+      );
+      let message = `You hear a terrible scream coming from the ${direction}.`;
+      // gain a level for first kill, then requires two more kills, etc
+      if (this._gainLevel[this._kills]) {
+        this.giveExperience(
+          this.getNextLevelExperience() - this.getExperience()
+        );
+        message += ' The minotaur grows in power!';
+      }
+      // send message to player to alert direction + increase in power
+      Messages.sendMessage(player, message);
+    },
+  },
+
+  init: function(template) {
+    // Call the task actor init with the tasks from template
+    EntityMixins.TaskActor.init.call(this, template);
+    // Declare boss specific variables
+    this._prey = false;
+    this._kills = 0;
+    this._gainLevel = [0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0];
+  },
+
+  canDoTask: function(task) {
+    // minotaur can smell entities through walls and will always chase the nearest
+    // he only starts chasing when player is on his level
+    if (task === 'chase') {
+      if (this._prey) {
+        // if already has a prey, hunt instead
+        return false;
+      } else {
+        // find a prey when player is on same level
+        return this.getZ() === this.getMap().getPlayer().getZ();
+      }
+    } else if (task === 'hunt') {
+      return this._prey ? true : false;
+    } else {
+      // call parent canDoTask
+      return EntityMixins.TaskActor.canDoTask.call(this, task);
+    }
+  },
+
+  chase: function() {
+    // set a prey to start hunting
+    this._prey = this.getMap().getEntityClosestTo(
+      this.getX(),
+      this.getY(),
+      this.getZ(),
+      true
+    );
+  },
+});
 
 export default EntityMixins;

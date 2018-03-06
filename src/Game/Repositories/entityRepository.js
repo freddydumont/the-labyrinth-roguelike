@@ -188,11 +188,10 @@ EntityRepository.define(
     attackValue: 25,
     defenseValue: 10,
     sightRadius: 10,
-    tasks: ['hunt', 'follow', 'wander'],
+    tasks: ['chase', 'hunt', 'follow', 'wander'],
     levelRange: [6],
     mixins: [
       EntityMixins.BossActor,
-      EntityMixins.TaskActor,
       EntityMixins.Sight,
       EntityMixins.Attacker,
       EntityMixins.Destructible,
