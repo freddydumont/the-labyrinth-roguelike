@@ -16,6 +16,7 @@ export default class Map {
     this.setupFov();
     // store our entities in a hash table indexed by position [x,y,z]
     this._entities = {};
+    this._remainingYouths = 13;
     // Create a table which will hold the items
     this._items = {};
     // create the engine and scheduler
@@ -30,9 +31,12 @@ export default class Map {
     for (let z = 0; z < this._depth; z++) {
       if (z === this._depth - 1) {
         this.addEntityAtRandomPosition(EntityRepository.create('minotaur'), z);
-        // 13 youths
+        // 6 youths, 7 maidens
         for (let i = 0; i < 13; i++) {
-          this.addEntityAtRandomPosition(EntityRepository.create('youth'), z);
+          this.addEntityAtRandomPosition(
+            EntityRepository.create(i < 6 ? 'youth' : 'maiden'),
+            z
+          );
         }
       } else {
         // 15 entities per floor
@@ -153,6 +157,10 @@ export default class Map {
   /***********
    * ENTITIES
    ***********/
+
+  decrementYouths() {
+    this._remainingYouths--;
+  }
 
   getEntityAt(x, y, z) {
     // Get the entity based on position key

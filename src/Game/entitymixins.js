@@ -933,6 +933,8 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
       this._kills++;
       const player = this.getMap().getPlayer();
       if (prey !== player) {
+        // decrement remaining youths
+        this.getMap().decrementYouths();
         // setup a message with direction
         const direction = Geometry.getCardinal(
           player.getX(),

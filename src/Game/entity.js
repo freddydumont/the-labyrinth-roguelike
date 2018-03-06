@@ -112,7 +112,8 @@ export default class Entity extends DynamicGlyph {
       // if entity is sacrificed youth and this is player
       if (
         this.hasMixin(EntityMixins.PlayerActor) &&
-        target.getName() === 'sacrificed youth'
+        (target.getName() === 'sacrificed youth' ||
+          target.getName() === 'sacrificed maiden')
       ) {
         this.exchangePositionWith(target);
         return true;
