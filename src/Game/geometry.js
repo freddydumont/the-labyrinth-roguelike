@@ -34,14 +34,14 @@ const Geometry = {
     // https://stackoverflow.com/questions/35104991/
     // relative-cardinal-direction-of-two-coordinates
     const directions = {
-      6: 'North',
-      7: 'Northwest',
+      2: 'North',
+      1: 'Northwest',
       0: 'West',
-      1: 'Southwest',
-      2: 'South',
-      3: 'Southeast',
+      7: 'Southwest',
+      6: 'South',
+      5: 'Southeast',
       4: 'East',
-      5: 'Northeast',
+      3: 'Northeast',
     };
 
     let angle = (Math.atan2(y2 - y1, x2 - x1) + Math.PI) / (Math.PI / 4);
