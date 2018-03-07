@@ -1,3 +1,4 @@
+import { ROT } from './game';
 import DynamicGlyph from './dynamicglyph';
 import EntityMixins from './entitymixins';
 import * as Messages from './messages';
@@ -116,6 +117,22 @@ export default class Entity extends DynamicGlyph {
           target.getName() === 'sacrificed maiden')
       ) {
         this.exchangePositionWith(target);
+        // Coin flip to send distress message to player
+        const distressMessages = [
+          '"Help me!"',
+          '"Help us!"',
+          '"I\'m scared."',
+          '"I don\'t want to die!"',
+        ];
+        if (Math.round(Math.random()) === 1) {
+          Messages.sendMessage(
+            this,
+            distressMessages[
+              ROT.RNG.getUniformInt(0, distressMessages.length - 1)
+            ]
+          );
+        }
+
         return true;
       }
       // An entity can only attack if the entity has the Attacker mixin and
