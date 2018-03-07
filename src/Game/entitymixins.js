@@ -992,6 +992,10 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
       this.getZ(),
       true
     );
+    // if prey is player, set speed to 1000
+    if (this._prey.getName() === this.getMap().getPlayer().getName()) {
+      this.setSpeed(1000);
+    }
   },
 });
 

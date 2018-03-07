@@ -188,6 +188,7 @@ EntityRepository.define(
     attackValue: 25,
     defenseValue: 10,
     sightRadius: 10,
+    speed: 500,
     tasks: ['chase', 'hunt', 'follow', 'wander'],
     levelRange: [6],
     mixins: [
@@ -210,7 +211,7 @@ EntityRepository.define(
   {
     name: 'sacrificed youth',
     character: 'Y',
-    foreground: 'blue',
+    foreground: 'royalblue',
     maxHp: 1,
     foodValue: 300,
     tasks: ['wander'],
