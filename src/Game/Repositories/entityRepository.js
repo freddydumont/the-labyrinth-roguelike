@@ -188,17 +188,63 @@ EntityRepository.define(
     attackValue: 25,
     defenseValue: 10,
     sightRadius: 10,
-    tasks: ['hunt', 'follow', 'wander'],
+    speed: 500,
+    tasks: ['chase', 'hunt', 'follow', 'wander'],
     levelRange: [6],
     mixins: [
       EntityMixins.BossActor,
-      EntityMixins.TaskActor,
       EntityMixins.Sight,
       EntityMixins.Attacker,
       EntityMixins.Destructible,
       EntityMixins.CorpseDropper,
       EntityMixins.ExperienceGainer,
       EntityMixins.RandomStatGainer,
+    ],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+EntityRepository.define(
+  'youth',
+  {
+    name: 'sacrificed youth',
+    character: 'Y',
+    foreground: 'royalblue',
+    maxHp: 1,
+    foodValue: 300,
+    tasks: ['wander'],
+    levelRange: [6],
+    mixins: [
+      EntityMixins.YouthActor,
+      EntityMixins.TaskActor,
+      EntityMixins.Sight,
+      EntityMixins.Destructible,
+      EntityMixins.CorpseDropper,
+    ],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+EntityRepository.define(
+  'maiden',
+  {
+    name: 'sacrificed maiden',
+    character: 'Y',
+    foreground: 'blueviolet',
+    maxHp: 1,
+    foodValue: 300,
+    tasks: ['wander'],
+    levelRange: [6],
+    mixins: [
+      EntityMixins.YouthActor,
+      EntityMixins.TaskActor,
+      EntityMixins.Sight,
+      EntityMixins.Destructible,
+      EntityMixins.CorpseDropper,
     ],
   },
   {

@@ -2,6 +2,7 @@ import { ROT } from './game';
 import TileRepository from './Repositories/tileRepository';
 import { EntityRepository } from './Repositories/entityRepository';
 import { ItemRepository, GearRepository } from './Repositories/itemRepository';
+import Geometry from './geometry';
 
 export default class Map {
   constructor(tiles, player) {
@@ -15,6 +16,7 @@ export default class Map {
     this.setupFov();
     // store our entities in a hash table indexed by position [x,y,z]
     this._entities = {};
+    this._remainingYouths = 13;
     // Create a table which will hold the items
     this._items = {};
     // create the engine and scheduler
@@ -23,12 +25,21 @@ export default class Map {
     // add the player
     this._player = player;
     this.addEntityAtRandomPosition(player, 0);
+    // add the boss
+    this._boss = EntityRepository.create('minotaur');
 
     // Add random enemies and items to each floor.
-    // Except last one where we only add a minotaur.
+    // Except last one where we only add minotaur and youths.
     for (let z = 0; z < this._depth; z++) {
       if (z === this._depth - 1) {
-        this.addEntityAtRandomPosition(EntityRepository.create('minotaur'), z);
+        this.addEntityAtRandomPosition(this._boss, z);
+        // 6 youths, 7 maidens
+        for (let i = 0; i < 13; i++) {
+          this.addEntityAtRandomPosition(
+            EntityRepository.create(i < 6 ? 'youth' : 'maiden'),
+            z
+          );
+        }
       } else {
         // 15 entities per floor
         for (let i = 0; i < 15; i++) {
@@ -87,6 +98,12 @@ export default class Map {
   }
   getPlayer() {
     return this._player;
+  }
+  getBoss() {
+    return this._boss;
+  }
+  getRemainingYouths() {
+    return this._remainingYouths;
   }
 
   /***********
@@ -149,6 +166,10 @@ export default class Map {
    * ENTITIES
    ***********/
 
+  decrementYouths() {
+    this._remainingYouths--;
+  }
+
   getEntityAt(x, y, z) {
     // Get the entity based on position key
     return this._entities[x + ',' + y + ',' + z];
@@ -175,6 +196,25 @@ export default class Map {
       }
     }
     return results;
+  }
+
+  getEntityClosestTo(x, y, z, isEntity) {
+    // get the array of entities on the level
+    const entities = this.getEntitiesWithinRadius(x, y, z, 100);
+    // calculate distance from center on each entity, saving index for later
+    let entitiesByDistance = entities.map((entity, i) => {
+      return {
+        index: i,
+        distance: Geometry.getDistance(x, y, entity.getX(), entity.getY()),
+      };
+    });
+    // sort the array to get the closest entity first
+    entitiesByDistance.sort((a, b) => {
+      return a.distance - b.distance;
+    });
+    // if we searched from an entity, we skip the first index
+    // as we don't want to return the original entity
+    return entities[entitiesByDistance[isEntity ? 1 : 0].index];
   }
 
   addEntityAtRandomPosition(entity, z) {

@@ -2,19 +2,9 @@ import { ROT, Game } from './game';
 import * as Messages from './messages';
 import Screen from './Screens/index';
 import { ItemRepository } from './Repositories/itemRepository';
+import Geometry from './geometry';
 
-const EntityMixins = {
-  BossActor: {
-    name: 'BossActor',
-    groupName: 'Actor',
-    listeners: {
-      onDeath: function(attacker) {
-        // Switch to win screen when killed!
-        Game.switchScreen(Screen.winScreen);
-      },
-    },
-  },
-
+let EntityMixins = {
   Equipper: {
     name: 'Equipper',
     init: function(template) {
@@ -160,17 +150,30 @@ const EntityMixins = {
      */
   MessageRecipient: {
     name: 'MessageRecipient',
+
     init: function(props) {
       this._messages = [];
+      this._delayedMessages = [];
     },
-    receiveMessage: function(message) {
-      this._messages.push(message);
+
+    receiveMessage: function(message, ttl = 0) {
+      if (ttl > 1) {
+        this._delayedMessages.push(message);
+        return this.receiveMessage(message, ttl - 1);
+      } else {
+        this._messages.push(message);
+      }
     },
+
     getMessages: function() {
       return this._messages;
     },
+
     clearMessages: function() {
       this._messages = [];
+      if (this._delayedMessages.length > 0) {
+        this._messages.push(this._delayedMessages.shift());
+      }
     },
   },
 
@@ -460,7 +463,7 @@ const EntityMixins = {
       // unknown, insight or outofsight
       this._sightStatus = 'unknown';
       // last known path is saved here
-      this._pathToPlayer = undefined;
+      this._pathToPrey = undefined;
     },
 
     act: function() {
@@ -480,7 +483,7 @@ const EntityMixins = {
           this.hasMixin('Sight') &&
           this.canSeeEntity(this.getMap().getPlayer())
         ) {
-          // player has been spotted, switch playerSighted to true and hunt
+          // player has been spotted, switch sightStatus and hunt
           this._sightStatus = 'insight';
           return true;
         } else {
@@ -501,29 +504,32 @@ const EntityMixins = {
     },
 
     hunt: function() {
-      const player = this.getMap().getPlayer();
-
-      // If adjacent to the player, then attack instead of hunting.
+      // default to prey if there is one, otherwise player
+      const prey = this._prey || this.getMap().getPlayer();
+      // If adjacent to the prey, then attack instead of hunting.
       const offsets =
-        Math.abs(player.getX() - this.getX()) +
-        Math.abs(player.getY() - this.getY());
+        Math.abs(prey.getX() - this.getX()) +
+        Math.abs(prey.getY() - this.getY());
       if (offsets === 1) {
         if (this.hasMixin('Attacker')) {
-          this.attack(player);
+          this.attack(prey);
           return;
         }
       }
 
       // Generate the path and move to the first tile.
       const z = this.getZ();
-      this._pathToPlayer = new ROT.Path.AStar(
-        player.getX(),
-        player.getY(),
+      this._pathToPrey = new ROT.Path.AStar(
+        prey.getX(),
+        prey.getY(),
         (x, y) => {
-          // If an entity is present at the tile, can't move there.
-          const entity = this.getMap().getEntityAt(x, y, z);
-          if (entity && entity !== player && entity !== this) {
-            return false;
+          if (!this.hasMixin('BossActor')) {
+            // If an entity is present at the tile, can't move there.
+            // N/A to Boss who will attack anything in his path
+            const entity = this.getMap().getEntityAt(x, y, z);
+            if (entity && entity !== prey && entity !== this) {
+              return false;
+            }
           }
           return this.getMap().getTile(x, y, z).isWalkable();
         },
@@ -541,8 +547,8 @@ const EntityMixins = {
       this._computePath();
       // Check if actor has reached last known position
       if (
-        this.getX() === this._pathToPlayer._toX &&
-        this.getY() === this._pathToPlayer._toY
+        this.getX() === this._pathToPrey._toX &&
+        this.getY() === this._pathToPrey._toY
       ) {
         this._sightStatus = 'unknown';
       }
@@ -563,7 +569,7 @@ const EntityMixins = {
       // Once we've gotten the path, we want to move to the second cell that is
       // passed in the callback (the first is the entity's starting point)
       let count = 0;
-      this._pathToPlayer.compute(this.getX(), this.getY(), (x, y) => {
+      this._pathToPrey.compute(this.getX(), this.getY(), (x, y) => {
         if (count === 1) {
           this.tryMove(x, y, this.getZ());
         }
@@ -910,6 +916,137 @@ const EntityMixins = {
       },
     },
   },
+
+  YouthActor: {
+    name: 'YouthActor',
+    groupName: 'Actor',
+    listeners: {
+      onDeath: function(attacker) {
+        // decrement remaining youths
+        this.getMap().decrementYouths();
+      },
+      onExchange: function(entity) {
+        // get boss direction and opposite
+        const boss = this.getMap().getBoss();
+        const direction = Geometry.getCardinal(
+          this.getX(),
+          this.getY(),
+          boss.getX(),
+          boss.getY()
+        );
+        const opposite = Geometry.getCardinal(
+          this.getX(),
+          this.getY(),
+          boss.getX(),
+          boss.getY(),
+          true
+        );
+        // create array of random messages with directions
+        const messages = [
+          `"I heard something coming from the ${direction}."`,
+          `"He's after me! I'm gonna die!"`,
+          `"I can hear it! Head ${direction} and kill the beast!"`,
+          `"I am fleeing from the beast. Head ${opposite} if you want to live!"`,
+          `"I don't want to die!"`,
+        ];
+        // Coin flip to send distress message to player
+        if (Math.round(Math.random()) === 1) {
+          Messages.sendMessage(
+            this.getMap().getPlayer(),
+            messages[ROT.RNG.getUniformInt(0, messages.length - 1)],
+            null,
+            4
+          );
+        }
+      },
+    },
+  },
 };
+
+// Combine TaskActor mixin with BossActor specifics
+EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
+  name: 'BossActor',
+  groupName: 'Actor',
+  listeners: {
+    onDeath: function(attacker) {
+      // Switch to win screen when killed!
+      Game.switchScreen(Screen.winScreen);
+    },
+    onKill: function(prey) {
+      // when minotaur kills, set prey to false and increment kills
+      this._prey = false;
+      this._kills++;
+      const player = this.getMap().getPlayer();
+      if (prey !== player) {
+        // setup a message with direction
+        const direction = Geometry.getCardinal(
+          player.getX(),
+          player.getY(),
+          prey.getX(),
+          prey.getY()
+        );
+        let message = `You hear a terrible scream coming from the ${direction}.`;
+        // gain a level for first kill, then requires two more kills, etc
+        if (this._gainLevel[this._kills]) {
+          this.giveExperience(
+            this.getNextLevelExperience() - this.getExperience()
+          );
+          message += ' The minotaur grows in power!';
+        }
+        // send message to player to alert direction + increase in power
+        Messages.sendMessage(player, message, null, 10);
+      }
+    },
+  },
+
+  init: function(template) {
+    // Call the task actor init with the tasks from template
+    EntityMixins.TaskActor.init.call(this, template);
+    // Declare boss specific variables
+    this._prey = false;
+    this._kills = 0;
+    this._gainLevel = [0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0];
+  },
+
+  canDoTask: function(task) {
+    // minotaur can smell entities through walls and will always chase the nearest
+    // he only starts chasing when player is on his level
+    if (task === 'chase') {
+      if (this._prey) {
+        // if already has a prey, hunt instead
+        // if player is in sight, then player becomes prey and speed increases
+        if (this._prey.getName() !== this.getMap().getPlayer().getName()) {
+          if (this.canSeeEntity(this.getMap().getPlayer())) {
+            this._prey = this.getMap().getPlayer();
+            this.setSpeed(1000);
+          }
+        }
+        return false;
+      } else {
+        // find a prey when player is on same level
+        return this.getZ() === this.getMap().getPlayer().getZ();
+      }
+    } else if (task === 'hunt') {
+      return this._prey ? true : false;
+    } else {
+      // call parent canDoTask
+      return EntityMixins.TaskActor.canDoTask.call(this, task);
+    }
+  },
+
+  chase: function() {
+    // set a prey to start hunting
+    this._prey = this.getMap().getEntityClosestTo(
+      this.getX(),
+      this.getY(),
+      this.getZ(),
+      true
+    );
+    // if prey is player, set speed to 1000
+    if (this._prey.getName() === this.getMap().getPlayer().getName()) {
+      this.setSpeed(1000);
+    }
+  },
+});
 
 export default EntityMixins;

@@ -54,6 +54,26 @@ export default class Entity extends DynamicGlyph {
     }
   }
 
+  exchangePositionWith(entity) {
+    // remove entity from map
+    this._map.removeEntity(entity);
+    // keep old position in memory
+    const oldX = this._x;
+    const oldY = this._y;
+    const oldZ = this._z;
+    // Update to entity position
+    this._x = entity.getX();
+    this._y = entity.getY();
+    this._z = entity.getZ();
+    this._map.updateEntityPosition(this, oldX, oldY, oldZ);
+    // update entity position
+    entity.setX(oldX);
+    entity.setY(oldY);
+    entity.setZ(oldZ);
+    // add it to map
+    this._map.addEntity(entity);
+  }
+
   canDoAction(action, args) {
     if (action === 'ranged') {
       const { x, y, z } = args;
@@ -89,11 +109,25 @@ export default class Entity extends DynamicGlyph {
       }
       // If an entity was present at the tile
     } else if (target) {
+      // if entity is sacrificed youth and this is player
+      if (
+        this.hasMixin(EntityMixins.PlayerActor) &&
+        (target.getName() === 'sacrificed youth' ||
+          target.getName() === 'sacrificed maiden')
+      ) {
+        // exchange position
+        this.exchangePositionWith(target);
+        // raise event on target
+        target.raiseEvent('onExchange', this);
+        return true;
+      }
       // An entity can only attack if the entity has the Attacker mixin and
       // either the entity or the target is the player.
+      // Special case for boss who will attack anything in his path
       if (
         this.hasMixin('Attacker') &&
         (this.hasMixin(EntityMixins.PlayerActor) ||
+          this.hasMixin('BossActor') ||
           target.hasMixin(EntityMixins.PlayerActor))
       ) {
         this.attack(target);
