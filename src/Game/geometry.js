@@ -30,7 +30,7 @@ const Geometry = {
     return points;
   },
 
-  getCardinal: function(x1, y1, x2, y2) {
+  getCardinal: function(x1, y1, x2, y2, opposite = false) {
     // https://stackoverflow.com/questions/35104991/
     // relative-cardinal-direction-of-two-coordinates
     const directions = {
@@ -44,9 +44,21 @@ const Geometry = {
       3: 'Northeast',
     };
 
+    const opposites = {
+      6: 'North',
+      5: 'Northwest',
+      4: 'West',
+      3: 'Southwest',
+      2: 'South',
+      1: 'Southeast',
+      0: 'East',
+      7: 'Northeast',
+    };
+
     let angle = (Math.atan2(y2 - y1, x2 - x1) + Math.PI) / (Math.PI / 4);
     // round angle for more precision
-    return directions[Math.round(angle) % 8];
+    angle = Math.round(angle) % 8;
+    return opposite ? opposites[angle] : directions[angle];
   },
 
   getDistance: function(x1, y1, x2, y2) {
