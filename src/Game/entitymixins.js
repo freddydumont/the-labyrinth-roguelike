@@ -1009,6 +1009,10 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
   },
 
   canDoTask: function(task) {
+    // if player is not on same level, minotaur can't act
+    if (this.getZ() !== this.getMap().getPlayer().getZ()) {
+      return false;
+    }
     // minotaur can smell entities through walls and will always chase the nearest
     // he only starts chasing when player is on his level
     if (task === 'chase') {
@@ -1023,8 +1027,8 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
         }
         return false;
       } else {
-        // find a prey when player is on same level
-        return this.getZ() === this.getMap().getPlayer().getZ();
+        // find a prey
+        return true;
       }
     } else if (task === 'hunt') {
       return this._prey ? true : false;
