@@ -33,7 +33,9 @@ export default class Builder {
         // if last level, generate a maze
         this._tiles[z] = this._generateLevel(
           ROT.Map.EllerMaze,
-          TileRepository.create('mazeWall')
+          TileRepository.create('mazeWall'),
+          this._width - 15,
+          this._height - 15
         );
       } else {
         this._tiles[z] = this._generateLevel();
@@ -77,7 +79,9 @@ export default class Builder {
    */
   _generateLevel(
     MapAlgorithm = ROT.Map.Digger,
-    wallTile = TileRepository.create('wall')
+    wallTile = TileRepository.create('wall'),
+    width = this._width,
+    height = this._height
   ) {
     let map = [];
     for (let x = 0; x < this._width; x++) {
@@ -90,7 +94,7 @@ export default class Builder {
     }
 
     // generate map type
-    let generator = new MapAlgorithm(this._width, this._height);
+    let generator = new MapAlgorithm(width, height);
 
     // create map
     generator.create((x, y, wall) => {
