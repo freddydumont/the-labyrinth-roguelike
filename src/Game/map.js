@@ -102,6 +102,9 @@ export default class Map {
   getBoss() {
     return this._boss;
   }
+  getRemainingYouths() {
+    return this._remainingYouths;
+  }
 
   /***********
    * ITEMS

@@ -217,6 +217,7 @@ EntityRepository.define(
     tasks: ['wander'],
     levelRange: [6],
     mixins: [
+      EntityMixins.YouthActor,
       EntityMixins.TaskActor,
       EntityMixins.Sight,
       EntityMixins.Destructible,
@@ -239,6 +240,7 @@ EntityRepository.define(
     tasks: ['wander'],
     levelRange: [6],
     mixins: [
+      EntityMixins.YouthActor,
       EntityMixins.TaskActor,
       EntityMixins.Sight,
       EntityMixins.Destructible,
