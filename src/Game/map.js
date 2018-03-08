@@ -25,12 +25,14 @@ export default class Map {
     // add the player
     this._player = player;
     this.addEntityAtRandomPosition(player, 0);
+    // add the boss
+    this._boss = EntityRepository.create('minotaur');
 
     // Add random enemies and items to each floor.
     // Except last one where we only add minotaur and youths.
     for (let z = 0; z < this._depth; z++) {
       if (z === this._depth - 1) {
-        this.addEntityAtRandomPosition(EntityRepository.create('minotaur'), z);
+        this.addEntityAtRandomPosition(this._boss, z);
         // 6 youths, 7 maidens
         for (let i = 0; i < 13; i++) {
           this.addEntityAtRandomPosition(
@@ -96,6 +98,9 @@ export default class Map {
   }
   getPlayer() {
     return this._player;
+  }
+  getBoss() {
+    return this._boss;
   }
 
   /***********

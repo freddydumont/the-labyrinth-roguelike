@@ -2,6 +2,7 @@ import { ROT } from './game';
 import DynamicGlyph from './dynamicglyph';
 import EntityMixins from './entitymixins';
 import * as Messages from './messages';
+import Geometry from './geometry';
 
 // A basic entity is composed of a glyph as well as a position and a name (used in messages).
 export default class Entity extends DynamicGlyph {
@@ -117,22 +118,38 @@ export default class Entity extends DynamicGlyph {
           target.getName() === 'sacrificed maiden')
       ) {
         this.exchangePositionWith(target);
-        // Coin flip to send distress message to player
-        const distressMessages = [
-          '"Help me!"',
-          '"Help us!"',
-          '"I\'m scared."',
-          '"I don\'t want to die!"',
+        // get boss direction and opposite
+        const boss = this.getMap().getBoss();
+        const direction = Geometry.getCardinal(
+          this.getX(),
+          this.getY(),
+          boss.getX(),
+          boss.getY()
+        );
+        const opposite = Geometry.getCardinal(
+          this.getX(),
+          this.getY(),
+          boss.getX(),
+          boss.getY(),
+          true
+        );
+        // create array of random messages with directions
+        const messages = [
+          `"I heard something coming from the ${direction}."`,
+          `"He's after me! I'm gonna die!"`,
+          `"I can hear it! Head ${direction} and kill the beast!"`,
+          `"I am fleeing from the beast. Head ${opposite} if you want to live!"`,
+          `"I don't want to die!"`,
         ];
+        // Coin flip to send distress message to player
         if (Math.round(Math.random()) === 1) {
           Messages.sendMessage(
             this,
-            distressMessages[
-              ROT.RNG.getUniformInt(0, distressMessages.length - 1)
-            ]
+            messages[ROT.RNG.getUniformInt(0, messages.length - 1)],
+            null,
+            4
           );
         }
-
         return true;
       }
       // An entity can only attack if the entity has the Attacker mixin and
