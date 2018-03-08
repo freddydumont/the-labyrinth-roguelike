@@ -90,10 +90,10 @@ EntityRepository.define('rat', {
   ],
 });
 
-EntityRepository.define('kobold', {
-  name: 'kobold',
-  character: 'k',
-  foreground: 'brown',
+EntityRepository.define('satyr', {
+  name: 'satyr',
+  character: 'S',
+  foreground: 'sandybrown',
   foodValue: 200,
   sightRadius: 5,
   maxHp: 20,
@@ -111,10 +111,10 @@ EntityRepository.define('kobold', {
   ],
 });
 
-EntityRepository.define('goblin', {
-  name: 'goblin',
-  character: 'g',
-  foreground: 'lawngreen',
+EntityRepository.define('harpy', {
+  name: 'harpy',
+  character: 'H',
+  foreground: 'mediumslateblue',
   foodValue: 200,
   maxHp: 25,
   attackValue: 9,
@@ -133,10 +133,10 @@ EntityRepository.define('goblin', {
   ],
 });
 
-EntityRepository.define('orc', {
-  name: 'orc',
-  character: 'O',
-  foreground: 'darkgreen',
+EntityRepository.define('undead', {
+  name: 'undead',
+  character: 'Z',
+  foreground: 'lime',
   foodValue: 300,
   maxHp: 40,
   attackValue: 12,
@@ -155,8 +155,8 @@ EntityRepository.define('orc', {
   ],
 });
 
-EntityRepository.define('cyclop', {
-  name: 'cyclop',
+EntityRepository.define('cyclops', {
+  name: 'cyclops',
   character: 'C',
   foreground: 'darkkhaki',
   foodValue: 300,
