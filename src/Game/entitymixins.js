@@ -971,6 +971,13 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
     if (task === 'chase') {
       if (this._prey) {
         // if already has a prey, hunt instead
+        // if player is in sight, then player becomes prey and speed increases
+        if (this._prey.getName() !== this.getMap().getPlayer().getName()) {
+          if (this.canSeeEntity(this.getMap().getPlayer())) {
+            this._prey = this.getMap().getPlayer();
+            this.setSpeed(1000);
+          }
+        }
         return false;
       } else {
         // find a prey when player is on same level
