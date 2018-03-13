@@ -1,5 +1,5 @@
 # The Labyrinth
-Simple Roguelike game where you play as an unknown hero tasked to enter the Labyrinth and slay the Minotaur. 
+Simple Roguelike game where you play as Theseus the hero tasked to enter the Labyrinth and slay the Minotaur. 
 
 The game has 7 depths, each progressively harder than the last. 
 
@@ -11,7 +11,7 @@ Those who fall will be forgotten, but those who manage the impossible will have 
 
 Good luck Hero!
 
-Game: https://bears-team-3.github.io
+Game: https://freddydumont.github.io/the-labyrinth-roguelike/
 
 
-Game worked on by @freddydumont and @cclar. Leaderboard being worked on by @mmarinm.
+Credits to @cclar and @mmarinm for help on the early development.
