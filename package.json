@@ -1,5 +1,6 @@
 {
   "name": "the-labyrinth-roguelike",
+  "homepage": "https://freddydumont.github.io/the-labyrinth-roguelike/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -11,12 +12,15 @@
   },
   "devDependencies": {
     "genversion": "^2.0.1",
+    "gh-pages": "^1.1.0",
     "react-scripts": "1.0.10"
   },
   "scripts": {
     "start": "genversion src/version.js && react-scripts start",
     "build": "genversion src/version.js && react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   }
 }
