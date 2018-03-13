@@ -26,6 +26,9 @@ export default class App extends Component {
         <p className="tracked f5" style={{ color: '#BEBEBE' }}>
           Press ? for help.
         </p>
+        <p className="tracked f5" style={{ color: '#BEBEBE' }}>
+          version <span className="gold">{require('../version')}</span>
+        </p>
       </div>
     );
   }

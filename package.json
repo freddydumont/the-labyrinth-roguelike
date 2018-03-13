@@ -10,11 +10,12 @@
     "tachyons": "^4.8.1"
   },
   "devDependencies": {
+    "genversion": "^2.0.1",
     "react-scripts": "1.0.10"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "genversion src/version.js && react-scripts start",
+    "build": "genversion src/version.js && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

@@ -1397,6 +1397,10 @@ commander@2.11.x, commander@~2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
+commander@^2.11.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.0.tgz#ad2a23a1c3b036e392469b8012cec6b33b4c1322"
+
 commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
@@ -2502,6 +2506,12 @@ find-cache-dir@^0.1.1:
     mkdirp "^0.5.1"
     pkg-dir "^1.0.0"
 
+find-package@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/find-package/-/find-package-1.0.0.tgz#d7738da67e3c5f055c24d3e19aa1aeed063c3e83"
+  dependencies:
+    parents "^1.0.1"
+
 find-up@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-1.1.2.tgz#6b2e9822b1a2ce0a60ab64d610eccad53cb24d0f"
@@ -2514,6 +2524,10 @@ find-up@^2.1.0:
   resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
   dependencies:
     locate-path "^2.0.0"
+
+firstline@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/firstline/-/firstline-1.2.1.tgz#b88673c42009f8821fac2926e99720acee924fae"
 
 flat-cache@^1.2.1:
   version "1.2.2"
@@ -2634,6 +2648,15 @@ generate-object-property@^1.1.0:
   resolved "https://registry.yarnpkg.com/generate-object-property/-/generate-object-property-1.2.0.tgz#9c0e1c40308ce804f4783618b937fa88f99d50d0"
   dependencies:
     is-property "^1.0.0"
+
+genversion@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/genversion/-/genversion-2.0.1.tgz#702010e550f777a56db166eb1732f8040f2619aa"
+  dependencies:
+    commander "^2.11.0"
+    find-package "^1.0.0"
+    firstline "^1.2.1"
+    mkdirp "^0.5.1"
 
 get-caller-file@^1.0.1:
   version "1.0.2"
@@ -4334,6 +4357,12 @@ param-case@2.1.x:
   dependencies:
     no-case "^2.2.0"
 
+parents@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/parents/-/parents-1.0.1.tgz#fedd4d2bf193a77745fe71e371d73c3307d9c751"
+  dependencies:
+    path-platform "~0.11.15"
+
 parse-asn1@^5.0.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/parse-asn1/-/parse-asn1-5.1.0.tgz#37c4f9b7ed3ab65c74817b5f2480937fbf97c712"
@@ -4392,6 +4421,10 @@ path-is-inside@^1.0.1:
 path-parse@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.5.tgz#3c1adf871ea9cd6c9431b6ea2bd74a0ff055c4c1"
+
+path-platform@~0.11.15:
+  version "0.11.15"
+  resolved "https://registry.yarnpkg.com/path-platform/-/path-platform-0.11.15.tgz#e864217f74c36850f0852b78dc7bf7d4a5721bf2"
 
 path-to-regexp@0.1.7:
   version "0.1.7"
