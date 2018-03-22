@@ -29,7 +29,16 @@ export default class Builder {
     // Instantiate the arrays to be multi-dimension
     for (let z = 0; z < depth; z++) {
       // Create a new dungeon at each level
-      if (z === depth - 1) {
+      // for the first 2 levels, generate a cave
+      if (z < 2) {
+        this._tiles[z] = this._generateLevel(
+          ROT.Map.Cellular,
+          TileRepository.create('caveWall'),
+          this._width,
+          this._height,
+          true
+        );
+      } else if (z === depth - 1) {
         // if last level, generate a maze
         this._tiles[z] = this._generateLevel(
           ROT.Map.EllerMaze,
@@ -81,7 +90,8 @@ export default class Builder {
     MapAlgorithm = ROT.Map.Digger,
     wallTile = TileRepository.create('wall'),
     width = this._width,
-    height = this._height
+    height = this._height,
+    isCave = false
   ) {
     let map = [];
     for (let x = 0; x < this._width; x++) {
@@ -95,6 +105,15 @@ export default class Builder {
 
     // generate map type
     let generator = new MapAlgorithm(width, height);
+
+    // if the map is a cave, generator has to be created multiple times
+    if (isCave) {
+      generator.randomize(0.5);
+      // create multiple times to smoothen the cave
+      for (let i = 0; i < 4; i++) {
+        generator.create();
+      }
+    }
 
     // create map
     generator.create((x, y, wall) => {
