@@ -162,7 +162,7 @@ export default class Entity extends DynamicGlyph {
         }
         // add to the message depending on the amount of items
         if (items.length === 1) {
-          message += `You see a ${items[0].describeA()}.`;
+          message += `You see ${items[0].describeA()}.`;
         } else {
           message += 'There are several objects here.';
         }
