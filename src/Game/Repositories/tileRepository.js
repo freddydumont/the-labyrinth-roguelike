@@ -23,6 +23,14 @@ TileRepository.define('wall', {
   description: 'A dungeon wall',
 });
 
+TileRepository.define('caveWall', {
+  name: 'wall',
+  character: '#',
+  foreground: 'goldenrod',
+  blocksLight: true,
+  description: 'A cave wall',
+});
+
 TileRepository.define('mazeWall', {
   name: 'mazeWall',
   character: '#',
