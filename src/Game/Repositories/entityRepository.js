@@ -15,7 +15,7 @@ export const Player = {
   // Starting fullness
   fullness: 500,
   // Lose 1 fullness per step
-  fullnessDepletionRate: 1,
+  fullnessDepletionRate: 0.5,
   mixins: [
     EntityMixins.PlayerActor,
     EntityMixins.Attacker,

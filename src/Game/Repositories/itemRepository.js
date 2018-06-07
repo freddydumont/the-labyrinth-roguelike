@@ -7,20 +7,20 @@ export const ItemRepository = new Repository('items', Item);
 export const GearRepository = new Repository('gear', Item);
 
 // Edibles
-ItemRepository.define('apple', {
-  name: 'apple',
+ItemRepository.define('fig', {
+  name: 'fig',
   character: '%',
-  foreground: 'red',
+  foreground: 'gold',
   foodValue: 100,
   healAmount: 5,
   onGround: true,
   mixins: [ItemMixins.Edible, ItemMixins.Throwable],
 });
 
-ItemRepository.define('melon', {
-  name: 'melon',
+ItemRepository.define('raisins', {
+  name: 'raisins',
   character: '%',
-  foreground: 'lightgreen',
+  foreground: 'purple',
   foodValue: 50,
   healAmount: 2,
   onGround: true,
