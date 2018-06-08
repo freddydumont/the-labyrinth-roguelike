@@ -94,9 +94,9 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'short sword',
+  'xiphos',
   {
-    name: 'short sword',
+    name: 'xiphos',
     character: ')',
     foreground: 'lightgray',
     attackValue: 5,
@@ -110,10 +110,10 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'war hammer',
+  'kopis',
   {
-    name: 'war hammer',
-    character: '†',
+    name: 'kopis',
+    character: ')',
     foreground: 'slategray',
     attackValue: 8,
     wieldable: true,
@@ -126,9 +126,9 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'staff',
+  'dory',
   {
-    name: 'staff',
+    name: 'dory',
     character: '/',
     foreground: 'darkgoldenrod',
     attackValue: 7,
@@ -143,10 +143,10 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'long sword',
+  'legendary sword',
   {
-    name: 'long sword',
-    character: '|',
+    name: 'legendary sword',
+    character: ')',
     foreground: 'white',
     attackValue: 12,
     wieldable: true,
@@ -201,7 +201,7 @@ GearRepository.define(
   {
     name: 'tunic',
     character: '[',
-    foreground: 'green',
+    foreground: 'white',
     defenseValue: 2,
     wearable: true,
     weightedValues: [50, 30, 15, 10, 0, 0, 0],
@@ -213,11 +213,11 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'leather armor',
+  'linothorax',
   {
-    name: 'leather armor',
+    name: 'linothorax',
     character: '[',
-    foreground: 'saddlebrown',
+    foreground: 'beige',
     defenseValue: 3,
     wearable: true,
     weightedValues: [0, 20, 25, 15, 10, 0, 0],
@@ -229,30 +229,14 @@ GearRepository.define(
 );
 
 GearRepository.define(
-  'chainmail',
+  'reinforced linothorax',
   {
-    name: 'chainmail',
+    name: 'reinforced linothorax',
     character: '[',
-    foreground: 'white',
+    foreground: 'lightgrey',
     defenseValue: 4,
     wearable: true,
     weightedValues: [0, 0, 5, 10, 20, 15, 0],
-    mixins: [ItemMixins.Equippable],
-  },
-  {
-    disableRandomCreation: true,
-  }
-);
-
-GearRepository.define(
-  'reinforced mail',
-  {
-    name: 'reinforced mail',
-    character: '[',
-    foreground: 'lightgoldenrodyellow',
-    defenseValue: 5,
-    wearable: true,
-    weightedValues: [0, 0, 5, 10, 10, 15, 0],
     mixins: [ItemMixins.Equippable],
   },
   {
@@ -265,7 +249,23 @@ GearRepository.define(
   {
     name: 'breastplate',
     character: '[',
-    foreground: 'aliceblue',
+    foreground: 'silver',
+    defenseValue: 5,
+    wearable: true,
+    weightedValues: [0, 0, 5, 10, 10, 15, 0],
+    mixins: [ItemMixins.Equippable],
+  },
+  {
+    disableRandomCreation: true,
+  }
+);
+
+GearRepository.define(
+  'legendary breastplate',
+  {
+    name: 'legendary breastplate',
+    character: '[',
+    foreground: 'gold',
     defenseValue: 6,
     wearable: true,
     weightedValues: [0, 0, 0, 5, 10, 20, 0],
