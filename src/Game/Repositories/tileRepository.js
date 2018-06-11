@@ -31,11 +31,20 @@ TileRepository.define('caveWall', {
   description: 'A cave wall',
 });
 
+TileRepository.define('dungeonWall', {
+  name: 'wall',
+  character: '#',
+  foreground: 'teal',
+  blocksLight: true,
+  description: 'A dungeon wall',
+});
+
 TileRepository.define('mazeWall', {
   name: 'mazeWall',
   character: '#',
   foreground: 'rgb(255, 183, 0)',
   blocksLight: true,
+  description: 'A maze wall',
 });
 
 TileRepository.define('stairsUp', {

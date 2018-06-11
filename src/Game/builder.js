@@ -38,6 +38,21 @@ export default class Builder {
           this._height,
           true
         );
+      } else if (3 < z && z < 6) {
+        // levels 4 & 5 have more big rooms, different color
+        this._tiles[z] = this._generateLevel(
+          ROT.Map.Digger,
+          TileRepository.create('dungeonWall'),
+          this._width,
+          this._height,
+          false,
+          {
+            roomWidth: [5, 15],
+            roomHeight: [5, 10],
+            corridorLength: [0, 4],
+            dugPercentage: 0.3,
+          }
+        );
       } else if (z === depth - 1) {
         // if last level, generate a maze
         this._tiles[z] = this._generateLevel(
@@ -47,6 +62,7 @@ export default class Builder {
           this._height - 15
         );
       } else {
+        // default level
         this._tiles[z] = this._generateLevel();
       }
       // Setup the regions array for each depth
@@ -91,7 +107,8 @@ export default class Builder {
     wallTile = TileRepository.create('wall'),
     width = this._width,
     height = this._height,
-    isCave = false
+    isCave = false,
+    config
   ) {
     let map = [];
     for (let x = 0; x < this._width; x++) {
@@ -104,7 +121,7 @@ export default class Builder {
     }
 
     // generate map type
-    let generator = new MapAlgorithm(width, height);
+    let generator = new MapAlgorithm(width, height, config);
 
     // if the map is a cave, generator has to be created multiple times
     if (isCave) {
