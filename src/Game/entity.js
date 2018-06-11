@@ -97,7 +97,12 @@ export default class Entity extends DynamicGlyph {
       if (tile.describe() !== 'stairsUp') {
         Messages.sendMessage(this, "You can't go up here!");
       } else {
-        Messages.sendMessage(this, 'You ascend to level %d!', [z + 1]);
+        // add special message when changing level group
+        Messages.sendMessage(
+          this,
+          'You ascend to level %d!' + Messages.changeLevelGroup.up[z],
+          [z + 1]
+        );
         this.setPosition(x, y, z);
       }
     } else if (z > this.getZ()) {
@@ -105,7 +110,11 @@ export default class Entity extends DynamicGlyph {
         Messages.sendMessage(this, "You can't go down here!");
       } else {
         this.setPosition(x, y, z);
-        Messages.sendMessage(this, 'You descend to level %d!', [z + 1]);
+        Messages.sendMessage(
+          this,
+          'You descend to level %d!' + Messages.changeLevelGroup.down[z],
+          [z + 1]
+        );
       }
       // If an entity was present at the tile
     } else if (target) {

@@ -1,7 +1,7 @@
 {
   "name": "the-labyrinth-roguelike",
   "homepage": "https://freddydumont.github.io/the-labyrinth-roguelike/",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "dependencies": {
     "prettier": "^1.5.3",

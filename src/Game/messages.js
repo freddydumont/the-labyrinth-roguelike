@@ -62,3 +62,24 @@ export const renderMessages = function(display) {
     );
   }
 };
+
+export const changeLevelGroup = {
+  down: {
+    0: '',
+    1: '',
+    2: ' Your surroundings change. You feel tense.',
+    3: '',
+    4: ' Why are these rooms so big?',
+    5: '',
+    6: ' A feeling of dread runs down your spine.',
+  },
+  up: {
+    0: '',
+    1: ' You hear the echo of your footsteps.',
+    2: '',
+    3: ' You feel confined in these corridors.',
+    4: '',
+    5: ' You retreat to the dungeon.',
+    6: '',
+  },
+};
