@@ -8,8 +8,40 @@ export const startScreen = {
 
   render: function(display) {
     // Render our prompt to the screen
-    display.drawText(1, 1, '%c{rgb(255,183,0)}The Labyrinth');
-    display.drawText(1, 2, 'Press [Enter] to start!');
+    let text = 'The Labyrinth';
+    let y = 3;
+    display.drawText(
+      Game.getScreenWidth() / 2 - text.length / 2,
+      y++,
+      '%c{rgb(255,183,0)}' + text
+    );
+
+    text = [
+      'Every nine years, seven Athenian boys and seven Athenian',
+      'girls are sent to Crete to be devoured by the Minotaur. ',
+      'Your are Theseus. You have volunteered to take the place',
+      'of a boy, find the Minotaur in his dungeon and slay him.',
+      'If you succeed, you will be remembered.',
+    ];
+    y = Game.getScreenHeight() / 2 - text.length;
+    for (let i = 0; i < text.length; i++) {
+      display.drawText(
+        Game.getScreenWidth() / 2 - text[i].length / 2,
+        y++,
+        text[i]
+      );
+      if (i % 2) {
+        y++;
+      }
+    }
+
+    text = 'Press [Enter] to start!';
+    y += 3;
+    display.drawText(
+      Game.getScreenWidth() / 2 - text.length / 2,
+      y,
+      '%c{rgb(255,183,0)}' + text
+    );
   },
 
   handleInput: function(inputType, inputData) {
@@ -19,5 +51,5 @@ export const startScreen = {
         Game.switchScreen(Screen.playScreen);
       }
     }
-  }
+  },
 };
