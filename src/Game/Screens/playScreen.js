@@ -214,7 +214,7 @@ export const playScreen = {
     // If the game is over, enter will bring the user to the losing screen.
     if (this._gameEnded) {
       if (inputType === 'keydown' && inputData.keyCode === ROT.VK_RETURN) {
-        Game.switchScreen(Screen.loseScreen);
+        Game.switchScreen(Screen.endScreen);
       }
       // Return to make sure the user can't still play
       return;
@@ -431,5 +431,9 @@ export const playScreen = {
       this._player.getY(),
       this._player.getZ()
     );
+  },
+
+  getPlayer: function() {
+    return this._player;
   },
 };

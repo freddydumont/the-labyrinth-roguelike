@@ -1,21 +1,17 @@
 import { startScreen } from './startScreen';
 import { playScreen } from './playScreen';
-import { winScreen } from './winScreen';
-import { loseScreen } from './loseScreen';
+import { endScreen } from './endScreen';
 import { helpScreen } from './helpScreen';
 import { gainStatScreen } from './gainStatScreen';
 import * as itemListScreens from './itemListScreens';
 import * as targetBasedScreens from './targetBasedScreens';
 
-let Screen = {
+export default {
   startScreen,
   playScreen,
-  winScreen,
-  loseScreen,
+  endScreen,
   helpScreen,
   gainStatScreen,
   ...itemListScreens,
   ...targetBasedScreens,
 };
-
-export default Screen;
