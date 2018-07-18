@@ -23,7 +23,6 @@ export const endScreen = {
       : 0;
 
     this.score = this.baseScore + this.weapon + this.armor + bonus;
-    console.log(this.score);
   },
 
   exit: function() {},
