@@ -420,6 +420,19 @@ let EntityMixins = {
   PlayerActor: {
     name: 'PlayerActor',
     groupName: 'Actor',
+
+    init: function() {
+      this._hasWon = false;
+    },
+
+    win: function() {
+      this._hasWon = true;
+    },
+
+    getHasWon: function() {
+      return this._hasWon;
+    },
+
     act: function() {
       if (this._acting) {
         return;
@@ -970,7 +983,8 @@ EntityMixins.BossActor = Object.assign({}, EntityMixins.TaskActor, {
   listeners: {
     onDeath: function(attacker) {
       // Switch to win screen when killed!
-      Game.switchScreen(Screen.winScreen);
+      attacker.win();
+      Game.switchScreen(Screen.endScreen);
     },
     onKill: function(prey) {
       // when minotaur kills, set prey to false and increment kills
